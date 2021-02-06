@@ -116,6 +116,13 @@
 //摇摆过程底盘运动最大角度(rad)
 #define SWING_MOVE_ANGLE 0.31415926535897932384626433832795f
 
+//原地旋转小陀螺模式下Z轴转速
+#define TOP_WZ_ANGLE_STAND 2.0f
+//移动状态下小陀螺转速
+#define TOP_WZ_ANGLE_MOVE 0.8f
+
+
+
 //chassis motor speed PID
 //底盘电机速度环PID
 #define M3505_MOTOR_SPEED_PID_KP 15000.0f
