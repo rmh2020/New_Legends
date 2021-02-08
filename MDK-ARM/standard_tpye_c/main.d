@@ -81,6 +81,7 @@ standard_tpye_c\main.o: ..\bsp\boards\bsp_delay.h
 standard_tpye_c\main.o: ..\bsp\boards\bsp_usart.h
 standard_tpye_c\main.o: ..\application\remote_control.h
 standard_tpye_c\main.o: ..\bsp\boards\bsp_rc.h
+standard_tpye_c\main.o: ..\application\vision.h
 standard_tpye_c\main.o: ..\application\calibrate_task.h
 standard_tpye_c\main.o: ..\application\chassis_task.h
 standard_tpye_c\main.o: ..\application\CAN_receive.h

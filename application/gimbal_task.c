@@ -647,7 +647,6 @@ static void gimbal_init(gimbal_control_t *init)
     init->gimbal_pitch_motor.mid_relative_angle = MID_PITCH;
   
 
-
     static const fp32 Pitch_speed_pid[3] = {PITCH_SPEED_PID_KP, PITCH_SPEED_PID_KI, PITCH_SPEED_PID_KD};
     static const fp32 Yaw_speed_pid[3] = {YAW_SPEED_PID_KP, YAW_SPEED_PID_KI, YAW_SPEED_PID_KD};
     //电机数据指针获取

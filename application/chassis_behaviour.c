@@ -255,8 +255,8 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     //Ò£¿ØÆ÷ÉèÖÃÄ£Ê½
     if (switch_is_up(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {    
-       //chassis_behaviour_mode = CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW;
-       chassis_behaviour_mode = CHASSIS_TOP;
+       chassis_behaviour_mode = CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW;
+       //chassis_behaviour_mode = CHASSIS_TOP;
     }
     else if (switch_is_mid(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
