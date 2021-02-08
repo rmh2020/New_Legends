@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "chassis_task.h": "c",
+        "struct_typedef.h": "c"
+    }
+}
