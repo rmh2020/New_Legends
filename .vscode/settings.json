@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "chassis_task.h": "c",
-        "struct_typedef.h": "c"
+        "struct_typedef.h": "c",
+        "chassis_behaviour.h": "c",
+        "bsp_usart.h": "c"
     }
 }

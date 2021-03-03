@@ -155,7 +155,7 @@ typedef struct
 //命令码ID,用来判断接收的是什么数据
 
 
-void vision_read_data(uint8_t *ReadFormUart7);
+void vision_read_data(uint8_t *ReadFormUart1);
 void vision_send_data(uint8_t CmdID );
 void vision_error_angle(float *yaw_angle_error, float *pitch_angle_error);
 

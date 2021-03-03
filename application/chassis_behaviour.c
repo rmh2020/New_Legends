@@ -129,7 +129,7 @@ static void chassis_zero_force_control(fp32 *vx_can_set, fp32 *vy_can_set, fp32 
   */
 static void chassis_no_move_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, chassis_move_t *chassis_move_rc_to_vector);
 
-/**
+/**    
   * @brief          when chassis behaviour mode is CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW, chassis control mode is speed control mode.
   *                 chassis will follow gimbal, chassis rotation speed is calculated from the angle difference.
   * @param[out]     vx_set: vx speed value, positive value means forward speed, negative value means backward speed,
@@ -255,11 +255,12 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     //Ò£¿ØÆ÷ÉèÖÃÄ£Ê½
     if (switch_is_up(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {    
-       chassis_behaviour_mode = CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW;
-       //chassis_behaviour_mode = CHASSIS_TOP;
+       //chassis_behaviour_mode = CHASSIS_NO_FOLLOW_YAW;
+       chassis_behaviour_mode = CHASSIS_TOP;
     }
     else if (switch_is_mid(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
+       //chassis_behaviour_mode = CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW;
        chassis_behaviour_mode = CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW;
     }
     else if (switch_is_down(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
@@ -308,7 +309,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     }
     else if (chassis_behaviour_mode == CHASSIS_TOP)
     {
-        chassis_move_mode->chassis_mode = CHASSIS_VECTOR_FOLLOW_CHASSIS_YAW;
+        chassis_move_mode->chassis_mode = CHASSIS_VECTOR_NO_FOLLOW_YAW;
     }
 }
 

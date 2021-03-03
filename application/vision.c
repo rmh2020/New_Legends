@@ -52,20 +52,20 @@ void vision_init()
   */
 uint8_t Vision_Time_Test[2] = {0};            //当前数据和上一次数据
 uint8_t Vision_Ping = 0;                 //发送时间间隔
-void vision_read_data(uint8_t *ReadFormUart7)
+void vision_read_data(uint8_t *ReadFormUart)
 {
 				
 	//判断帧头数据是否为0xA5
-	if(ReadFormUart7[0] == VISION_SOF)
+	if(ReadFormUart[0] == VISION_SOF)
 	{
 		//帧头CRC8校验
-		if(get_CRC8_check_sum( ReadFormUart7, VISION_LEN_HEADER ) == TRUE)
+		if(get_CRC8_check_sum( ReadFormUart, VISION_LEN_HEADER ) == TRUE)
 		{
 			//帧尾CRC16校验
-			if(get_CRC16_check_sum( ReadFormUart7, VISION_LEN_PACKED ) == TRUE)
+			if(get_CRC16_check_sum( ReadFormUart, VISION_LEN_PACKED ) == TRUE)
 			{
 				//接收数据拷贝
-				memcpy( &VisionRecvData, ReadFormUart7, VISION_LEN_PACKED);	
+				memcpy( &VisionRecvData, ReadFormUart, VISION_LEN_PACKED);	
 				Vision_Get_New_Data = TRUE;//标记视觉数据更新了
 				
 				//帧计算

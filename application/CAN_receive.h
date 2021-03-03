@@ -23,7 +23,7 @@
 
 #include "struct_typedef.h"
 
-#define CHASSIS_CAN hcan1
+#define CHASSIS_CAN hcan2
 #define GIMBAL_CAN hcan1
 
 /* CAN send and receive ID */
@@ -138,7 +138,7 @@ extern const motor_measure_t *get_pitch_gimbal_motor_measure_point(void);
 extern const motor_measure_t *get_trigger_motor_measure_point(void);
 
 /**
-  * @brief          return the chassis 3508 motor data point
+  * @brief          return the chassis 3508 moto  r data point
   * @param[in]      i: motor number,range [0,3]
   * @retval         motor data point
   */
