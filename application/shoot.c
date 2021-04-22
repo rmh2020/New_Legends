@@ -207,7 +207,7 @@ static void shoot_set_mode(void)
 {
     static int8_t last_s = RC_SW_UP;
 
-    //上拨判断， 一次开启，再次关闭 连发
+    //上拨判断， 一次开启，再次关闭
     if ((switch_is_up(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_up(last_s) && shoot_control.shoot_mode == SHOOT_STOP))
     {
         shoot_control.shoot_mode = SHOOT_READY_FRIC;
@@ -224,16 +224,6 @@ static void shoot_set_mode(void)
     }
     //处于中档， 可以使用键盘关闭摩擦轮
     else if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && (shoot_control.shoot_rc->key.v & SHOOT_OFF_KEYBOARD) && shoot_control.shoot_mode != SHOOT_STOP)
-    {
-        shoot_control.shoot_mode = SHOOT_STOP;
-    }
-
-    //下拨判断， 一次拨一颗弹
-    if ((switch_is_down(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_down(last_s) && shoot_control.shoot_mode == SHOOT_STOP))
-    {
-        shoot_control.shoot_mode = SHOOT_READY_FRIC;
-    }
-    else if ((switch_is_down(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_down(last_s) && shoot_control.shoot_mode != SHOOT_STOP))
     {
         shoot_control.shoot_mode = SHOOT_STOP;
     }
@@ -257,7 +247,6 @@ static void shoot_set_mode(void)
         {
             shoot_control.shoot_mode = SHOOT_BULLET;
         }
-       
     }
     else if(shoot_control.shoot_mode == SHOOT_DONE)
     {
@@ -293,13 +282,14 @@ static void shoot_set_mode(void)
     }
 
     get_shoot_heat0_limit_and_heat0(&shoot_control.heat_limit, &shoot_control.heat);
-    if(!toe_is_error(REFEREE_TOE) && (shoot_control.heat + SHOOT_HEAT_REMAIN_VALUE > shoot_control.heat_limit))
-    {
-        if(shoot_control.shoot_mode == SHOOT_BULLET || shoot_control.shoot_mode == SHOOT_CONTINUE_BULLET)
-        {
-            shoot_control.shoot_mode =SHOOT_READY_BULLET;
-        }
-    }
+    //检测两个摩擦轮同时上线，为了便于调试，暂时注释
+    // if(!toe_is_error(REFEREE_TOE) && (shoot_control.heat + SHOOT_HEAT_REMAIN_VALUE > shoot_control.heat_limit))
+    // {
+    //     if(shoot_control.shoot_mode == SHOOT_BULLET || shoot_control.shoot_mode == SHOOT_CONTINUE_BULLET)
+    //     {
+    //         shoot_control.shoot_mode =SHOOT_READY_BULLET;
+    //     }
+    // }
     //如果云台状态是 无力状态，就关闭射击
     if (gimbal_cmd_to_shoot_stop())
     {
@@ -452,10 +442,10 @@ static void trigger_motor_turn_back(void)
 static void shoot_bullet_control(void)
 {
 
-    //每次拨动 1/4PI的角度
+    //每次拨动的角度
     if (shoot_control.move_flag == 0)
     {
-        shoot_control.set_angle = rad_format(shoot_control.angle + PI_TEN);
+        shoot_control.set_angle = rad_format(shoot_control.angle + TRIGGER_ONCE);
         shoot_control.move_flag = 1;
     }
     if(shoot_control.key == SWITCH_TRIGGER_OFF)
@@ -472,6 +462,7 @@ static void shoot_bullet_control(void)
     else
     {
         shoot_control.move_flag = 0;
+        shoot_control.shoot_mode = SHOOT_READY;
     }
 }
 

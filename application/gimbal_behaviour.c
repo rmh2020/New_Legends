@@ -83,6 +83,7 @@
 #include "arm_math.h"
 #include "bsp_buzzer.h"
 #include "detect_task.h"
+#include "vision.h"
 
 #include "user_lib.h"
 
@@ -273,6 +274,17 @@ static void gimbal_relative_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
   */
 static void gimbal_motionless_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
 
+
+/**
+  * @brief          云台进入自瞄模式无输入控制，电机是绝对角度控制，
+  * @author         RM
+  * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
+  * @param[in]      pitch: pitch轴角度控制，为角度的增量 单位 rad
+  * @param[in]      gimbal_control_set:云台数据指针
+  * @retval         none
+  */
+static void gimbal_auto_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
+
 //云台行为状态机
 static gimbal_behaviour_e gimbal_behaviour = GIMBAL_ZERO_FORCE;
 
@@ -330,6 +342,11 @@ void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set)
         gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_ENCONDE;
         gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_ENCONDE;
     }
+    else if (gimbal_behaviour == GIMBAL_AUTO)
+    {
+        gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;
+        gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;
+    }
 }
 
 /**
@@ -379,6 +396,10 @@ void gimbal_behaviour_control_set(fp32 *add_yaw, fp32 *add_pitch, gimbal_control
     else if (gimbal_behaviour == GIMBAL_MOTIONLESS)
     {
         gimbal_motionless_control(add_yaw, add_pitch, gimbal_control_set);
+    }
+    else if (gimbal_behaviour == GIMBAL_AUTO)
+    {
+        gimbal_auto_control(add_yaw, add_pitch, gimbal_control_set);
     }
 
 }
@@ -804,3 +825,27 @@ static void gimbal_motionless_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
     *yaw = 0.0f;
     *pitch = 0.0f;
 }
+
+/**
+  * @brief          云台进入自瞄模式无输入控制，电机是绝对角度控制，
+  * @author         RM
+  * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
+  * @param[in]      pitch: pitch轴角度控制，为角度的增量 单位 rad
+  * @param[in]      gimbal_control_set:云台数据指针
+  * @retval         none
+  */
+static void gimbal_auto_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
+{
+    if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
+    {
+        return;
+    }
+
+    if(vision_if_update() == TRUE)
+    {
+      vision_error_angle(yaw, pitch); //获取yaw 和 pitch的偏移量
+      vision_clean_update_flag();
+    }
+}
+
+

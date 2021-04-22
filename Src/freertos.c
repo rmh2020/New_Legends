@@ -25,7 +25,7 @@
 #include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */     
+/* USER CODE BEGIN Includes */
 
 #include "calibrate_task.h"
 #include "chassis_task.h"
@@ -144,8 +144,8 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* definition and creation of test */
-		osThreadDef(test, test_task, osPriorityNormal, 0, 128);
-		testHandle = osThreadCreate(osThread(test), NULL);
+  osThreadDef(test, test_task, osPriorityNormal, 0, 128);
+  testHandle = osThreadCreate(osThread(test), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

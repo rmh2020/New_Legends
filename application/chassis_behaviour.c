@@ -129,7 +129,7 @@ static void chassis_zero_force_control(fp32 *vx_can_set, fp32 *vy_can_set, fp32 
   */
 static void chassis_no_move_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, chassis_move_t *chassis_move_rc_to_vector);
 
-/**
+/**    
   * @brief          when chassis behaviour mode is CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW, chassis control mode is speed control mode.
   *                 chassis will follow gimbal, chassis rotation speed is calculated from the angle difference.
   * @param[out]     vx_set: vx speed value, positive value means forward speed, negative value means backward speed,
@@ -211,7 +211,17 @@ static void chassis_no_follow_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_s
 
 static void chassis_open_set_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, chassis_move_t *chassis_move_rc_to_vector);
 
+/**
+  * @brief          小陀螺旋转的行为状态机下，底盘模式是跟随底盘角度，底盘旋转速度会根据角度差计算底盘旋转的角速度
+  * @author         RM
+  * @param[in]      vx_set前进的速度,正值 前进速度， 负值 后退速度
+  * @param[in]      vy_set左右的速度,正值 左移速度， 负值 右移速度
+  * @param[in]      angle_set底盘设置的yaw 小陀螺旋转的速度
+  * @param[in]      chassis_move_rc_to_vector底盘数据
+  * @retval         返回空
+  */
 
+static void chassis_top_control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, chassis_move_t *chassis_move_rc_to_vector);
 
 
 
@@ -245,11 +255,13 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     //遥控器设置模式
     if (switch_is_up(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {    
-       chassis_behaviour_mode = CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW;
+       //chassis_behaviour_mode = CHASSIS_NO_FOLLOW_YAW;
+       chassis_behaviour_mode = CHASSIS_TOP;
     }
     else if (switch_is_mid(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
-       chassis_behaviour_mode = CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW;
+       chassis_behaviour_mode = CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW;
+       //chassis_behaviour_mode = CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW;
     }
     else if (switch_is_down(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
@@ -294,6 +306,10 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     else if (chassis_behaviour_mode == CHASSIS_OPEN)
     {
         chassis_move_mode->chassis_mode = CHASSIS_VECTOR_RAW;
+    }
+    else if (chassis_behaviour_mode == CHASSIS_TOP)
+    {
+        chassis_move_mode->chassis_mode = CHASSIS_VECTOR_NO_FOLLOW_YAW;
     }
 }
 
@@ -347,6 +363,10 @@ void chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, 
     else if (chassis_behaviour_mode == CHASSIS_OPEN)
     {
         chassis_open_set_control(vx_set, vy_set, angle_set, chassis_move_rc_to_vector);
+    }
+     else if (chassis_behaviour_mode == CHASSIS_TOP)
+    {
+        chassis_top_control(vx_set, vy_set, angle_set, chassis_move_rc_to_vector);
     }
 }
 
@@ -592,4 +612,39 @@ static void chassis_open_set_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, c
     *vy_set = -chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_Y_CHANNEL] * CHASSIS_OPEN_RC_SCALE;
     *wz_set = -chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL] * CHASSIS_OPEN_RC_SCALE;
     return;
+}
+
+
+/**
+  * @brief          小陀螺旋转的行为状态机下，底盘模式是跟随底盘角度，底盘旋转速度会根据角度差计算底盘旋转的角速度
+  * @author         RM
+  * @param[in]      vx_set前进的速度,正值 前进速度， 负值 后退速度
+  * @param[in]      vy_set左右的速度,正值 左移速度， 负值 右移速度
+  * @param[in]      angle_set底盘设置的yaw 小陀螺旋转的速度
+  * @param[in]      chassis_move_rc_to_vector底盘数据
+  * @retval         返回空
+  */
+
+static void chassis_top_control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, chassis_move_t *chassis_move_rc_to_vector)
+{
+    if (vx_set == NULL || vy_set == NULL || angle_set == NULL || chassis_move_rc_to_vector == NULL)
+    {
+        return;
+    }
+
+    chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
+
+    if((fabs(*vx_set)<0.001)&&(fabs(*vy_set)<0.001))
+    {
+      *angle_set = TOP_WZ_ANGLE_STAND;
+    }
+    else
+    {
+      *angle_set = TOP_WZ_ANGLE_MOVE;
+
+      fp32 angle = chassis_move_rc_to_vector->chassis_yaw_motor->relative_angle;
+      *vx_set = (cos(angle) * *vx_set) + (-sin(angle) * *vx_set);
+      *vy_set = (sin(angle) * *vy_set) + (cos(angle) * *vy_set);
+    }
+
 }

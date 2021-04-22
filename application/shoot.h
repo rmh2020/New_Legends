@@ -70,6 +70,7 @@
 
 #define PI_FOUR                     0.78539816339744830961566084581988f
 #define PI_TEN                      0.314f
+#define PI                          3.1415926f
 
 //拨弹轮电机PID
 #define TRIGGER_ANGLE_PID_KP        800.0f
@@ -84,24 +85,17 @@
 
 
 #define SHOOT_HEAT_REMAIN_VALUE     80
-
-/*
-停止模式
-摩擦轮准备
-拨盘准备
-单发
-连发
-
-
-*/
+//拨盘格数
+#define TRIGGER_GRID_NUM 12     
+#define TRIGGER_ONCE PI/TRIGGER_GRID_NUM
 
 typedef enum
 {
     SHOOT_STOP = 0,
     SHOOT_READY_FRIC,
     SHOOT_READY_BULLET,
-    SHOOT_BULLET,
     SHOOT_READY,
+    SHOOT_BULLET,
     SHOOT_CONTINUE_BULLET,
     SHOOT_DONE,
 } shoot_mode_e;

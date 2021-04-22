@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<JScopeProject>
+    <FileVersion major="1" minor="1" />
+    <Project>
+        <Configuration>
+            <JLink>
+                <Options IsRTTSession="0" IsRTTWithTimeStamp="1" SamplingPeriod="20000" Connection="1" SerialNo="0" IP="" TargetDevice="unspecified" TargetInterface="SWD" InterfaceSpeed="4000" />
+            </JLink>
+            <ElfFile Name="E:\file\competition\RM\code\code_reconsitut\New_Legends\MDK-ARM\standard_tpye_c\standard_tpye_c.axf" />
+            <DataFile Name="" />
+            <RawFile Name="" />
+            <Scope>
+                <Options TimeResolutionUs="1000000" />
+            </Scope>
+        </Configuration>
+        <Windows>
+            <Graph Show="1" />
+            <Watch Show="1" />
+        </Windows>
+        <SelectedSymbols>
+            <Symbol>
+                <Options Name="yaw_relative_angle_1000" Address="0x2000017C" Type="int" TypeID="12" Size="4" GraphColorRed="255" GraphColorGreen="215" GraphColorBlue="0" YMinSampled="-839939669" YMaxSampled="3138" YAvgSampled="-9714962" Offset="4" ShowInGraph="1" YOffset="440" IsAutoConfig="1" YResolution="500000000" MaxValue="1485000000" File="..\application\gimbal_task.c" Scope="0" DrawStyle="0" />
+            </Symbol>
+            <Symbol>
+                <Options Name="pitch_relative_angle_1000" Address="0x20000180" Type="int" TypeID="12" Size="4" GraphColorRed="0" GraphColorGreen="255" GraphColorBlue="0" YMinSampled="-747" YMaxSampled="21845" YAvgSampled="671" Offset="8" ShowInGraph="0" YOffset="220" IsAutoConfig="1" YResolution="500" MaxValue="1000" File="..\application\gimbal_task.c" Scope="0" DrawStyle="0" />
+            </Symbol>
+            <Symbol>
+                <Options Name="yaw_relative_set_1000" Address="0x20000184" Type="int" TypeID="12" Size="4" GraphColorRed="0" GraphColorGreen="0" GraphColorBlue="176" YMinSampled="-6283" YMaxSampled="1073754112" YAvgSampled="12415086" Offset="12" ShowInGraph="1" YOffset="240" IsAutoConfig="1" YResolution="1000000000" MaxValue="-2147483648" File="..\application\gimbal_task.c" Scope="0" DrawStyle="0" />
+            </Symbol>
+            <Symbol>
+                <Options Name="pitch_relative_set_1000" Address="0x20000188" Type="int" TypeID="12" Size="4" GraphColorRed="160" GraphColorGreen="32" GraphColorBlue="240" YMinSampled="-942" YMaxSampled="4095" YAvgSampled="167" Offset="16" ShowInGraph="0" YOffset="300" IsAutoConfig="1" YResolution="500" MaxValue="1000" File="..\application\gimbal_task.c" Scope="0" DrawStyle="0" />
+            </Symbol>
+        </SelectedSymbols>
+    </Project>
+</JScopeProject>

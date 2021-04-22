@@ -50,7 +50,7 @@ static CAN_TxHeaderTypeDef  gimbal_tx_message;
 static uint8_t              gimbal_can_send_data[8];
 static CAN_TxHeaderTypeDef  chassis_tx_message;
 static uint8_t              chassis_can_send_data[8];
-
+        
 /**
   * @brief          hal CAN fifo call back, receive motor data
   * @param[in]      hcan, the point to CAN handle
