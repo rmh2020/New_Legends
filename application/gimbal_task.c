@@ -298,6 +298,9 @@ static void J_scope_gimbal_test(void);
 //云台控制所有相关数据
 gimbal_control_t gimbal_control;
 
+extern shoot_control_t shoot_control;          //射击数据
+
+
 //motor current 
 //发送的电机电流
 static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
@@ -339,7 +342,7 @@ void gimbal_task(void const *pvParameters)
         gimbal_feedback_update(&gimbal_control);             //云台数据反馈
         gimbal_set_control(&gimbal_control);                 //设置云台控制量
         gimbal_control_loop(&gimbal_control);                //云台控制PID计算
-        shoot_can_set_current = shoot_control_loop();        //射击任务控制循环
+        shoot_control_loop();        //射击任务控制循环
 #if YAW_TURN
         yaw_can_set_current = -gimbal_control.gimbal_yaw_motor.given_current;
 #else
@@ -357,10 +360,12 @@ void gimbal_task(void const *pvParameters)
             if (toe_is_error(DBUS_TOE))
             {
                 CAN_cmd_gimbal(0, 0, 0, 0);
+                CAN_cmd_shoot(0, 0, 0, 0);
             }
             else
             {
-                CAN_cmd_gimbal(yaw_can_set_current, pitch_can_set_current, shoot_can_set_current, 0);
+                CAN_cmd_gimbal(yaw_can_set_current, pitch_can_set_current, 0, 0);
+                CAN_cmd_shoot(shoot_control.fric_motor[LEFT].give_current, shoot_control.fric_motor[RIGHT].give_current, shoot_control.given_current, 0);
             }
         }
 

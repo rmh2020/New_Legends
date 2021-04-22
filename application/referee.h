@@ -95,6 +95,8 @@ typedef __packed struct //0x0201
     uint16_t shooter_heat0_cooling_limit;
     uint16_t shooter_heat1_cooling_rate;
     uint16_t shooter_heat1_cooling_limit;
+    uint8_t shooter_heat0_speed_limit;
+    uint8_t shooter_heat1_speed_limit;
     uint8_t mains_power_gimbal_output : 1;
     uint8_t mains_power_chassis_output : 1;
     uint8_t mains_power_shooter_output : 1;

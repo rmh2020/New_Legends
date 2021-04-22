@@ -168,28 +168,52 @@ void referee_data_solve(uint8_t *frame)
     }
 }
 
-void get_chassis_power_and_buffer(fp32 *power, fp32 *buffer)
-{
-    *power = power_heat_data_t.chassis_power;
-    *buffer = power_heat_data_t.chassis_power_buffer;
-
-}
 
 
+//返回机器人ID
 uint8_t get_robot_id(void)
 {
     return robot_state.robot_id;
 }
 
-void get_shoot_heat0_limit_and_heat0(uint16_t *heat0_limit, uint16_t *heat0)
+
+//底盘输出功率,底盘功率缓存
+void get_chassis_power_and_buffer(fp32 *power, fp32 *buffer)
+{
+    *power = power_heat_data_t.chassis_power;
+    *buffer = power_heat_data_t.chassis_power_buffer;
+}
+
+
+//17mm枪口热量上限, 17mm枪口实时热量
+void get_shooter_heat0_cooling_limit_and_heat0(uint16_t *heat0_limit, uint16_t *heat0)
 {
     *heat0_limit = robot_state.shooter_heat0_cooling_limit;
     *heat0 = power_heat_data_t.shooter_heat0;
 }
 
-void get_shoot_heat1_limit_and_heat1(uint16_t *heat1_limit, uint16_t *heat1)
+
+//17mm枪口枪口射速上限,17mm实时射速
+void get_shooter_heat0_speed_limit_and_heat0(uint16_t *heat0_limit, uint16_t *heat0)
+{
+    *heat0_limit = robot_state.shooter_heat0_speed_limit;
+    *heat0 = shoot_data_t.bullet_speed;
+}
+
+
+//42mm枪口热量上限, 42mm枪口实时热量
+void get_shooter_heat1_cooling_limit_and_heat1(uint16_t *heat1_limit, uint16_t *heat1)
 {
     *heat1_limit = robot_state.shooter_heat1_cooling_limit;
     *heat1 = power_heat_data_t.shooter_heat1;
 }
+
+//42mm枪口枪口射速上限,42mm实时射速
+void get_shooter_heat1_speed_limit_and_heat1(uint16_t *heat1_limit, uint16_t *heat1)
+{
+    *heat1_limit = robot_state.shooter_heat1_speed_limit;
+    *heat1 = shoot_data_t.bullet_speed;
+}
+
+
 

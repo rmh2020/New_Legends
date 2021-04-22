@@ -22,12 +22,46 @@ Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
 E:\file\competition\RM\code\code_reconsitut\New_Legends\MDK-ARM\standard_robot.uvprojx
-Project File Date:  02/10/2021
+Project File Date:  04/22/2021
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 0 Warning(s).
+compiling CAN_receive.c...
+..\application\CAN_receive.c(243): error:  #147-D: declaration is incompatible with "const motor_measure_t *get_fric_motor_measure_point(void)"  (declared at line 133 of "..\application\CAN_receive.h")
+  const motor_measure_t *get_fric_motor_measure_point(uint8_t i)
+..\application\CAN_receive.c: 0 warnings, 1 error
+compiling shoot.c...
+..\application\shoot.c(107): error:  #140: too many arguments in function call
+      shoot_control.fric_motor[
+EFT].fric_motor_measure[
+EFT] = get_fric_motor_measure_point(
+EFT);
+..\application\shoot.c(107): error:  #137: expression must be a modifiable lvalue
+      shoot_control.fric_motor[
+EFT].fric_motor_measure[
+EFT] = get_fric_motor_measure_point(
+EFT);
+..\application\shoot.c(108): error:  #140: too many arguments in function call
+      shoot_control.fric_motor[
+IGHT].fric_motor_measure[
+IGHT] = get_fric_motor_measure_point(
+IGHT);
+..\application\shoot.c(108): error:  #137: expression must be a modifiable lvalue
+      shoot_control.fric_motor[
+IGHT].fric_motor_measure[
+IGHT] = get_fric_motor_measure_point(
+IGHT);
+..\application\shoot.c(219): error:  #167: argument of type "fp32 *" is incompatible with parameter of type "ramp_function_source_t *"
+          ramp_calc(&shoot_control.fric_motor[
+EFT].speed_set, -
+HOOT_FRIC_ADD_VALUE);
+..\application\shoot.c(220): error:  #167: argument of type "fp32 *" is incompatible with parameter of type "ramp_function_source_t *"
+          ramp_calc(&shoot_control.fric_motor[
+IGHT].speed_set, 
+HOOT_FRIC_ADD_VALUE);
+..\application\shoot.c: 0 warnings, 6 errors
+"standard_tpye_c\standard_tpye_c.axf" - 7 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -45,7 +79,8 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:01
+Target not created.
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>
