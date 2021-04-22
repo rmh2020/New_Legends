@@ -97,8 +97,9 @@ typedef enum
                                         //底盘不跟随角度，角度是开环的，但轮子是有速度环
   CHASSIS_OPEN,                          //the value of remote control will mulitiply a value, get current value that will be sent to can bus
                                         // 遥控器的值乘以比例成电流值 直接发送到can总线上
-  CHASSIS_TOP                           //小陀螺模式，底盘Z轴以固定速度旋转，可以使用遥控器或键盘控制底盘移动
-                    
+  CHASSIS_TOP,                           //小陀螺模式，底盘Z轴以固定速度旋转，可以使用遥控器或键盘控制底盘移动
+  CHASSIS_SHAKE,                         //扭腰模式,底盘左右小角度摆动,适用在突起地面上规避敌方子弹
+  CHASSIS_MISS,                          //自动闪避模式,通过读取裁判数据,判断自己是否被击打,如果被击打,底盘旋转一定角度                                        
 } chassis_behaviour_e;
 
 #define CHASSIS_OPEN_RC_SCALE 10 // in CHASSIS_OPEN mode, multiply the value. 在chassis_open 模型下，遥控器乘以该比例发送到can上

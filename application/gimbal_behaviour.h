@@ -85,13 +85,14 @@
 #include "gimbal_task.h"
 typedef enum
 {
-  GIMBAL_ZERO_FORCE = 0, 
-  GIMBAL_INIT,           
-  GIMBAL_CALI,           
-  GIMBAL_ABSOLUTE_ANGLE, 
-  GIMBAL_RELATIVE_ANGLE, 
-  GIMBAL_MOTIONLESS,  
-  GIMBAL_AUTO   
+  GIMBAL_ZERO_FORCE = 0,             //无力模式
+  GIMBAL_INIT,                       //初始化模式
+  GIMBAL_CALI,                      //校准模式
+  GIMBAL_ABSOLUTE_ANGLE,            //底盘跟随云台
+  GIMBAL_RELATIVE_ANGLE,            //云台跟随底盘
+  GIMBAL_MOTIONLESS,                //电机静止
+  GIMBAL_AUTO,                      //自瞄模式
+  GIMBAL_TURN_FIXED_ANGLE,          //云台旋转固定角度
 } gimbal_behaviour_e;
 
 /**
