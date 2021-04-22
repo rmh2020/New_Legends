@@ -28,6 +28,7 @@
 #define SHOOT_CAN hcan1
 
 
+
 /* CAN send and receive ID */
 typedef enum
 {
@@ -130,7 +131,7 @@ extern const motor_measure_t *get_trigger_motor_measure_point(void);
   * @param[in]      none
   * @retval         电机数据指针
   */
-extern const motor_measure_t *get_fric_motor_measure_point(void);
+extern const motor_measure_t *get_fric_motor_measure_point(uint8_t i);
 
 
 /**

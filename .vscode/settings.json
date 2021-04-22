@@ -4,6 +4,9 @@
         "struct_typedef.h": "c",
         "chassis_behaviour.h": "c",
         "bsp_usart.h": "c",
-        "cmsis_os.h": "c"
+        "cmsis_os.h": "c",
+        "can_receive.h": "c",
+        "cmath": "c",
+        "*.tcc": "c"
     }
 }

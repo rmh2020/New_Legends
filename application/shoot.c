@@ -43,7 +43,7 @@
 
 //通过读取裁判数据,直接修改射速和射频等级
 //射速等级  摩擦电机
-fp32 shoot_fric_grade[3] = {2.0f, 4.0f, 6.0f};
+fp32 shoot_fric_grade[3] = {1000, 2000, 4000};
 
 //射频等级 拨弹电机
 fp32 shoot_grigger_grade[3] = {10.0f, 15.0f, 20.0f};
@@ -104,8 +104,8 @@ void shoot_init(void)
     shoot_control.shoot_rc = get_remote_control_point();
     //电机指针 拨弹 摩擦轮
     shoot_control.trigger_motor_measure = get_trigger_motor_measure_point();
-    shoot_control.fric_motor[LEFT].fric_motor_measure[LEFT] = get_fric_motor_measure_point(LEFT);
-    shoot_control.fric_motor[RIGHT].fric_motor_measure[RIGHT] = get_fric_motor_measure_point(RIGHT);
+    shoot_control.fric_motor[LEFT].fric_motor_measure = get_fric_motor_measure_point(LEFT);
+    shoot_control.fric_motor[RIGHT].fric_motor_measure = get_fric_motor_measure_point(RIGHT);
 
 
     //初始化PID
@@ -113,18 +113,21 @@ void shoot_init(void)
     PID_init(&shoot_control.fric_speed_pid[LEFT], PID_POSITION, Fric_speed_pid, FRIC_PID_MAX_OUT, FRIC_PID_MAX_IOUT);
     PID_init(&shoot_control.fric_speed_pid[RIGHT], PID_POSITION, Fric_speed_pid, FRIC_PID_MAX_OUT, FRIC_PID_MAX_IOUT);
 
-    //设置最大 最小值  左摩擦轮顺时针转 右摩擦轮逆时针转
-    shoot_control.fric_motor[LEFT].speed_max = FRIC_MAX_SPEED;
-    shoot_control.fric_motor[LEFT].speed_min = -FRIC_MAX_SPEED;
-    shoot_control.fric_motor[LEFT].speed_require = -FRIC_REQUIRE_SPEED;
 
-    shoot_control.fric_motor[RIGHT].speed_max = FRIC_MAX_SPEED;
-    shoot_control.fric_motor[RIGHT].speed_min = -FRIC_MAX_SPEED;
-    shoot_control.fric_motor[RIGHT].speed_require = FRIC_REQUIRE_SPEED;
+  
+    //设置最大 最小值  左摩擦轮顺时针转 右摩擦轮逆时针转
+    shoot_control.fric_motor[LEFT].max_speed = FRIC_MAX_SPEED_RMP;
+    shoot_control.fric_motor[LEFT].min_speed = -FRIC_MAX_SPEED_RMP;
+    shoot_control.fric_motor[LEFT].require_speed = -FRIC_REQUIRE_SPEED_RMP;
+
+    shoot_control.fric_motor[RIGHT].max_speed = FRIC_MAX_SPEED_RMP;
+    shoot_control.fric_motor[RIGHT].min_speed = -FRIC_MAX_SPEED_RMP;
+    shoot_control.fric_motor[RIGHT].require_speed = -FRIC_REQUIRE_SPEED_RMP;
     
     //更新数据
     shoot_feedback_update();
 
+   
 
 
     shoot_control.ecd_count = 0;
@@ -201,9 +204,9 @@ void shoot_control_loop(void)
     {
         shoot_laser_off();
         shoot_control.given_current = 0;
-        shoot_control.fric_motor[LEFT].give_current = 0;
-        shoot_control.fric_motor[RIGHT].give_current = 0;
-
+        shoot_control.fric_motor[LEFT].speed_set = 0.0f;
+        shoot_control.fric_motor[RIGHT].speed_set = 0.0f;
+  
     }
     else
     {
@@ -215,15 +218,21 @@ void shoot_control_loop(void)
         {
             shoot_control.given_current = 0;
         }
-        //摩擦轮需要一个个斜波开启，不能同时直接开启，否则可能电机不转
-        ramp_calc(&shoot_control.fric_motor[LEFT].speed_set, -SHOOT_FRIC_ADD_VALUE);
-        ramp_calc(&shoot_control.fric_motor[RIGHT].speed_set, SHOOT_FRIC_ADD_VALUE);
 
+        shoot_control.fric_motor[LEFT].speed_set = shoot_fric_grade[0];
+        shoot_control.fric_motor[RIGHT].speed_set = -shoot_fric_grade[0];
+  
     }
-    //计算摩擦轮的PID
+
+     //计算摩擦轮的PID
     PID_calc(&shoot_control.fric_speed_pid[LEFT], shoot_control.fric_motor[LEFT].speed, shoot_control.fric_motor[LEFT].speed_set);
     PID_calc(&shoot_control.fric_speed_pid[RIGHT], shoot_control.fric_motor[RIGHT].speed, shoot_control.fric_motor[RIGHT].speed_set);    
    
+    shoot_control.fric_motor[LEFT].give_current = shoot_control.fric_speed_pid[LEFT].out;
+    shoot_control.fric_motor[RIGHT].give_current = shoot_control.fric_speed_pid[RIGHT].out;
+
+
+    
 }
 
 /**
@@ -256,8 +265,8 @@ static void shoot_set_mode(void)
         shoot_control.shoot_mode = SHOOT_STOP;
     }
 
-    //摩擦轮速度达到一定值,才可开启拨盘
-    if(shoot_control.shoot_mode == SHOOT_READY_FRIC && shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm == shoot_control.fric_motor[LEFT].speed_require && shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm == shoot_control.fric_motor[RIGHT].speed_require)
+    //摩擦轮速度达到一定值,才可开启拨盘  为了便于测试,这里只需要一个摩擦轮电机达到拨盘启动要求就可以开启拨盘
+    if(shoot_control.shoot_mode == SHOOT_READY_FRIC && abs(shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[RIGHT].require_speed))
     {
         shoot_control.shoot_mode = SHOOT_READY_BULLET;
     }
@@ -310,7 +319,7 @@ static void shoot_set_mode(void)
         }
     }
 
-    get_shoot_heat0_limit_and_heat0(&shoot_control.heat_limit, &shoot_control.heat);
+    get_shooter_heat0_cooling_limit_and_heat0(&shoot_control.heat_limit, &shoot_control.heat);
     //检测两个摩擦轮同时上线，为了便于调试，暂时注释
     // if(!toe_is_error(REFEREE_TOE) && (shoot_control.heat + SHOOT_HEAT_REMAIN_VALUE > shoot_control.heat_limit))
     // {
@@ -335,15 +344,9 @@ static void shoot_set_mode(void)
 static void shoot_feedback_update(void)
 {
 
-
-    // uint8_t i = 0;
-    // for (i = 4; i < 6; i++)
-    // {
-    //     //更新电机速度，加速度是速度的PID微分
-    //     shoot_control.fric_motor[i].speed= CHASSIS_MOTOR_RPM_TO_VECTOR_SEN * shoot_control.fric_motor[i].fric_motor_measure->speed_rpm;
-    //     chassis_move_update->motor_chassis[i].accel = chassis_move_update->motor_speed_pid[i].Dbuf[0] * CHASSIS_CONTROL_FREQUENCE;
-    // }
-
+    //更新摩擦轮电机速度
+    shoot_control.fric_motor[LEFT].speed = shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm;
+    shoot_control.fric_motor[RIGHT].speed = shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm;
 
     static fp32 speed_fliter_1 = 0.0f;
     static fp32 speed_fliter_2 = 0.0f;
@@ -434,14 +437,14 @@ static void shoot_feedback_update(void)
 
     if (up_time > 0)
     {
-        shoot_control.fric_motor[LEFT].speed = shoot_fric_grade[1];
-        shoot_control.fric_motor[RIGHT].speed = shoot_fric_grade[1];
+        shoot_control.fric_motor[LEFT].max_speed = shoot_fric_grade[1];
+        shoot_control.fric_motor[RIGHT].max_speed = shoot_fric_grade[1];
         up_time--;
     }
     else
     {
-        shoot_control.fric_motor[LEFT].speed = shoot_fric_grade[1]/2;
-        shoot_control.fric_motor[RIGHT].speed = shoot_fric_grade[1]/2;
+        shoot_control.fric_motor[LEFT].max_speed = shoot_fric_grade[1]/2;
+        shoot_control.fric_motor[RIGHT].max_speed = shoot_fric_grade[1]/2;
     }
 
 

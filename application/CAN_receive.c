@@ -185,8 +185,8 @@ void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int16_t mot
   */
 void CAN_cmd_shoot(int16_t left_fric, int16_t right_fric, int16_t trigger, int16_t rev)
 {
-  uint32_t send_mail_box;
-    shoot_tx_message.StdId = CAN_GIMBAL_ALL_ID;
+    uint32_t send_mail_box;
+    shoot_tx_message.StdId = CAN_SHOOT_ALL_ID;
     shoot_tx_message.IDE = CAN_ID_STD;
     shoot_tx_message.RTR = CAN_RTR_DATA;
     shoot_tx_message.DLC = 0x08;

@@ -74,28 +74,28 @@
 #define PI                          3.1415926f
 
 //拨弹轮电机PID
-#define TRIGGER_ANGLE_PID_KP        800.0f
-#define TRIGGER_ANGLE_PID_KI        0.5f
+#define TRIGGER_ANGLE_PID_KP        80.0f  //800
+#define TRIGGER_ANGLE_PID_KI        0.01f  //0.5
 #define TRIGGER_ANGLE_PID_KD        0.0f
 
 #define TRIGGER_BULLET_PID_MAX_OUT  10000.0f
-#define TRIGGER_BULLET_PID_MAX_IOUT 9000.0f
+#define TRIGGER_BULLET_PID_MAX_IOUT 200.0f
 
 #define TRIGGER_READY_PID_MAX_OUT   10000.0f
-#define TRIGGER_READY_PID_MAX_IOUT  7000.0f
+#define TRIGGER_READY_PID_MAX_IOUT  200.0f
 
 
 //摩擦轮电机PID
-#define FRIC_SPEED_PID_KP        15000.0f
-#define FRIC_SPEED_PID_KI        10.0f
+#define FRIC_SPEED_PID_KP        2.0f
+#define FRIC_SPEED_PID_KI        0.5f
 #define FRIC_SPEED_PID_KD        0.0f
 
-#define FRIC_PID_MAX_OUT  16000.0f
-#define FRIC_PID_MAX_IOUT 2000.0f
+#define FRIC_PID_MAX_OUT  8000.0f
+#define FRIC_PID_MAX_IOUT 200.0f
 
 
-#define FRIC_MAX_SPEED 2.0f
-#define FRIC_REQUIRE_SPEED 1.0f
+#define FRIC_MAX_SPEED_RMP 4000.0f
+#define FRIC_REQUIRE_SPEED_RMP 500.0f
 
 #define SHOOT_HEAT_REMAIN_VALUE     80
 //拨盘格数
@@ -108,13 +108,13 @@
 
 typedef enum
 {
-    SHOOT_STOP = 0,
-    SHOOT_READY_FRIC,
-    SHOOT_READY_BULLET,
-    SHOOT_READY,
-    SHOOT_BULLET,
-    SHOOT_CONTINUE_BULLET,
-    SHOOT_DONE,
+    SHOOT_STOP = 0,    //停止发射结构
+    SHOOT_READY_FRIC,  //摩擦轮准备中
+    SHOOT_READY_BULLET,//拨盘准备中,摩擦轮已达到转速
+    SHOOT_READY,       //整个发射机构准备完成
+    SHOOT_BULLET,      //单发
+    SHOOT_CONTINUE_BULLET,//连发
+    SHOOT_DONE,      
 } shoot_mode_e;
 
 typedef struct
@@ -125,9 +125,9 @@ typedef struct
   fp32 speed_set;
   int16_t give_current;
 
-  fp32 speed_max;  //摩擦轮旋转最大速度
-  fp32 speed_min;  //摩擦轮旋转最小速度
-  fp32 speed_require; //允许拨盘开启的最低速度
+  fp32 max_speed;  //摩擦轮旋转最大速度
+  fp32 min_speed;  //摩擦轮旋转最小速度
+  fp32 require_speed; //允许拨盘开启的最低速度
 
 } fric_motor_t;
 
@@ -150,7 +150,7 @@ typedef struct
     //摩擦轮电机数据
     fric_motor_t fric_motor[2]; 
     pid_type_def fric_speed_pid[2];
-
+  
 
     bool_t press_l;
     bool_t press_r;
