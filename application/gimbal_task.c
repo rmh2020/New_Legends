@@ -1067,7 +1067,8 @@ static void gimbal_motor_raw_angle_control(gimbal_motor_t *gimbal_motor)
 #if GIMBAL_TEST_MODE
 int32_t yaw_ins_int_1000, pitch_ins_int_1000;
 int32_t yaw_ins_set_1000, pitch_ins_set_1000;
-int32_t pitch_relative_set_1000, pitch_relative_angle_1000;
+int32_t yaw_relative_angle_1000, pitch_relative_angle_1000;
+int32_t yaw_relative_set_1000, pitch_relative_set_1000;
 int32_t yaw_speed_int_1000, pitch_speed_int_1000;
 int32_t yaw_speed_set_int_1000, pitch_speed_set_int_1000;
 static void J_scope_gimbal_test(void)
@@ -1076,6 +1077,10 @@ static void J_scope_gimbal_test(void)
     yaw_ins_set_1000 = (int32_t)(gimbal_control.gimbal_yaw_motor.absolute_angle_set * 1000);
     yaw_speed_int_1000 = (int32_t)(gimbal_control.gimbal_yaw_motor.motor_gyro * 1000);
     yaw_speed_set_int_1000 = (int32_t)(gimbal_control.gimbal_yaw_motor.motor_gyro_set * 1000);
+    yaw_relative_angle_1000 = (int32_t)(gimbal_control.gimbal_yaw_motor.relative_angle * 1000);
+    yaw_relative_set_1000 = (int32_t)(gimbal_control.gimbal_yaw_motor.relative_angle_set * 1000);
+
+
 
     pitch_ins_int_1000 = (int32_t)(gimbal_control.gimbal_pitch_motor.absolute_angle * 1000);
     pitch_ins_set_1000 = (int32_t)(gimbal_control.gimbal_pitch_motor.absolute_angle_set * 1000);

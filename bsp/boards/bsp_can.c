@@ -8,6 +8,10 @@ extern CAN_HandleTypeDef hcan2;
 void can_filter_init(void)
 {
 
+    //CAN总线恢复功能
+    // hcan1.Init.AutoBusOff = ENABLE;
+    // hcan2.Init.AutoBusOff = ENABLE
+
     CAN_FilterTypeDef can_filter_st;
     can_filter_st.FilterActivation = ENABLE;
     can_filter_st.FilterMode = CAN_FILTERMODE_IDMASK;
