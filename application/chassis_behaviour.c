@@ -279,7 +279,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
 
     //add your own logic to enter the new mode
     //添加自己的逻辑判断进入新模式
-
+    
 
     //accord to beheviour mode, choose chassis control mode
     //根据行为模式选择一个底盘控制模式
