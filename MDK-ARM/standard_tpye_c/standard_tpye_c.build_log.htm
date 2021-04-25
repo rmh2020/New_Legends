@@ -17,7 +17,7 @@ Library Manager: ArmAr.exe V5.06 update 4 (build 422)
 Hex Converter:   FromElf.exe V5.06 update 4 (build 422)
 CPU DLL:         SARMCM3.DLL V5.23
 Dialog DLL:      DCM.DLL V1.15.0.0
-Target DLL:      Segger\JL2CM3.dll V2.99.23.0
+Target DLL:      CMSIS_AGDI.dll V1.27.5.0
 Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
@@ -27,25 +27,7 @@ Project File Date:  04/22/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-compiling shoot.c...
-..\application\shoot.c(269): warning:  #223-D: function "abs" declared implicitly
-      if(shoot_control.shoot_mode == SHOOT_READY_FRIC && abs(shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[RIGHT].require_speed))
-..\application\shoot.c(322): warning:  #223-D: function "get_shooter_heat0_cooling_limit_and_heat0" declared implicitly
-      get_shooter_heat0_cooling_limit_and_heat0(&shoot_control.heat_limit, &shoot_control.heat);
-..\application\shoot.c: 2 warnings, 0 errors
-compiling gimbal_task.c...
-..\application\gimbal_task.c(650): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-      init->gimbal_pitch_motor.max_relative_angle = 
-AX_PITCH;
-..\application\gimbal_task.c(692): warning:  #223-D: function "RAMP_float" declared implicitly
-      RAMP_float(init->gimbal_pitch_motor.mid_relative_angle, init->gimbal_pitch_motor.relative_angle, GIMBAL_ACCEL_PITCH_NUM);
-..\application\gimbal_task.c(306): warning:  #177-D: variable "shoot_can_set_current"  was declared but never referenced
-  static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
-..\application\gimbal_task.c: 3 warnings, 0 errors
-linking...
-Program Size: Code=110516 RO-data=13916 RW-data=1284 ZI-data=58748  
-FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 5 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -63,7 +45,7 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

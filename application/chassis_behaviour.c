@@ -282,7 +282,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     /*
     F¼üÐ¡ÍÓÂÝ 
     */
-    if(chassis_move_mode.cr->chassis_RC->key.v & KEY_PRESSED_OFFSET_F)
+    if(chassis_move_mode->chassis_RC->key.v & KEY_PRESSED_OFFSET_F)
     {
         chassis_behaviour_mode == CHASSIS_TOP;
     }
