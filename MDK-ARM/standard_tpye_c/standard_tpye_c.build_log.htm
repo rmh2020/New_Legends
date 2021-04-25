@@ -27,7 +27,56 @@ Project File Date:  04/22/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 0 Warning(s).
+compiling detect_task.c...
+compiling calibrate_task.c...
+compiling chassis_behaviour.c...
+..\application\chassis_behaviour.c(287): warning:  #174-D: expression has no effect
+          chassis_behaviour_mode == CHASSIS_TOP;
+..\application\chassis_behaviour.c: 1 warning, 0 errors
+compiling main.c...
+..\application\vision.h(167): warning:  #1295-D: Deprecated declaration vision_if_update - give arg types
+  bool vision_if_update();
+..\application\vision.h(172): warning:  #1-D: last line of file ends without a newline
+  #endif
+../Src/main.c(151): warning:  #223-D: function "vision_init" declared implicitly
+      vision_init();
+../Src/main.c: 3 warnings, 0 errors
+compiling chassis_power_control.c...
+compiling chassis_task.c...
+compiling freertos.c...
+compiling CAN_receive.c...
+compiling gimbal_task.c...
+..\application\gimbal_task.c(549): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      init->gimbal_pitch_motor.max_relative_angle = 
+AX_PITCH;
+..\application\gimbal_task.c(591): warning:  #223-D: function "RAMP_float" declared implicitly
+      RAMP_float(init->gimbal_pitch_motor.mid_relative_angle, init->gimbal_pitch_motor.relative_angle, GIMBAL_ACCEL_PITCH_NUM);
+..\application\gimbal_task.c(244): warning:  #177-D: variable "shoot_can_set_current"  was declared but never referenced
+  static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
+..\application\gimbal_task.c: 3 warnings, 0 errors
+compiling gimbal_behaviour.c...
+..\application\vision.h(167): warning:  #1295-D: Deprecated declaration vision_if_update - give arg types
+  bool vision_if_update();
+..\application\vision.h(172): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\application\gimbal_behaviour.c: 2 warnings, 0 errors
+compiling INS_task.c...
+compiling test_task.c...
+compiling remote_control.c...
+compiling oled_task.c...
+compiling referee_usart_task.c...
+compiling shoot.c...
+..\application\shoot.c(277): warning:  #223-D: function "abs" declared implicitly
+      if(shoot_control.shoot_mode == SHOOT_READY_FRIC && abs(shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[RIGHT].require_speed))
+..\application\shoot.c(331): warning:  #223-D: function "get_shooter_heat0_cooling_limit_and_heat0" declared implicitly
+      get_shooter_heat0_cooling_limit_and_heat0(&shoot_control.heat_limit, &shoot_control.heat);
+..\application\shoot.c: 2 warnings, 0 errors
+compiling usb_task.c...
+compiling servo_task.c...
+linking...
+Program Size: Code=110824 RO-data=13928 RW-data=1284 ZI-data=58756  
+FromELF: creating hex file...
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 11 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -45,7 +94,7 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:04
 </pre>
 </body>
 </html>

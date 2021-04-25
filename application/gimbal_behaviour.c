@@ -84,6 +84,7 @@
 #include "bsp_buzzer.h"
 #include "detect_task.h"
 #include "vision.h"
+#include "shoot.h"
 
 #include "user_lib.h"
 
@@ -274,6 +275,9 @@ static void gimbal_auto_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal
 //云台行为状态机
 static gimbal_behaviour_e gimbal_behaviour = GIMBAL_ZERO_FORCE;
 
+extern shoot_control_t shoot_control;          //射击数据
+
+
 /**
   * @brief          the function is called by gimbal_set_mode function in gimbal_task.c
   *                 the function set gimbal_behaviour variable, and set motor mode.
@@ -396,6 +400,10 @@ bool_t gimbal_cmd_to_chassis_stop(void)
     {
         return 1;
     }
+    else if(shoot_control.magazine_status == TRUE)   //当弹仓打开,底盘无法运动
+    {
+        return 1;
+    }
     else
     {
         return 0;
@@ -434,13 +442,11 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
     {
         return;
     }
-    //in cali mode, return
     //校准行为，return 不会设置其他的模式
     if (gimbal_behaviour == GIMBAL_CALI && gimbal_mode_set->gimbal_cali.step != GIMBAL_CALI_END_STEP)
     {
         return;
     }
-    //if other operate make step change to start, means enter cali mode
     //如果外部使得校准步骤从0 变成 start，则进入校准模式
     if (gimbal_mode_set->gimbal_cali.step == GIMBAL_CALI_START_STEP && !toe_is_error(DBUS_TOE))
     {
@@ -448,7 +454,6 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
         return;
     }
 
-    //init mode, judge if gimbal is in middle place
     //初始化模式判断是否到达中值位置
     if (gimbal_behaviour == GIMBAL_INIT)
     {
@@ -516,7 +521,6 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
         gimbal_behaviour = GIMBAL_ZERO_FORCE;
     }
 
-    //enter init mode
     //判断进入init状态机
     {
         static gimbal_behaviour_e last_gimbal_behaviour = GIMBAL_ZERO_FORCE;

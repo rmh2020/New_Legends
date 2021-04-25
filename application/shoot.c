@@ -124,7 +124,7 @@ void shoot_init(void)
     shoot_control.fric_motor[RIGHT].min_speed = -FRIC_MAX_SPEED_RMP;
     shoot_control.fric_motor[RIGHT].require_speed = -FRIC_REQUIRE_SPEED_RMP;
     
-    //Ä¦²ÁÂÖºÍµ¯²Ö×´Ì¬
+    //Ä¦²ÁÂÖ,µ¯²Ö¶æ»ú,ÏÞÎ»¶æ»ú×´Ì¬
     shoot_control.fric_status = FALSE;
     shoot_control.magazine_status = FALSE;
     shoot_control.limit_switch_status = FALSE;

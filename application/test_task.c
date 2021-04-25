@@ -1,7 +1,7 @@
 /**
   ****************************(C) COPYRIGHT 2019 DJI****************************
   * @file       test_task.c/h
-  * @brief      buzzer warning task.·äÃùÆ÷±¨¾¯ÈÎÎñ
+  * @brief      buzzer warning task.Ë‡Ã¤Ä‚Å¯Ä†Ã·Ä…Â¨Å¾Å»ÄŒÃŽÃŽÅ„
   * @note       
   * @history
   *  Version    Date            Author          Modification
@@ -33,7 +33,7 @@ const error_t *error_list_test_local;
   * @retval         none
   */
 /**
-  * @brief          testÈÎÎñ
+  * @brief          testÄŒÃŽÃŽÅ„
   * @param[in]      pvParameters: NULL
   * @retval         none
   */
@@ -48,7 +48,7 @@ void test_task(void const * argument)
         error = 0;
 
         //find error
-        //·¢ÏÖ´íÎó
+        //Ë‡Ë˜ÄŽÃ–Â´Ã­ÃŽÃ³
         for(error_num = 0; error_num < REFEREE_TOE; error_num++)
         {
             if(error_list_test_local[error_num].error_exist)
@@ -59,13 +59,13 @@ void test_task(void const * argument)
         }
 
         //no error, stop buzzer
-        //Ã»ÓÐ´íÎó, Í£Ö¹·äÃùÆ÷
+        //Ä‚Å¥Ã“ÄÂ´Ã­ÃŽÃ³, ÃÅÃ–Å¡Ë‡Ã¤Ä‚Å¯Ä†Ã·
         if(error == 0 && last_error != 0)
         {
             buzzer_off();
         }
         //have error
-        //ÓÐ´íÎó
+        //æœ‰é”™è¯¯
         if(error)
         {
             buzzer_warn_error(error_num+1);
@@ -77,14 +77,10 @@ void test_task(void const * argument)
 }
 
 
+
 /**
-  * @brief          make the buzzer sound
-  * @param[in]      num: the number of beeps 
-  * @retval         none
-  */
-/**
-  * @brief          Ê¹µÃ·äÃùÆ÷Ïì
-  * @param[in]      num:ÏìÉù´ÎÊý
+  * @brief          Ä˜Å¡Ä¾Ä‚Ë‡Ã¤Ä‚Å¯Ä†Ã·ÄŽÄ›
+  * @param[in]      num:ÄŽÄ›Ã‰Å¯Â´ÃŽÄ˜Ã½
   * @retval         none
   */
 static void buzzer_warn_error(uint8_t num)

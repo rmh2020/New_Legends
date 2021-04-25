@@ -528,15 +528,7 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
     *angle_set = swing_angle;
 }
 
-/**
-  * @brief          when chassis behaviour mode is CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW, chassis control mode is speed control mode.
-  *                 chassis will follow chassis yaw, chassis rotation speed is calculated from the angle difference between set angle and chassis yaw.
-  * @param[out]     vx_set: vx speed value, positive value means forward speed, negative value means backward speed,
-  * @param[out]     vy_set: vy speed value, positive value means left speed, negative value means right speed.
-  * @param[out]     angle_set: control angle[-PI, PI]
-  * @param[in]      chassis_move_rc_to_vector: chassis data
-  * @retval         none
-  */
+
 /**
   * @brief          底盘跟随底盘yaw的行为状态机下，底盘模式是跟随底盘角度，底盘旋转速度会根据角度差计算底盘旋转的角速度
   * @author         RM
@@ -559,15 +551,7 @@ static void chassis_engineer_follow_chassis_yaw_control(fp32 *vx_set, fp32 *vy_s
     *angle_set = rad_format(chassis_move_rc_to_vector->chassis_yaw_set - CHASSIS_ANGLE_Z_RC_SEN * chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL]);
 }
 
-/**
-  * @brief          when chassis behaviour mode is CHASSIS_NO_FOLLOW_YAW, chassis control mode is speed control mode.
-  *                 chassis will no follow angle, chassis rotation speed is set by wz_set.
-  * @param[out]     vx_set: vx speed value, positive value means forward speed, negative value means backward speed,
-  * @param[out]     vy_set: vy speed value, positive value means left speed, negative value means right speed.
-  * @param[out]     wz_set: rotation speed,positive value means counterclockwise , negative value means clockwise
-  * @param[in]      chassis_move_rc_to_vector: chassis data
-  * @retval         none
-  */
+
 /**
   * @brief          底盘不跟随角度的行为状态机下，底盘模式是不跟随角度，底盘旋转速度由参数直接设定
   * @author         RM

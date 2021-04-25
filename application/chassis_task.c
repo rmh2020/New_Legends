@@ -147,27 +147,21 @@ void chassis_task(void const *pvParameters)
 
     while (1)
     {
-        //set chassis control mode
+       
         //设置底盘控制模式
         chassis_set_mode(&chassis_move);
-        //when mode changes, some data save
         //模式切换数据保存
         chassis_mode_change_control_transit(&chassis_move);
-        //chassis data update
         //底盘数据更新
         chassis_feedback_update(&chassis_move);
-        //set chassis control set-point 
         //底盘控制量设置
         chassis_set_contorl(&chassis_move);
-        //chassis control pid calculate
         //底盘控制PID计算
         chassis_control_loop(&chassis_move);
 
-        //make sure  one motor is online at least, so that the control CAN message can be received
         //确保至少一个电机在线， 这样CAN控制包可以被接收到
         if (!(toe_is_error(CHASSIS_MOTOR1_TOE) && toe_is_error(CHASSIS_MOTOR2_TOE) && toe_is_error(CHASSIS_MOTOR3_TOE) && toe_is_error(CHASSIS_MOTOR4_TOE)))
         {
-            //when remote control is offline, chassis motor should receive zero current. 
             //当遥控器掉线的时候，发送给底盘电机零电流.
             if (toe_is_error(DBUS_TOE))
             {
@@ -175,13 +169,11 @@ void chassis_task(void const *pvParameters)
             }
             else
             {
-                //send control current
                 //发送控制电流
                 CAN_cmd_chassis(chassis_move.motor_chassis[0].give_current, chassis_move.motor_chassis[1].give_current,
                                 chassis_move.motor_chassis[2].give_current, chassis_move.motor_chassis[3].give_current);
             }
         }
-        //os delay
         //系统延时
         vTaskDelay(CHASSIS_CONTROL_TIME_MS);
 
@@ -191,12 +183,7 @@ void chassis_task(void const *pvParameters)
     }
 }
 
-/**
-  * @brief          "chassis_move" valiable initialization, include pid initialization, remote control data point initialization, 3508 chassis motors
-  *                 data point initialization, gimbal motor data point initialization, and gyro sensor angle point initialization.
-  * @param[out]     chassis_move_init: "chassis_move" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          初始化"chassis_move"变量，包括pid初始化， 遥控器指针初始化，3508底盘电机指针初始化，云台电机初始化，陀螺仪角度指针初始化
   * @param[out]     chassis_move_init:"chassis_move"变量指针.
@@ -209,11 +196,9 @@ static void chassis_init(chassis_move_t *chassis_move_init)
         return;
     }
 
-    //chassis motor speed PID
     //底盘速度环pid值
     const static fp32 motor_speed_pid[3] = {M3505_MOTOR_SPEED_PID_KP, M3505_MOTOR_SPEED_PID_KI, M3505_MOTOR_SPEED_PID_KD};
     
-    //chassis angle PID
     //底盘角度pid值
     const static fp32 chassis_yaw_pid[3] = {CHASSIS_FOLLOW_GIMBAL_PID_KP, CHASSIS_FOLLOW_GIMBAL_PID_KI, CHASSIS_FOLLOW_GIMBAL_PID_KD};
     
@@ -221,7 +206,6 @@ static void chassis_init(chassis_move_t *chassis_move_init)
     const static fp32 chassis_y_order_filter[1] = {CHASSIS_ACCEL_Y_NUM};
     uint8_t i;
 
-    //in beginning， chassis mode is raw 
     //底盘开机状态为原始
     chassis_move_init->chassis_mode = CHASSIS_VECTOR_RAW;
     //get remote control point
@@ -466,19 +450,15 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
     if (chassis_move_control->chassis_mode == CHASSIS_VECTOR_FOLLOW_GIMBAL_YAW)
     {
         fp32 sin_yaw = 0.0f, cos_yaw = 0.0f;
-        //rotate chassis direction, make sure vertial direction follow gimbal 
         //旋转控制底盘速度方向，保证前进方向是云台方向，有利于运动平稳
         sin_yaw = arm_sin_f32(-chassis_move_control->chassis_yaw_motor->relative_angle);
         cos_yaw = arm_cos_f32(-chassis_move_control->chassis_yaw_motor->relative_angle);
         chassis_move_control->vx_set = cos_yaw * vx_set + sin_yaw * vy_set;
         chassis_move_control->vy_set = -sin_yaw * vx_set + cos_yaw * vy_set;
-        //set control relative angle  set-point
         //设置控制相对云台角度
         chassis_move_control->chassis_relative_angle_set = rad_format(angle_set);
-        //calculate ratation speed
         //计算旋转PID角速度
         chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, chassis_move_control->chassis_yaw_motor->relative_angle, chassis_move_control->chassis_relative_angle_set);
-        //speed limit
         //速度限幅
         chassis_move_control->vx_set = fp32_constrain(chassis_move_control->vx_set, chassis_move_control->vx_min_speed, chassis_move_control->vx_max_speed);
         chassis_move_control->vy_set = fp32_constrain(chassis_move_control->vy_set, chassis_move_control->vy_min_speed, chassis_move_control->vy_max_speed);
@@ -518,14 +498,7 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
     }
 }
 
-/**
-  * @brief          four mecanum wheels speed is calculated by three param. 
-  * @param[in]      vx_set: vertial speed
-  * @param[in]      vy_set: horizontal speed
-  * @param[in]      wz_set: rotation speed
-  * @param[out]     wheel_speed: four mecanum wheels speed
-  * @retval         none
-  */
+
 /**
   * @brief          四个麦轮速度是通过三个参数计算出来的
   * @param[in]      vx_set: 纵向速度
@@ -545,12 +518,7 @@ static void chassis_vector_to_mecanum_wheel_speed(const fp32 vx_set, const fp32 
 }
 
 
-/**
-  * @brief          control loop, according to control set-point, calculate motor current, 
-  *                 motor current will be sentto motor
-  * @param[out]     chassis_move_control_loop: "chassis_move" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          控制循环，根据控制设定值，计算电机电流值，进行控制
   * @param[out]     chassis_move_control_loop:"chassis_move"变量指针.
@@ -563,7 +531,6 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
     fp32 wheel_speed[4] = {0.0f, 0.0f, 0.0f, 0.0f};
     uint8_t i = 0;
 
-    //mecanum wheel speed calculation
     //麦轮运动分解
     chassis_vector_to_mecanum_wheel_speed(chassis_move_control_loop->vx_set,
                                           chassis_move_control_loop->vy_set, chassis_move_control_loop->wz_set, wheel_speed);
@@ -575,12 +542,10 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
         {
             chassis_move_control_loop->motor_chassis[i].give_current = (int16_t)(wheel_speed[i]);
         }
-        //in raw mode, derectly return
         //raw控制直接返回
         return;
     }
 
-    //calculate the max speed in four wheels, limit the max speed
     //计算轮子控制最大速度，并限制其最大速度
     for (i = 0; i < 4; i++)
     {
@@ -601,7 +566,6 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
         }
     }
 
-    //calculate pid
     //计算pid
     for (i = 0; i < 4; i++)
     {
@@ -618,4 +582,5 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
     {
         chassis_move_control_loop->motor_chassis[i].give_current = (int16_t)(chassis_move_control_loop->motor_speed_pid[i].out);
     }
+    
 }

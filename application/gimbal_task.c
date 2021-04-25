@@ -193,25 +193,14 @@ static void gimbal_relative_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add);
   */
 static void gimbal_PID_init(gimbal_PID_t *pid, fp32 maxout, fp32 intergral_limit, fp32 kp, fp32 ki, fp32 kd);
 
-/**
-  * @brief          gimbal PID clear, clear pid.out, iout.
-  * @param[out]     pid_clear: "gimbal_control" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          云台PID清除，清除pid的out,iout
   * @param[out]     pid_clear:"gimbal_control"变量指针.
   * @retval         none
   */
 static void gimbal_PID_clear(gimbal_PID_t *pid_clear);
-/**
-  * @brief          gimbal angle pid calc, because angle is in range(-pi,pi),can't use PID in pid.c
-  * @param[out]     pid: pid data pointer stucture
-  * @param[in]      get: angle feeback
-  * @param[in]      set: angle set-point
-  * @param[in]      error_delta: rotation speed
-  * @retval         pid out
-  */
+
 /**
   * @brief          云台角度PID计算, 因为角度范围在(-pi,pi)，不能用PID.c的PID
   * @param[out]     pid:云台PID指针
@@ -222,17 +211,7 @@ static void gimbal_PID_clear(gimbal_PID_t *pid_clear);
   */
 static fp32 gimbal_PID_calc(gimbal_PID_t *pid, fp32 get, fp32 set, fp32 error_delta);
 
-/**
-  * @brief          gimbal calibration calculate
-  * @param[in]      gimbal_cali: cali data
-  * @param[out]     yaw_offset:yaw motor middle place encode
-  * @param[out]     pitch_offset:pitch motor middle place encode
-  * @param[out]     max_yaw:yaw motor max machine angle
-  * @param[out]     min_yaw: yaw motor min machine angle
-  * @param[out]     max_pitch: pitch motor max machine angle
-  * @param[out]     min_pitch: pitch motor min machine angle
-  * @retval         none
-  */
+
 /**
   * @brief          云台校准计算
   * @param[in]      gimbal_cali: 校准数据
@@ -253,8 +232,6 @@ static void J_scope_gimbal_test(void);
 #endif
 
 
-
-
 //gimbal control data
 //云台控制所有相关数据
 gimbal_control_t gimbal_control;
@@ -266,11 +243,7 @@ extern shoot_control_t shoot_control;          //射击数据
 //发送的电机电流
 static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
 
-/**
-  * @brief          gimbal task, osDelay GIMBAL_CONTROL_TIME (1ms) 
-  * @param[in]      pvParameters: null
-  * @retval         none
-  */
+
 /**
   * @brief          云台任务，间隔 GIMBAL_CONTROL_TIME 1ms
   * @param[in]      pvParameters: 空
@@ -280,15 +253,11 @@ static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set
 void gimbal_task(void const *pvParameters)
 {
     //等待陀螺仪任务更新陀螺仪数据
-    //wait a time
     vTaskDelay(GIMBAL_TASK_INIT_TIME);
-    //gimbal init
     //云台初始化
     gimbal_init(&gimbal_control);
-    //shoot init
     //射击初始化
     shoot_init();
-    //wait for all motor online
     //判断电机是否都上线
     while (toe_is_error(YAW_GIMBAL_MOTOR_TOE) || toe_is_error(PITCH_GIMBAL_MOTOR_TOE))
     {
@@ -343,16 +312,7 @@ void gimbal_task(void const *pvParameters)
 }
 
 
-/**
-  * @brief          gimbal cali data, set motor offset encode, max and min relative angle
-  * @param[in]      yaw_offse:yaw middle place encode
-  * @param[in]      pitch_offset:pitch place encode
-  * @param[in]      max_yaw:yaw max relative angle
-  * @param[in]      min_yaw:yaw min relative angle
-  * @param[in]      max_yaw:pitch max relative angle
-  * @param[in]      min_yaw:pitch min relative angle
-  * @retval         none
-  */
+
 /**
   * @brief          云台校准设置，将校准的云台中值以及最小最大机械相对角度
   * @param[in]      yaw_offse:yaw 中值
@@ -376,16 +336,7 @@ void set_cali_gimbal_hook(const uint16_t yaw_offset, const uint16_t pitch_offset
 }
 
 
-/**
-  * @brief          gimbal cali calculate, return motor offset encode, max and min relative angle
-  * @param[out]     yaw_offse:yaw middle place encode
-  * @param[out]     pitch_offset:pitch place encode
-  * @param[out]     max_yaw:yaw max relative angle
-  * @param[out]     min_yaw:yaw min relative angle
-  * @param[out]     max_yaw:pitch max relative angle
-  * @param[out]     min_yaw:pitch min relative angle
-  * @retval         none
-  */
+
 /**
   * @brief          云台校准计算，将校准记录的中值,最大 最小值返回
   * @param[out]     yaw 中值 指针
@@ -435,16 +386,7 @@ bool_t cmd_cali_gimbal_hook(uint16_t *yaw_offset, uint16_t *pitch_offset, fp32 *
     }
 }
 
-/**
-  * @brief          calc motor offset encode, max and min relative angle
-  * @param[out]     yaw_offse:yaw middle place encode
-  * @param[out]     pitch_offset:pitch place encode
-  * @param[out]     max_yaw:yaw max relative angle
-  * @param[out]     min_yaw:yaw min relative angle
-  * @param[out]     max_yaw:pitch max relative angle
-  * @param[out]     min_yaw:pitch min relative angle
-  * @retval         none
-  */
+
 /**
   * @brief          云台校准计算，将校准记录的中值,最大 最小值
   * @param[out]     yaw 中值 指针
@@ -561,11 +503,7 @@ static void calc_gimbal_cali(const gimbal_step_cali_t *gimbal_cali, uint16_t *ya
 #endif
 }
 
-/**
-  * @brief          return yaw motor data point
-  * @param[in]      none
-  * @retval         yaw motor data point
-  */
+
 /**
   * @brief          返回yaw 电机数据指针
   * @param[in]      none
