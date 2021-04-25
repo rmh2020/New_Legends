@@ -130,23 +130,14 @@ static void gimbal_mode_change_control_transit(gimbal_control_t *mode_change);
   * @retval         相对角度，单位rad
   */
 static fp32 motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd);
-/**
-  * @brief          set gimbal control set-point, control set-point is set by "gimbal_behaviour_control_set".         
-  * @param[out]     gimbal_set_control: "gimbal_control" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          设置云台控制设定值，控制值是通过gimbal_behaviour_control_set函数设置的
   * @param[out]     gimbal_set_control:"gimbal_control"变量指针.
   * @retval         none
   */
 static void gimbal_set_control(gimbal_control_t *set_control);
-/**
-  * @brief          control loop, according to control set-point, calculate motor current, 
-  *                 motor current will be sent to motor
-  * @param[out]     gimbal_control_loop: "gimbal_control" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          控制循环，根据控制设定值，计算电机电流值，进行控制
   * @param[out]     gimbal_control_loop:"gimbal_control"变量指针.
@@ -154,55 +145,35 @@ static void gimbal_set_control(gimbal_control_t *set_control);
   */
 static void gimbal_control_loop(gimbal_control_t *control_loop);
 
-/**
-  * @brief          gimbal control mode :GIMBAL_MOTOR_GYRO, use euler angle calculated by gyro sensor to control. 
-  * @param[out]     gimbal_motor: yaw motor or pitch motor
-  * @retval         none
-  */
+
 /**
   * @brief          云台控制模式:GIMBAL_MOTOR_GYRO，使用陀螺仪计算的欧拉角进行控制
   * @param[out]     gimbal_motor:yaw电机或者pitch电机
   * @retval         none
   */
 static void gimbal_motor_absolute_angle_control(gimbal_motor_t *gimbal_motor);
-/**
-  * @brief          gimbal control mode :GIMBAL_MOTOR_ENCONDE, use the encode relative angle  to control. 
-  * @param[out]     gimbal_motor: yaw motor or pitch motor
-  * @retval         none
-  */
+
 /**
   * @brief          云台控制模式:GIMBAL_MOTOR_ENCONDE，使用编码相对角进行控制
   * @param[out]     gimbal_motor:yaw电机或者pitch电机
   * @retval         none
   */
 static void gimbal_motor_relative_angle_control(gimbal_motor_t *gimbal_motor);
-/**
-  * @brief          gimbal control mode :GIMBAL_MOTOR_RAW, current  is sent to CAN bus. 
-  * @param[out]     gimbal_motor: yaw motor or pitch motor
-  * @retval         none
-  */
+
 /**
   * @brief          云台控制模式:GIMBAL_MOTOR_RAW，电流值直接发送到CAN总线.
   * @param[out]     gimbal_motor:yaw电机或者pitch电机
   * @retval         none
   */
 static void gimbal_motor_raw_angle_control(gimbal_motor_t *gimbal_motor);
-/**
-  * @brief          limit angle set in GIMBAL_MOTOR_GYRO mode, avoid exceeding the max angle
-  * @param[out]     gimbal_motor: yaw motor or pitch motor
-  * @retval         none
-  */
+
 /**
   * @brief          在GIMBAL_MOTOR_GYRO模式，限制角度设定,防止超过最大
   * @param[out]     gimbal_motor:yaw电机或者pitch电机
   * @retval         none
   */
 static void gimbal_absolute_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add);
-/**
-  * @brief          limit angle set in GIMBAL_MOTOR_ENCONDE mode, avoid exceeding the max angle
-  * @param[out]     gimbal_motor: yaw motor or pitch motor
-  * @retval         none
-  */
+
 /**
   * @brief          在GIMBAL_MOTOR_ENCONDE模式，限制角度设定,防止超过最大
   * @param[out]     gimbal_motor:yaw电机或者pitch电机
@@ -210,16 +181,6 @@ static void gimbal_absolute_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add);
   */
 static void gimbal_relative_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add);
 
-/**
-  * @brief          gimbal angle pid init, because angle is in range(-pi,pi),can't use PID in pid.c
-  * @param[out]     pid: pid data pointer stucture
-  * @param[in]      maxout: pid max out
-  * @param[in]      intergral_limit: pid max iout
-  * @param[in]      kp: pid kp
-  * @param[in]      ki: pid ki
-  * @param[in]      kd: pid kd
-  * @retval         none
-  */
 /**
   * @brief          云台角度PID初始化, 因为角度范围在(-pi,pi)，不能用PID.c的PID
   * @param[out]     pid:云台PID指针

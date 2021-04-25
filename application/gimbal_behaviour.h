@@ -92,7 +92,7 @@ typedef enum
   GIMBAL_RELATIVE_ANGLE,            //云台电机编码值相对角度控制
   GIMBAL_MOTIONLESS,                //云台在遥控器无输入一段时间后保持不动，避免陀螺仪漂移
   GIMBAL_AUTO,                      //自瞄模式
-  GIMBAL_TURN_FIXED_ANGLE,          //云台旋转固定角度
+
 } gimbal_behaviour_e;
 
 

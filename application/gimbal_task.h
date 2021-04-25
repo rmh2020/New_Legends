@@ -89,9 +89,12 @@
 #define PITCH_CHANNEL 1
 #define GIMBAL_MODE_CHANNEL 0
 
-//turn 180°
-//掉头180 按键
-#define TURN_KEYBOARD KEY_PRESSED_OFFSET_F
+//向左转头90度 按键
+#define TURN_L_90_KEYBOARD KEY_PRESSED_OFFSET_Q
+//向右转头90度 按键
+#define TURN_R_90_KEYBOARD KEY_PRESSED_OFFSET_E
+//向后转头180 按键
+#define TURN_180_KEYBOARD KEY_PRESSED_OFFSET_V
 //turn speed
 //掉头云台速度
 #define TURN_SPEED    0.04f

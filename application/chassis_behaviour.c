@@ -279,8 +279,14 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
 
     //add your own logic to enter the new mode
     //添加自己的逻辑判断进入新模式
+    /*
+    F键小陀螺 
+    */
+    if(chassis_move_mode.cr->chassis_RC->key.v & KEY_PRESSED_OFFSET_F)
+    {
+        chassis_behaviour_mode == CHASSIS_TOP;
+    }
     
-
     //accord to beheviour mode, choose chassis control mode
     //根据行为模式选择一个底盘控制模式
     if (chassis_behaviour_mode == CHASSIS_ZERO_FORCE)

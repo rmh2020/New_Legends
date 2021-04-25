@@ -36,8 +36,7 @@
 #define SHOOT_FRIC_ADD_VALUE    0.1f
 
 //射击摩擦轮激光打开 关闭
-#define SHOOT_ON_KEYBOARD           KEY_PRESSED_OFFSET_Q
-#define SHOOT_OFF_KEYBOARD          KEY_PRESSED_OFFSET_E
+#define SHOOT_KEYBOARD           KEY_PRESSED_OFFSET_G
 
 //射击完成后 子弹弹出去后，判断时间，以防误触发
 #define SHOOT_DONE_KEY_OFF_TIME     15
@@ -150,6 +149,11 @@ typedef struct
     //摩擦轮电机数据
     fric_motor_t fric_motor[2]; 
     pid_type_def fric_speed_pid[2];
+
+    //摩擦轮电机 弹仓舵机
+    bool_t fric_status;
+    bool_t magazine_status;
+    bool_t limit_switch_status;
   
 
     bool_t press_l;
