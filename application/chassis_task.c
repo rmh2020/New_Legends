@@ -67,11 +67,7 @@ static void chassis_init(chassis_move_t *chassis_move_init);
   */
 static void chassis_set_mode(chassis_move_t *chassis_move_mode);
 
-/**
-  * @brief          when chassis mode change, some param should be changed, suan as chassis yaw_set should be now chassis yaw
-  * @param[out]     chassis_move_transit: "chassis_move" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          底盘模式改变，有些参数需要改变，例如底盘控制yaw角度设定值应该变成当前底盘yaw角度
   * @param[out]     chassis_move_transit:"chassis_move"变量指针.
@@ -85,24 +81,14 @@ void chassis_mode_change_control_transit(chassis_move_t *chassis_move_transit);
   * @retval         none
   */
 static void chassis_feedback_update(chassis_move_t *chassis_move_update);
-/**
-  * @brief          set chassis control set-point, three movement control value is set by "chassis_behaviour_control_set".
-  *                 
-  * @param[out]     chassis_move_update: "chassis_move" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          
   * @param[out]     chassis_move_update:"chassis_move"变量指针.
   * @retval         none
   */
 static void chassis_set_contorl(chassis_move_t *chassis_move_control);
-/**
-  * @brief          control loop, according to control set-point, calculate motor current, 
-  *                 motor current will be sentto motor
-  * @param[out]     chassis_move_control_loop: "chassis_move" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          控制循环，根据控制设定值，计算电机电流值，进行控制
   * @param[out]     chassis_move_control_loop:"chassis_move"变量指针.
@@ -118,6 +104,9 @@ uint32_t chassis_high_water;
 
 //底盘运动数据
 chassis_move_t chassis_move;
+
+extern chassis_behaviour_e chassis_behaviour_mode;
+extern chassis_behaviour_e last_chassis_behaviour_mode;
 
 /**
   * @brief          chassis task, osDelay CHASSIS_CONTROL_TIME_MS (2ms) 
@@ -248,11 +237,7 @@ static void chassis_init(chassis_move_t *chassis_move_init)
     chassis_feedback_update(chassis_move_init);
 }
 
-/**
-  * @brief          set chassis control mode, mainly call 'chassis_behaviour_mode_set' function
-  * @param[out]     chassis_move_mode: "chassis_move" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          设置底盘控制模式，主要在'chassis_behaviour_mode_set'函数中改变
   * @param[out]     chassis_move_mode:"chassis_move"变量指针.
@@ -268,11 +253,7 @@ static void chassis_set_mode(chassis_move_t *chassis_move_mode)
     chassis_behaviour_mode_set(chassis_move_mode);
 }
 
-/**
-  * @brief          when chassis mode change, some param should be changed, suan as chassis yaw_set should be now chassis yaw
-  * @param[out]     chassis_move_transit: "chassis_move" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          底盘模式改变，有些参数需要改变，例如底盘控制yaw角度设定值应该变成当前底盘yaw角度
   * @param[out]     chassis_move_transit:"chassis_move"变量指针.
@@ -294,7 +275,9 @@ static void chassis_mode_change_control_transit(chassis_move_t *chassis_move_tra
     //切入跟随云台模式
     if ((chassis_move_transit->last_chassis_mode != CHASSIS_VECTOR_FOLLOW_GIMBAL_YAW) && chassis_move_transit->chassis_mode == CHASSIS_VECTOR_FOLLOW_GIMBAL_YAW)
     {
-        chassis_move_transit->chassis_relative_angle_set = 0.0f;
+        //chassis_move_transit->chassis_relative_angle_set = 0.0f;
+        chassis_move_transit->chassis_relative_angle_set = INIT_YAW_SET;
+
     }
     //change to follow chassis yaw angle
     //切入跟随底盘角度模式
@@ -312,11 +295,6 @@ static void chassis_mode_change_control_transit(chassis_move_t *chassis_move_tra
     chassis_move_transit->last_chassis_mode = chassis_move_transit->chassis_mode;
 }
 
-/**
-  * @brief          chassis some measure data updata, such as motor speed, euler angle， robot speed
-  * @param[out]     chassis_move_update: "chassis_move" valiable point
-  * @retval         none
-  */
 /**
   * @brief          底盘测量数据更新，包括电机速度，欧拉角度，机器人速度
   * @param[out]     chassis_move_update:"chassis_move"变量指针.
@@ -349,15 +327,10 @@ static void chassis_feedback_update(chassis_move_t *chassis_move_update)
     chassis_move_update->chassis_yaw = rad_format(*(chassis_move_update->chassis_INS_angle + INS_YAW_ADDRESS_OFFSET) - chassis_move_update->chassis_yaw_motor->relative_angle);
     chassis_move_update->chassis_pitch = rad_format(*(chassis_move_update->chassis_INS_angle + INS_PITCH_ADDRESS_OFFSET) - chassis_move_update->chassis_pitch_motor->relative_angle);
     chassis_move_update->chassis_roll = *(chassis_move_update->chassis_INS_angle + INS_ROLL_ADDRESS_OFFSET);
+
+    
 }
-/**
-  * @brief          accroding to the channel value of remote control, calculate chassis vertical and horizontal speed set-point
-  *                 
-  * @param[out]     vx_set: vertical speed set-point
-  * @param[out]     vy_set: horizontal speed set-point
-  * @param[out]     chassis_move_rc_to_vector: "chassis_move" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          根据遥控器通道值，计算纵向和横移速度
   *                 
@@ -422,11 +395,7 @@ void chassis_rc_to_control_vector(fp32 *vx_set, fp32 *vy_set, chassis_move_t *ch
     *vx_set = chassis_move_rc_to_vector->chassis_cmd_slow_set_vx.out;
     *vy_set = chassis_move_rc_to_vector->chassis_cmd_slow_set_vy.out;
 }
-/**
-  * @brief          set chassis control set-point, three movement control value is set by "chassis_behaviour_control_set".
-  * @param[out]     chassis_move_update: "chassis_move" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          设置底盘控制设置值, 三运动控制值是通过chassis_behaviour_control_set函数设置的
   * @param[out]     chassis_move_update:"chassis_move"变量指针.
@@ -456,7 +425,11 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
         chassis_move_control->vx_set = cos_yaw * vx_set + sin_yaw * vy_set;
         chassis_move_control->vy_set = -sin_yaw * vx_set + cos_yaw * vy_set;
         //设置控制相对云台角度
-        chassis_move_control->chassis_relative_angle_set = rad_format(angle_set);
+        // if(last_chassis_behaviour_mode == CHASSIS_NO_MOVE)  //如果初始化,控制初始角度
+        //   chassis_move_control->chassis_relative_angle_set = 3.05f;
+        // else
+          chassis_move_control->chassis_relative_angle_set = rad_format(angle_set);
+
         //计算旋转PID角速度
         chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, chassis_move_control->chassis_yaw_motor->relative_angle, chassis_move_control->chassis_relative_angle_set);
         //速度限幅
@@ -466,14 +439,14 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
     else if (chassis_move_control->chassis_mode == CHASSIS_VECTOR_FOLLOW_CHASSIS_YAW)
     {
         fp32 delat_angle = 0.0f;
-        //set chassis yaw angle set-point
+        
         //设置底盘控制的角度
         chassis_move_control->chassis_yaw_set = rad_format(angle_set);
         delat_angle = rad_format(chassis_move_control->chassis_yaw_set - chassis_move_control->chassis_yaw);
-        //calculate rotation speed
+        
         //计算旋转的角速度
         chassis_move_control->wz_set = PID_calc(&chassis_move_control->chassis_angle_pid, 0.0f, delat_angle);
-        //speed limit
+        
         //速度限幅
         chassis_move_control->vx_set = fp32_constrain(vx_set, chassis_move_control->vx_min_speed, chassis_move_control->vx_max_speed);
         chassis_move_control->vy_set = fp32_constrain(vy_set, chassis_move_control->vy_min_speed, chassis_move_control->vy_max_speed);

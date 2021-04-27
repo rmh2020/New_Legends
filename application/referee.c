@@ -28,7 +28,11 @@ ext_shoot_data_t shoot_data_t;
 ext_bullet_remaining_t bullet_remaining_t;
 ext_student_interactive_data_t student_interactive_data_t;
 
+uint8_t Judge_Self_ID;//当前机器人的ID
+uint16_t Judge_SelfClient_ID;//发送者机器人对应的客户端ID
 
+#define BLUE  0
+#define RED   1
 
 
 void init_referee_struct_data(void)
@@ -213,6 +217,44 @@ void get_shooter_heat1_speed_limit_and_heat1(uint16_t *heat1_limit, uint16_t *he
 {
     *heat1_limit = robot_state.shooter_heat1_speed_limit;
     *heat1 = shoot_data_t.bullet_speed;
+}
+/**
+  * @brief  判断自己红蓝方
+  * @param  void
+  * @retval RED   BLUE
+  * @attention  数据打包,打包完成后通过串口发送到裁判系统
+  */
+bool Color;
+bool is_red_or_blue(void)
+{
+	Judge_Self_ID = robot_state.robot_id;//读取当前机器人ID
+	
+	if(robot_state.robot_id > 10)
+	{
+		return BLUE;
+	}
+	else 
+	{
+		return RED;
+	}
+}
+/**
+  * @brief  判断自身ID，选择客户端ID
+  * @param  void
+  * @retval RED   BLUE
+  * @attention  数据打包,打包完成后通过串口发送到裁判系统
+  */
+void determine_ID(void)
+{
+	Color = is_red_or_blue();
+	if(Color == BLUE)
+	{
+		Judge_SelfClient_ID = 0x0110 + (Judge_Self_ID-0x10);//计算客户端ID
+	}
+	else if(Color == RED)
+	{
+		Judge_SelfClient_ID = 0x0100 + Judge_Self_ID;//计算客户端ID
+	}
 }
 
 

@@ -98,7 +98,6 @@ typedef enum
   CHASSIS_OPEN,                          //the value of remote control will mulitiply a value, get current value that will be sent to can bus
                                         // 遥控器的值乘以比例成电流值 直接发送到can总线上
   CHASSIS_TOP,                           //小陀螺模式，底盘Z轴以固定速度旋转，可以使用遥控器或键盘控制底盘移动
-  CHASSIS_SHAKE,                         //扭腰模式,底盘左右小角度摆动,适用在突起地面上规避敌方子弹
   CHASSIS_MISS,                          //自动闪避模式,通过读取裁判数据,判断自己是否被击打,如果被击打,底盘旋转一定角度                                        
 } chassis_behaviour_e;
 

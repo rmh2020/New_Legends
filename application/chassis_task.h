@@ -102,10 +102,10 @@
 #define MAX_WHEEL_SPEED 4.0f
 //chassis forward or back max speed
 //底盘运动过程最大前进速度
-#define NORMAL_MAX_CHASSIS_SPEED_X 2.0f
+#define NORMAL_MAX_CHASSIS_SPEED_X 0.8f  //2.0
 //chassis left or right max speed
 //底盘运动过程最大平移速度
-#define NORMAL_MAX_CHASSIS_SPEED_Y 1.5f
+#define NORMAL_MAX_CHASSIS_SPEED_Y 0.8f  //1.5
 
 #define CHASSIS_WZ_SET_SCALE 0.1f
 
@@ -117,7 +117,7 @@
 #define SWING_MOVE_ANGLE 0.31415926535897932384626433832795f
 
 //原地旋转小陀螺模式下Z轴转速
-#define TOP_WZ_ANGLE_STAND 2.0f
+#define TOP_WZ_ANGLE_STAND 0.8f //2.0
 //移动状态下小陀螺转速
 #define TOP_WZ_ANGLE_MOVE 0.8f
 

@@ -49,7 +49,7 @@
 
 //pitch gyro angle close-loop PID params, max out and max iout
 //pitch 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define PITCH_GYRO_ABSOLUTE_PID_KP 2.0f   //15
+#define PITCH_GYRO_ABSOLUTE_PID_KP 5.0f   //15
 #define PITCH_GYRO_ABSOLUTE_PID_KI 0.0f
 #define PITCH_GYRO_ABSOLUTE_PID_KD 0.0f
 
@@ -58,7 +58,7 @@
 
 //yaw gyro angle close-loop PID params, max out and max iout
 //yaw 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define YAW_GYRO_ABSOLUTE_PID_KP        2.0f  //26
+#define YAW_GYRO_ABSOLUTE_PID_KP        13.0f  //26
 #define YAW_GYRO_ABSOLUTE_PID_KI        0.0f
 #define YAW_GYRO_ABSOLUTE_PID_KD        0.0f
 #define YAW_GYRO_ABSOLUTE_PID_MAX_OUT   10.0f
@@ -66,7 +66,7 @@
 
 //pitch encode angle close-loop PID params, max out and max iout
 //pitch 角度环 角度由编码器 PID参数以及 PID最大输出，积分输出
-#define PITCH_ENCODE_RELATIVE_PID_KP 1.0f  //15
+#define PITCH_ENCODE_RELATIVE_PID_KP 15.0f  //15
 #define PITCH_ENCODE_RELATIVE_PID_KI 0.00f
 #define PITCH_ENCODE_RELATIVE_PID_KD 0.0f
 
@@ -126,7 +126,7 @@
 #define HALF_ECD_RANGE  4096
 #define ECD_RANGE       8191
 //云台初始化回中值，允许的误差,并且在误差范围内停止一段时间以及最大时间6s后解除初始化状态，
-#define GIMBAL_INIT_ANGLE_ERROR     0.1f
+#define GIMBAL_INIT_ANGLE_ERROR     0.01f
 #define GIMBAL_INIT_STOP_TIME       100
 #define GIMBAL_INIT_TIME            6000
 #define GIMBAL_CALI_REDUNDANT_ANGLE 0.1f
@@ -134,8 +134,8 @@
 #define GIMBAL_INIT_PITCH_SPEED     0.004f
 #define GIMBAL_INIT_YAW_SPEED       0.005f
 
-#define INIT_YAW_SET    0.0f
-#define INIT_PITCH_SET  0.0f
+#define INIT_YAW_SET    3.05f
+#define INIT_PITCH_SET  -0.05f
 
 
 //云台校准中值的时候，发送原始电流值，以及堵转时间，通过陀螺仪判断堵转
@@ -161,8 +161,8 @@
 
 //限幅 需要自己手动校准  
 #define PI             3.1415926f
-#define MID_YAW         0.0f
-#define MIN_YAW        -2*PI
+#define MID_YAW         0
+#define MIN_YAW         -2*PI
 #define MAX_YAW         2*PI
 #define MID_PITCH       0.0f
 #define MIN_PITCH      -0.3*PI
@@ -216,6 +216,8 @@ typedef struct
     fp32 max_relative_angle; //rad
     fp32 min_relative_angle; //rad
     fp32 mid_relative_angle; //rad
+
+    fp32 mid_absolute_angle; //rad
 
     fp32 relative_angle;     //rad
     fp32 relative_angle_set; //rad

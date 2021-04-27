@@ -273,7 +273,8 @@ static void gimbal_motionless_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
 static void gimbal_auto_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
 
 //云台行为状态机
-static gimbal_behaviour_e gimbal_behaviour = GIMBAL_ZERO_FORCE;
+gimbal_behaviour_e gimbal_behaviour = GIMBAL_ZERO_FORCE;
+gimbal_behaviour_e last_gimbal_behaviour = GIMBAL_ZERO_FORCE;
 
 extern shoot_control_t shoot_control;          //射击数据
 
@@ -523,7 +524,7 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
 
     //判断进入init状态机
     {
-        static gimbal_behaviour_e last_gimbal_behaviour = GIMBAL_ZERO_FORCE;
+       
         if (last_gimbal_behaviour == GIMBAL_ZERO_FORCE && gimbal_behaviour != GIMBAL_ZERO_FORCE)
         {
             gimbal_behaviour = GIMBAL_INIT;

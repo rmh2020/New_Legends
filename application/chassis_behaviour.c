@@ -88,16 +88,6 @@
 #include "gimbal_behaviour.h"
 
 /**
-  * @brief          when chassis behaviour mode is CHASSIS_ZERO_FORCE, the function is called
-  *                 and chassis control mode is raw. The raw chassis control mode means set value
-  *                 will be sent to CAN bus derectly, and the function will set all speed zero.
-  * @param[out]     vx_can_set: vx speed value, it will be sent to CAN bus derectly.
-  * @param[out]     vy_can_set: vy speed value, it will be sent to CAN bus derectly.
-  * @param[out]     wz_can_set: wz rotate speed value, it will be sent to CAN bus derectly.
-  * @param[in]      chassis_move_rc_to_vector: chassis data
-  * @retval         none
-  */
-/**
   * @brief          底盘无力的行为状态机下，底盘模式是raw，故而设定值会直接发送到can总线上故而将设定值都设置为0
   * @author         RM
   * @param[in]      vx_set前进的速度 设定值将直接发送到can总线上
@@ -109,15 +99,7 @@
 static void chassis_zero_force_control(fp32 *vx_can_set, fp32 *vy_can_set, fp32 *wz_can_set, chassis_move_t *chassis_move_rc_to_vector);
 
 
-/**
-  * @brief          when chassis behaviour mode is CHASSIS_NO_MOVE, chassis control mode is speed control mode.
-  *                 chassis does not follow gimbal, and the function will set all speed zero to make chassis no move
-  * @param[out]     vx_set: vx speed value, positive value means forward speed, negative value means backward speed,
-  * @param[out]     vy_set: vy speed value, positive value means left speed, negative value means right speed.
-  * @param[out]     wz_set: wz rotate speed value, positive value means counterclockwise , negative value means clockwise.
-  * @param[in]      chassis_move_rc_to_vector: chassis data
-  * @retval         none
-  */
+
 /**
   * @brief          底盘不移动的行为状态机下，底盘模式是不跟随角度，
   * @author         RM
@@ -129,15 +111,6 @@ static void chassis_zero_force_control(fp32 *vx_can_set, fp32 *vy_can_set, fp32 
   */
 static void chassis_no_move_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, chassis_move_t *chassis_move_rc_to_vector);
 
-/**    
-  * @brief          when chassis behaviour mode is CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW, chassis control mode is speed control mode.
-  *                 chassis will follow gimbal, chassis rotation speed is calculated from the angle difference.
-  * @param[out]     vx_set: vx speed value, positive value means forward speed, negative value means backward speed,
-  * @param[out]     vy_set: vy speed value, positive value means left speed, negative value means right speed.
-  * @param[out]     angle_set: control angle difference between chassis and gimbal
-  * @param[in]      chassis_move_rc_to_vector: chassis data
-  * @retval         none
-  */
 /**
   * @brief          底盘跟随云台的行为状态机下，底盘模式是跟随云台角度，底盘旋转速度会根据角度差计算底盘旋转的角速度
   * @author         RM
@@ -149,15 +122,7 @@ static void chassis_no_move_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, ch
   */
 static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, chassis_move_t *chassis_move_rc_to_vector);
 
-/**
-  * @brief          when chassis behaviour mode is CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW, chassis control mode is speed control mode.
-  *                 chassis will follow chassis yaw, chassis rotation speed is calculated from the angle difference between set angle and chassis yaw.
-  * @param[out]     vx_set: vx speed value, positive value means forward speed, negative value means backward speed,
-  * @param[out]     vy_set: vy speed value, positive value means left speed, negative value means right speed.
-  * @param[out]     angle_set: control angle[-PI, PI]
-  * @param[in]      chassis_move_rc_to_vector: chassis data
-  * @retval         none
-  */
+
 /**
   * @brief          底盘跟随底盘yaw的行为状态机下，底盘模式是跟随底盘角度，底盘旋转速度会根据角度差计算底盘旋转的角速度
   * @author         RM
@@ -229,7 +194,7 @@ static void chassis_top_control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, cha
 //highlight, the variable chassis behaviour mode 
 //留意，这个底盘行为模式变量
 chassis_behaviour_e chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
-
+chassis_behaviour_e last_chassis_behaviour_mode = CHASSIS_NO_MOVE;
 
 /**
   * @brief          logical judgement to assign "chassis_behaviour_mode" variable to which mode
@@ -249,7 +214,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     }
       //can change to CHASSIS_ZERO_FORCE,CHASSIS_NO_MOVE,CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW,
       //CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW,CHASSIS_NO_FOLLOW_YAW,CHASSIS_OPEN
-
+    last_chassis_behaviour_mode = chassis_behaviour_mode;
 
     //remote control  set chassis behaviour mode
     //遥控器设置模式
@@ -260,21 +225,22 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     }
     else if (switch_is_mid(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
-       chassis_behaviour_mode = CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW;
+       chassis_behaviour_mode = CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW;
        //chassis_behaviour_mode = CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW;
     }
     else if (switch_is_down(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
-        chassis_behaviour_mode = CHASSIS_NO_MOVE;
+        chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
     }
     
 
     //when gimbal in some mode, such as init mode, chassis must's move
-    //当云台在某些模式下，像初始化， 底盘不动
+    //当云台在某些模式下或者弹仓打开，像初始化， 底盘不动
     if (gimbal_cmd_to_chassis_stop())
     {
         chassis_behaviour_mode = CHASSIS_NO_MOVE;
     }
+    
 
 
     //add your own logic to enter the new mode

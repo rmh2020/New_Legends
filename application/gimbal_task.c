@@ -549,6 +549,10 @@ static void gimbal_init(gimbal_control_t *init)
     init->gimbal_pitch_motor.max_relative_angle = MAX_PITCH;
     init->gimbal_pitch_motor.min_relative_angle = MIN_PITCH;
     init->gimbal_pitch_motor.mid_relative_angle = MID_PITCH;
+
+    init->gimbal_yaw_motor.mid_absolute_angle = MID_YAW;
+    init->gimbal_pitch_motor.mid_absolute_angle = MID_PITCH;
+  
   
 
     static const fp32 Pitch_speed_pid[3] = {PITCH_SPEED_PID_KP, PITCH_SPEED_PID_KI, PITCH_SPEED_PID_KD};
@@ -564,6 +568,7 @@ static void gimbal_init(gimbal_control_t *init)
     //初始化电机模式
     init->gimbal_yaw_motor.gimbal_motor_mode = init->gimbal_yaw_motor.last_gimbal_motor_mode = GIMBAL_MOTOR_RAW;
     init->gimbal_pitch_motor.gimbal_motor_mode = init->gimbal_pitch_motor.last_gimbal_motor_mode = GIMBAL_MOTOR_RAW;
+    
     //初始化yaw电机pid
     gimbal_PID_init(&init->gimbal_yaw_motor.gimbal_motor_absolute_angle_pid, YAW_GYRO_ABSOLUTE_PID_MAX_OUT, YAW_GYRO_ABSOLUTE_PID_MAX_IOUT, YAW_GYRO_ABSOLUTE_PID_KP, YAW_GYRO_ABSOLUTE_PID_KI, YAW_GYRO_ABSOLUTE_PID_KD);
     gimbal_PID_init(&init->gimbal_yaw_motor.gimbal_motor_relative_angle_pid, YAW_ENCODE_RELATIVE_PID_MAX_OUT, YAW_ENCODE_RELATIVE_PID_MAX_IOUT, YAW_ENCODE_RELATIVE_PID_KP, YAW_ENCODE_RELATIVE_PID_KI, YAW_ENCODE_RELATIVE_PID_KD);
@@ -587,9 +592,9 @@ static void gimbal_init(gimbal_control_t *init)
     init->gimbal_pitch_motor.relative_angle_set = init->gimbal_pitch_motor.relative_angle;
     init->gimbal_pitch_motor.motor_gyro_set = init->gimbal_pitch_motor.motor_gyro;
 
-    //斜坡函数，使云台平稳移动至中央
-    RAMP_float(init->gimbal_pitch_motor.mid_relative_angle, init->gimbal_pitch_motor.relative_angle, GIMBAL_ACCEL_PITCH_NUM);
-    RAMP_float(init->gimbal_yaw_motor.mid_relative_angle, init->gimbal_yaw_motor.relative_angle, GIMBAL_ACCEL_YAW_NUM);
+    // //斜坡函数，使云台平稳移动至中央
+    // RAMP_float(init->gimbal_pitch_motor.mid_relative_angle, init->gimbal_pitch_motor.relative_angle, GIMBAL_ACCEL_PITCH_NUM);
+    // RAMP_float(init->gimbal_yaw_motor.mid_relative_angle, init->gimbal_yaw_motor.relative_angle, GIMBAL_ACCEL_YAW_NUM);
 
 
 }

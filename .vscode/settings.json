@@ -8,6 +8,8 @@
         "can_receive.h": "c",
         "cmath": "c",
         "*.tcc": "c",
-        "gimbal_behaviour.h": "c"
+        "gimbal_behaviour.h": "c",
+        "ui_task.h": "c",
+        "main.h": "c"
     }
 }
