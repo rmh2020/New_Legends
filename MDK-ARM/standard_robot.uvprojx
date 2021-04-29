@@ -684,6 +684,16 @@
               <FileType>1</FileType>
               <FilePath>..\application\vision.c</FilePath>
             </File>
+            <File>
+              <FileName>RM_Cilent_UI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\RM_Cilent_UI.c</FilePath>
+            </File>
+            <File>
+              <FileName>ui_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\ui_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

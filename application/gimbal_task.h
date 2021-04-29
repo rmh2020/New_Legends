@@ -126,15 +126,15 @@
 #define HALF_ECD_RANGE  4096
 #define ECD_RANGE       8191
 //云台初始化回中值，允许的误差,并且在误差范围内停止一段时间以及最大时间6s后解除初始化状态，
-#define GIMBAL_INIT_ANGLE_ERROR     0.01f
+#define GIMBAL_INIT_ANGLE_ERROR     0.1f  //0.05
 #define GIMBAL_INIT_STOP_TIME       100
 #define GIMBAL_INIT_TIME            6000
 #define GIMBAL_CALI_REDUNDANT_ANGLE 0.1f
 //云台初始化回中值的速度以及控制到的角度
 #define GIMBAL_INIT_PITCH_SPEED     0.004f
-#define GIMBAL_INIT_YAW_SPEED       0.005f
+#define GIMBAL_INIT_YAW_SPEED       0.002f  //0.005
 
-#define INIT_YAW_SET    3.05f
+#define INIT_YAW_SET    2.05f
 #define INIT_PITCH_SET  -0.05f
 
 

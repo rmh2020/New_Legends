@@ -420,7 +420,7 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
     {
         fp32 sin_yaw = 0.0f, cos_yaw = 0.0f;
         //旋转控制底盘速度方向，保证前进方向是云台方向，有利于运动平稳
-        sin_yaw = arm_sin_f32(-chassis_move_control->chassis_yaw_motor->relative_angle);
+        sin_yaw = arm_sin_f32(-chassis_move_control->chassis_yaw_motor->relative_angle);  
         cos_yaw = arm_cos_f32(-chassis_move_control->chassis_yaw_motor->relative_angle);
         chassis_move_control->vx_set = cos_yaw * vx_set + sin_yaw * vy_set;
         chassis_move_control->vy_set = -sin_yaw * vx_set + cos_yaw * vy_set;
@@ -428,7 +428,9 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
         // if(last_chassis_behaviour_mode == CHASSIS_NO_MOVE)  //如果初始化,控制初始角度
         //   chassis_move_control->chassis_relative_angle_set = 3.05f;
         // else
-          chassis_move_control->chassis_relative_angle_set = rad_format(angle_set);
+        
+        //注意,此处设置的角度要相对于云台中值
+        chassis_move_control->chassis_relative_angle_set = rad_format(angle_set + INIT_YAW_SET);
 
         //计算旋转PID角速度
         chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, chassis_move_control->chassis_yaw_motor->relative_angle, chassis_move_control->chassis_relative_angle_set);
