@@ -68,12 +68,7 @@ uint32_t gimbal_high_water;
 #endif
 
 
-/**
-  * @brief          "gimbal_control" valiable initialization, include pid initialization, remote control data point initialization, gimbal motors
-  *                 data point initialization, and gyro sensor angle point initialization.
-  * @param[out]     init: "gimbal_control" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          初始化"gimbal_control"变量，包括pid初始化， 遥控器指针初始化，云台电机指针初始化，陀螺仪角度指针初始化
   * @param[out]     init:"gimbal_control"变量指针.
@@ -82,22 +77,14 @@ uint32_t gimbal_high_water;
 static void gimbal_init(gimbal_control_t *init);
 
 
-/**
-  * @brief          set gimbal control mode, mainly call 'gimbal_behaviour_mode_set' function
-  * @param[out]     gimbal_set_mode: "gimbal_control" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          设置云台控制模式，主要在'gimbal_behaviour_mode_set'函数中改变
   * @param[out]     gimbal_set_mode:"gimbal_control"变量指针.
   * @retval         none
   */
 static void gimbal_set_mode(gimbal_control_t *set_mode);
-/**
-  * @brief          gimbal some measure data updata, such as motor enconde, euler angle, gyro
-  * @param[out]     gimbal_feedback_update: "gimbal_control" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          底盘测量数据更新，包括电机速度，欧拉角度，机器人速度
   * @param[out]     gimbal_feedback_update:"gimbal_control"变量指针.
@@ -105,11 +92,7 @@ static void gimbal_set_mode(gimbal_control_t *set_mode);
   */
 static void gimbal_feedback_update(gimbal_control_t *feedback_update);
 
-/**
-  * @brief          when gimbal mode change, some param should be changed, suan as  yaw_set should be new yaw
-  * @param[out]     mode_change: "gimbal_control" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          云台模式改变，有些参数需要改变，例如控制yaw角度设定值应该变成当前yaw角度
   * @param[out]     mode_change:"gimbal_control"变量指针.
@@ -117,12 +100,7 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update);
   */
 static void gimbal_mode_change_control_transit(gimbal_control_t *mode_change);
 
-/**
-  * @brief          calculate the relative angle between ecd and offset_ecd
-  * @param[in]      ecd: motor now encode
-  * @param[in]      offset_ecd: gimbal offset encode
-  * @retval         relative angle, unit rad
-  */
+
 /**
   * @brief          计算ecd与offset_ecd之间的相对角度
   * @param[in]      ecd: 电机当前编码
@@ -804,17 +782,14 @@ static void gimbal_absolute_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add)
     {
         return;
     }
-    //now angle error
     //当前控制误差角度
     bias_angle = rad_format(gimbal_motor->absolute_angle_set - gimbal_motor->absolute_angle);
-    //relative angle + angle error + add_angle > max_relative angle
     //云台相对角度+ 误差角度 + 新增角度 如果大于 最大机械角度
     if (gimbal_motor->relative_angle + bias_angle + add > gimbal_motor->max_relative_angle)
     {
         //如果是往最大机械角度控制方向
         if (add > 0.0f)
         {
-            //calculate max add_angle
             //计算出一个最大的添加角度，
             add = gimbal_motor->max_relative_angle - gimbal_motor->relative_angle - bias_angle;
         }

@@ -97,22 +97,17 @@
 #define M3508_MOTOR_RPM_TO_VECTOR 0.000415809748903494517209f
 #define CHASSIS_MOTOR_RPM_TO_VECTOR_SEN M3508_MOTOR_RPM_TO_VECTOR
 
-//single chassis motor max speed
 //单个底盘电机最大速度
 #define MAX_WHEEL_SPEED 4.0f
-//chassis forward or back max speed
 //底盘运动过程最大前进速度
 #define NORMAL_MAX_CHASSIS_SPEED_X 0.8f  //2.0
-//chassis left or right max speed
 //底盘运动过程最大平移速度
 #define NORMAL_MAX_CHASSIS_SPEED_Y 0.8f  //1.5
 
 #define CHASSIS_WZ_SET_SCALE 0.1f
 
-//when chassis is not set to move, swing max angle
 //摇摆原地不动摇摆最大角度(rad)
-#define SWING_NO_MOVE_ANGLE 0.7f
-//when chassis is set to move, swing max angle
+#define SWING_NO_MOVE_ANGLE 0.7f  //0.7
 //摇摆过程底盘运动最大角度(rad)
 #define SWING_MOVE_ANGLE 0.31415926535897932384626433832795f
 

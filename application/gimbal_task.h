@@ -137,6 +137,8 @@
 #define INIT_YAW_SET    2.05f
 #define INIT_PITCH_SET  -0.05f
 
+#define CHASSIS_COORD_CHANGE -2.05f  //底盘坐标变换
+
 
 //云台校准中值的时候，发送原始电流值，以及堵转时间，通过陀螺仪判断堵转
 #define GIMBAL_CALI_MOTOR_SET   8000

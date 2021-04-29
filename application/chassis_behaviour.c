@@ -250,7 +250,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     */
     if(chassis_move_mode->chassis_RC->key.v & KEY_PRESSED_OFFSET_F)
     {
-        chassis_behaviour_mode == CHASSIS_TOP;
+        chassis_behaviour_mode = CHASSIS_TOP;
     }
     
     //accord to beheviour mode, choose chassis control mode
@@ -281,7 +281,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     }
     else if (chassis_behaviour_mode == CHASSIS_TOP)
     {
-        chassis_move_mode->chassis_mode = CHASSIS_VECTOR_NO_FOLLOW_YAW;
+        chassis_move_mode->chassis_mode = CHASSIS_VECTOR_FOLLOW_GIMBAL_YAW;
     }
 }
 
