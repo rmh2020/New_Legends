@@ -19,36 +19,6 @@
   *
   @verbatim
   ==============================================================================
-    add a gimbal behaviour mode
-    1. in gimbal_behaviour.h , add a new behaviour name in gimbal_behaviour_e
-    erum
-    {  
-        ...
-        ...
-        GIMBAL_XXX_XXX, // new add
-    }gimbal_behaviour_e,
-    2. implement new function. gimbal_xxx_xxx_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
-        "yaw, pitch" param is gimbal movement contorl input. 
-        first param: 'yaw' usually means  yaw axis move,usaully means increment angle.
-            positive value means counterclockwise move, negative value means clockwise move.
-        second param: 'pitch' usually means pitch axis move,usaully means increment angle.
-            positive value means counterclockwise move, negative value means clockwise move.
-
-        in this new function, you can assign set-point to "yaw" and "pitch",as your wish
-    3.  in "gimbal_behavour_set" function, add new logical judgement to assign GIMBAL_XXX_XXX to  "gimbal_behaviour" variable,
-        and in the last of the "gimbal_behaviour_mode_set" function, add "else if(gimbal_behaviour == GIMBAL_XXX_XXX)" 
-        choose a gimbal control mode.
-        four mode:
-        GIMBAL_MOTOR_RAW : will use 'yaw' and 'pitch' as motor current set,  derectly sent to can bus.
-        GIMBAL_MOTOR_ENCONDE : 'yaw' and 'pitch' are angle increment,  control enconde relative angle.
-        GIMBAL_MOTOR_GYRO : 'yaw' and 'pitch' are angle increment,  control gyro absolute angle.
-    4. in the last of "gimbal_behaviour_control_set" function, add
-        else if(gimbal_behaviour == GIMBAL_XXX_XXX)
-        {
-            gimbal_xxx_xxx_control(&rc_add_yaw, &rc_add_pit, gimbal_control_set);
-        }
-
-        
     如果要添加一个新的行为模式
     1.首先，在gimbal_behaviour.h文件中， 添加一个新行为名字在 gimbal_behaviour_e
     erum

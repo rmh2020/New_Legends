@@ -70,13 +70,11 @@ typedef enum
 
 #define CHASSIS_OPEN_RC_SCALE 10 // in CHASSIS_OPEN mode, multiply the value. 在chassis_open 模型下，遥控器乘以该比例发送到can上
 
+//小陀螺控制键盘延时
+#define KEY_TOP_LONG_TIME 200
 
 
-/**
-  * @brief          logical judgement to assign "chassis_behaviour_mode" variable to which mode
-  * @param[in]      chassis_move_mode: chassis data
-  * @retval         none
-  */
+
 /**
   * @brief          通过逻辑判断，赋值"chassis_behaviour_mode"成哪种模式
   * @param[in]      chassis_move_mode: 底盘数据
@@ -84,15 +82,7 @@ typedef enum
   */
 extern void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode);
 
-/**
-  * @brief          set control set-point. three movement param, according to difference control mode,
-  *                 will control corresponding movement.in the function, usually call different control function.
-  * @param[out]     vx_set, usually controls vertical speed.
-  * @param[out]     vy_set, usually controls horizotal speed.
-  * @param[out]     wz_set, usually controls rotation speed.
-  * @param[in]      chassis_move_rc_to_vector,  has all data of chassis
-  * @retval         none
-  */
+
 /**
   * @brief          设置控制量.根据不同底盘控制模式，三个参数会控制不同运动.在这个函数里面，会调用不同的控制函数.
   * @param[out]     vx_set, 通常控制纵向移动.

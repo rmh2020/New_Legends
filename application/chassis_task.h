@@ -79,12 +79,15 @@
 //chassis control frequence, no use now.
 //底盘任务控制频率，尚未使用这个宏
 #define CHASSIS_CONTROL_FREQUENCE 500.0f
-//chassis 3508 max motor control current
 //底盘3508最大can发送电流值
 #define MAX_MOTOR_CAN_CURRENT 16000.0f
 //press the key, chassis will swing
 //底盘摇摆按键
 #define SWING_KEY KEY_PRESSED_OFFSET_CTRL
+//底盘小陀螺按键
+#define TOP_KEY KEY_PRESSED_OFFSET_F
+
+
 //chassi forward, back, left, right key
 //底盘前后左右控制按键
 #define CHASSIS_FRONT_KEY KEY_PRESSED_OFFSET_W
@@ -114,7 +117,7 @@
 //原地旋转小陀螺模式下Z轴转速
 #define TOP_WZ_ANGLE_STAND 0.2f //2.0
 //移动状态下小陀螺转速
-#define TOP_WZ_ANGLE_MOVE 0.1f
+#define TOP_WZ_ANGLE_MOVE 0.15f
 
 
 

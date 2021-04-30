@@ -249,6 +249,7 @@ void shoot_control_loop(void)
 static void shoot_set_mode(void)
 {
     static int8_t last_s = RC_SW_UP;
+    static uint16_t key_fric_long_time = 0; //摩擦轮按键延时,也为了防止键盘检测过快,开启后自动关闭摩擦轮
 
     //上拨判断， 一次开启，再次关闭
     if ((switch_is_up(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_up(last_s) && shoot_control.shoot_mode == SHOOT_STOP))
@@ -257,7 +258,7 @@ static void shoot_set_mode(void)
     }
     else if ((switch_is_up(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_up(last_s) && shoot_control.shoot_mode != SHOOT_STOP))
     {
-        shoot_control.shoot_mode = SHOOT_STOP;
+        shoot_control.shoot_mode = SHOOT_STOP;    
     }
 
 
@@ -265,12 +266,20 @@ static void shoot_set_mode(void)
     //处于中档， 可以使用键盘开启摩擦轮
     if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && (shoot_control.shoot_rc->key.v & SHOOT_KEYBOARD) && shoot_control.fric_status == FALSE && shoot_control.shoot_mode == SHOOT_STOP)
     {
-        shoot_control.shoot_mode = SHOOT_READY_FRIC;
+        if (key_fric_long_time++ > KEY_FRIC_LONG_TIME)
+        {
+            key_fric_long_time = 0;
+            shoot_control.shoot_mode = SHOOT_READY_FRIC;
+        }
     }
     //处于中档， 可以使用键盘关闭摩擦轮
     else if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && (shoot_control.shoot_rc->key.v & SHOOT_KEYBOARD) && shoot_control.fric_status == TRUE && shoot_control.shoot_mode != SHOOT_STOP)
     {
-        shoot_control.shoot_mode = SHOOT_STOP;
+        if (key_fric_long_time++ > KEY_FRIC_LONG_TIME)
+        {
+            key_fric_long_time = 0;
+            shoot_control.shoot_mode = SHOOT_STOP;
+        }
     }
 
     //摩擦轮速度达到一定值,才可开启拨盘  为了便于测试,这里只需要一个摩擦轮电机达到拨盘启动要求就可以开启拨盘

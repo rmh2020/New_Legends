@@ -105,14 +105,11 @@ uint32_t chassis_high_water;
 //底盘运动数据
 chassis_move_t chassis_move;
 
+extern uint8_t top_flag;
 extern chassis_behaviour_e chassis_behaviour_mode;
 extern chassis_behaviour_e last_chassis_behaviour_mode;
 
-/**
-  * @brief          chassis task, osDelay CHASSIS_CONTROL_TIME_MS (2ms) 
-  * @param[in]      pvParameters: null
-  * @retval         none
-  */
+
 /**
   * @brief          底盘任务，间隔 CHASSIS_CONTROL_TIME_MS 2ms
   * @param[in]      pvParameters: 空
@@ -136,7 +133,6 @@ void chassis_task(void const *pvParameters)
 
     while (1)
     {
-       
         //设置底盘控制模式
         chassis_set_mode(&chassis_move);
         //模式切换数据保存
@@ -319,7 +315,6 @@ static void chassis_feedback_update(chassis_move_t *chassis_move_update)
 
     //底盘相对云台角度,这里由于yaw轴电机的初始安装位置的编码值不为0,所以需要进行一次坐标变换
     chassis_move_update->chassis_relative_angle = chassis_move_update->chassis_yaw_motor->relative_angle + CHASSIS_COORD_CHANGE ;
-   // chassis_move_update->chassis_relative_angle = chassis_move_update->chassis_yaw_motor->relative_angle;
 
     //计算底盘姿态角度, 如果底盘上有陀螺仪请更改这部分代码
     chassis_move_update->chassis_yaw = rad_format(*(chassis_move_update->chassis_INS_angle + INS_YAW_ADDRESS_OFFSET) - chassis_move_update->chassis_yaw_motor->relative_angle);
@@ -425,7 +420,7 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
         chassis_move_control->chassis_relative_angle_set = rad_format(angle_set);
 
         //计算旋转PID角速度 如果是小陀螺,固定转速
-        if(chassis_behaviour_mode == CHASSIS_TOP)
+        if(top_flag == 1)
             chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, 0, chassis_move_control->chassis_relative_angle_set);
         else
             chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, chassis_move_control->chassis_relative_angle, chassis_move_control->chassis_relative_angle_set);

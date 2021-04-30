@@ -492,11 +492,7 @@ const gimbal_motor_t *get_yaw_motor_point(void)
     return &gimbal_control.gimbal_yaw_motor;
 }
 
-/**
-  * @brief          return pitch motor data point
-  * @param[in]      none
-  * @retval         pitch motor data point
-  */
+
 /**
   * @brief          返回pitch 电机数据指针
   * @param[in]      none
@@ -507,12 +503,7 @@ const gimbal_motor_t *get_pitch_motor_point(void)
     return &gimbal_control.gimbal_pitch_motor;
 }
 
-/**
-  * @brief          "gimbal_control" valiable initialization, include pid initialization, remote control data point initialization, gimbal motors
-  *                 data point initialization, and gyro sensor angle point initialization.
-  * @param[out]     init: "gimbal_control" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          初始化"gimbal_control"变量，包括pid初始化， 遥控器指针初始化，云台电机指针初始化，陀螺仪角度指针初始化
   * @param[out]     init:"gimbal_control"变量指针.
@@ -577,11 +568,7 @@ static void gimbal_init(gimbal_control_t *init)
 
 }
 
-/**
-  * @brief          set gimbal control mode, mainly call 'gimbal_behaviour_mode_set' function
-  * @param[out]     gimbal_set_mode: "gimbal_control" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          设置云台控制模式，主要在'gimbal_behaviour_mode_set'函数中改变
   * @param[out]     gimbal_set_mode:"gimbal_control"变量指针.
@@ -595,11 +582,7 @@ static void gimbal_set_mode(gimbal_control_t *set_mode)
     }
     gimbal_behaviour_mode_set(set_mode);
 }
-/**
-  * @brief          gimbal some measure data updata, such as motor enconde, euler angle, gyro
-  * @param[out]     gimbal_feedback_update: "gimbal_control" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          底盘测量数据更新，包括电机速度，欧拉角度，机器人速度
   * @param[out]     gimbal_feedback_update:"gimbal_control"变量指针.
@@ -639,12 +622,7 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update)
                                                         - arm_sin_f32(feedback_update->gimbal_pitch_motor.relative_angle) * (*(feedback_update->gimbal_INT_gyro_point + INS_GYRO_X_ADDRESS_OFFSET));
 }
 
-/**
-  * @brief          calculate the relative angle between ecd and offset_ecd
-  * @param[in]      ecd: motor now encode
-  * @param[in]      offset_ecd: gimbal offset encode
-  * @retval         relative angle, unit rad
-  */
+
 /**
   * @brief          计算ecd与offset_ecd之间的相对角度
   * @param[in]      ecd: 电机当前编码
@@ -666,11 +644,7 @@ static fp32 motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd)
     return relative_ecd * MOTOR_ECD_TO_RAD;
 }
 
-/**
-  * @brief          when gimbal mode change, some param should be changed, suan as  yaw_set should be new yaw
-  * @param[out]     gimbal_mode_change: "gimbal_control" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          云台模式改变，有些参数需要改变，例如控制yaw角度设定值应该变成当前yaw角度
   * @param[out]     gimbal_mode_change:"gimbal_control"变量指针.
@@ -713,11 +687,7 @@ static void gimbal_mode_change_control_transit(gimbal_control_t *gimbal_mode_cha
 
     gimbal_mode_change->gimbal_pitch_motor.last_gimbal_motor_mode = gimbal_mode_change->gimbal_pitch_motor.gimbal_motor_mode;
 }
-/**
-  * @brief          set gimbal control set-point, control set-point is set by "gimbal_behaviour_control_set".         
-  * @param[out]     gimbal_set_control: "gimbal_control" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          设置云台控制设定值，控制值是通过gimbal_behaviour_control_set函数设置的
   * @param[out]     gimbal_set_control:"gimbal_control"变量指针.

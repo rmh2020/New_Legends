@@ -613,8 +613,7 @@ static void gimbal_cali_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal
     }
 }
 
-uint8_t a=0;
-fp32 temp_add = 0;
+
 /**
   * @brief          云台陀螺仪控制，电机是陀螺仪角度控制，
   * @param[out]     yaw: yaw轴角度控制，为角度的增量 单位 rad
@@ -640,7 +639,7 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
 
     {
         static uint16_t last_turn_keyboard = 0;
-        static uint8_t gimbal_turn_flag = 0;  //0表示不转头,1表示左转90度,2表示右转90度,3表示后转180度
+        static uint8_t gimbal_turn_flag = 0;  
         static fp32 gimbal_end_angle = 0.0f;
 
         //按下 Q云台左转90度, E云台右转90度, V云台向后转180度.
@@ -657,7 +656,7 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
         {
             if (gimbal_turn_flag == 0)
             {
-                gimbal_turn_flag = 2;
+                gimbal_turn_flag = 1;
                 //保存掉头的目标值
                 gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle - PI/2);
             }
@@ -666,7 +665,7 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
         {
             if (gimbal_turn_flag == 0)
             {
-                gimbal_turn_flag = 3;
+                gimbal_turn_flag = 1;
                 //保存掉头的目标值
                 gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
             }
@@ -678,25 +677,14 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
 
         if (gimbal_turn_flag)
         {
-            // //右转,顺时针;左转,后转逆时针
-            // if(gimbal_turn_flag == 2)
-            // {
-            //     *yaw -= TURN_SPEED;
-            // }
-            // else 
-            // {
-            //     *yaw += TURN_SPEED;
-            // }
             //不断控制到掉头的目标值，正转，反装是随机
             if (rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle) > 0.0f)
             {      
                 *yaw += TURN_SPEED;
-                a = 1;     
             }
             else
             {        
                 *yaw -= TURN_SPEED;
-                a = 2;
             }
         }
         //到达对应角度后停止
@@ -705,7 +693,6 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
             gimbal_turn_flag = 0;
         }
     }
-    temp_add = *yaw;
 
 }
 

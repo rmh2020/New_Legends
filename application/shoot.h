@@ -42,6 +42,10 @@
 #define SHOOT_DONE_KEY_OFF_TIME     15
 //鼠标长按判断
 #define PRESS_LONG_TIME             400
+//摩擦轮开启按键延时
+#define KEY_FRIC_LONG_TIME             200
+
+
 //遥控器射击开关打下档一段时间后 连续发射子弹 用于清单
 #define RC_S_LONG_TIME              2000
 //摩擦轮高速 加速 时间
