@@ -177,6 +177,12 @@ void INS_task(void const *pvParameters)
 {
     //wait a time
     osDelay(INS_TASK_INIT_TIME);
+
+    while(gimbal_cmd_to_chassis_stop())
+    {
+      osDelay(100);
+    }
+     
     while(BMI088_init())
     {
         osDelay(100);

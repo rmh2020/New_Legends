@@ -19,34 +19,7 @@
   *
   @verbatim
   ==============================================================================
-    add a gimbal behaviour mode
-    1. in gimbal_behaviour.h , add a new behaviour name in gimbal_behaviour_e
-    erum
-    {  
-        ...
-        ...
-        GIMBAL_XXX_XXX, // new add
-    }gimbal_behaviour_e,
-    2. implement new function. gimbal_xxx_xxx_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
-        "yaw, pitch" param is gimbal movement contorl input. 
-        first param: 'yaw' usually means  yaw axis move,usaully means increment angle.
-            positive value means counterclockwise move, negative value means clockwise move.
-        second param: 'pitch' usually means pitch axis move,usaully means increment angle.
-            positive value means counterclockwise move, negative value means clockwise move.
 
-        in this new function, you can assign set-point to "yaw" and "pitch",as your wish
-    3.  in "gimbal_behavour_set" function, add new logical judgement to assign GIMBAL_XXX_XXX to  "gimbal_behaviour" variable,
-        and in the last of the "gimbal_behaviour_mode_set" function, add "else if(gimbal_behaviour == GIMBAL_XXX_XXX)" 
-        choose a gimbal control mode.
-        four mode:
-        GIMBAL_MOTOR_RAW : will use 'yaw' and 'pitch' as motor current set,  derectly sent to can bus.
-        GIMBAL_MOTOR_ENCONDE : 'yaw' and 'pitch' are angle increment,  control enconde relative angle.
-        GIMBAL_MOTOR_GYRO : 'yaw' and 'pitch' are angle increment,  control gyro absolute angle.
-    4. in the last of "gimbal_behaviour_control_set" function, add
-        else if(gimbal_behaviour == GIMBAL_XXX_XXX)
-        {
-            gimbal_xxx_xxx_control(&rc_add_yaw, &rc_add_pit, gimbal_control_set);
-        }
 
         
     如果要添加一个新的行为模式
@@ -573,18 +546,8 @@ static void gimbal_init_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal
     }
  
     //初始化状态控制量计算  注意此处应先初始化pitch中值 这里为了便于调试,设置为先初始化yaw
-    // if (fabs(INIT_PITCH_SET - gimbal_control_set->gimbal_pitch_motor.absolute_angle) > GIMBAL_INIT_ANGLE_ERROR)
-    // {
-    //     *pitch = (INIT_PITCH_SET - gimbal_control_set->gimbal_pitch_motor.absolute_angle) * GIMBAL_INIT_PITCH_SPEED;
-    //     *yaw = 0.0f;
-    // }
-    // else
-    // {
-        *pitch = (INIT_PITCH_SET - gimbal_control_set->gimbal_pitch_motor.absolute_angle) * GIMBAL_INIT_PITCH_SPEED;
-        *yaw = (INIT_YAW_SET - gimbal_control_set->gimbal_yaw_motor.relative_angle) * GIMBAL_INIT_YAW_SPEED;
-    //}
-
-
+    *pitch = (INIT_PITCH_SET - gimbal_control_set->gimbal_pitch_motor.absolute_angle) * GIMBAL_INIT_PITCH_SPEED;
+    *yaw = (INIT_YAW_SET - gimbal_control_set->gimbal_yaw_motor.relative_angle) * GIMBAL_INIT_YAW_SPEED;
 
 }
 
@@ -650,8 +613,8 @@ static void gimbal_cali_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal
     }
 }
 
-
-
+uint8_t a=0;
+fp32 temp_add = 0;
 /**
   * @brief          云台陀螺仪控制，电机是陀螺仪角度控制，
   * @param[out]     yaw: yaw轴角度控制，为角度的增量 单位 rad
@@ -677,10 +640,10 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
 
     {
         static uint16_t last_turn_keyboard = 0;
-        static uint8_t gimbal_turn_flag = 0;
+        static uint8_t gimbal_turn_flag = 0;  //0表示不转头,1表示左转90度,2表示右转90度,3表示后转180度
         static fp32 gimbal_end_angle = 0.0f;
 
-        //按下 Q云台左转90度, E云台右转90度, C云台向后转180度.
+        //按下 Q云台左转90度, E云台右转90度, V云台向后转180度.
         if ((gimbal_control_set->gimbal_rc_ctrl->key.v & TURN_L_90_KEYBOARD) && !(last_turn_keyboard & TURN_L_90_KEYBOARD))
         {
             if (gimbal_turn_flag == 0)
@@ -694,7 +657,7 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
         {
             if (gimbal_turn_flag == 0)
             {
-                gimbal_turn_flag = 1;
+                gimbal_turn_flag = 2;
                 //保存掉头的目标值
                 gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle - PI/2);
             }
@@ -703,7 +666,7 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
         {
             if (gimbal_turn_flag == 0)
             {
-                gimbal_turn_flag = 1;
+                gimbal_turn_flag = 3;
                 //保存掉头的目标值
                 gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
             }
@@ -715,14 +678,25 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
 
         if (gimbal_turn_flag)
         {
+            // //右转,顺时针;左转,后转逆时针
+            // if(gimbal_turn_flag == 2)
+            // {
+            //     *yaw -= TURN_SPEED;
+            // }
+            // else 
+            // {
+            //     *yaw += TURN_SPEED;
+            // }
             //不断控制到掉头的目标值，正转，反装是随机
             if (rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle) > 0.0f)
-            {
+            {      
                 *yaw += TURN_SPEED;
+                a = 1;     
             }
             else
-            {
+            {        
                 *yaw -= TURN_SPEED;
+                a = 2;
             }
         }
         //到达对应角度后停止
@@ -731,6 +705,8 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
             gimbal_turn_flag = 0;
         }
     }
+    temp_add = *yaw;
+
 }
 
 

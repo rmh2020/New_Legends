@@ -31,7 +31,6 @@
 #include "CAN_receive.h"
 #include "pid.h"
 #include "remote_control.h"
-//pitch speed close-loop PID params, max out and max iout
 //pitch 速度环 PID参数以及 PID最大输出，积分输出
 #define PITCH_SPEED_PID_KP        2900.0f
 #define PITCH_SPEED_PID_KI        0.0f
@@ -39,7 +38,6 @@
 #define PITCH_SPEED_PID_MAX_OUT   30000.0f
 #define PITCH_SPEED_PID_MAX_IOUT  10000.0f
 
-//yaw speed close-loop PID params, max out and max iout
 //yaw 速度环 PID参数以及 PID最大输出，积分输出
 #define YAW_SPEED_PID_KP        3600.0f
 #define YAW_SPEED_PID_KI        0.0f   //20
@@ -47,7 +45,6 @@
 #define YAW_SPEED_PID_MAX_OUT   30000.0f
 #define YAW_SPEED_PID_MAX_IOUT  5000.0f
 
-//pitch gyro angle close-loop PID params, max out and max iout
 //pitch 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
 #define PITCH_GYRO_ABSOLUTE_PID_KP 5.0f   //15
 #define PITCH_GYRO_ABSOLUTE_PID_KI 0.0f
@@ -56,15 +53,13 @@
 #define PITCH_GYRO_ABSOLUTE_PID_MAX_OUT 10.0f
 #define PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT 0.0f
 
-//yaw gyro angle close-loop PID params, max out and max iout
 //yaw 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define YAW_GYRO_ABSOLUTE_PID_KP        13.0f  //26
+#define YAW_GYRO_ABSOLUTE_PID_KP        26.0f  //26
 #define YAW_GYRO_ABSOLUTE_PID_KI        0.0f
 #define YAW_GYRO_ABSOLUTE_PID_KD        0.0f
 #define YAW_GYRO_ABSOLUTE_PID_MAX_OUT   10.0f
 #define YAW_GYRO_ABSOLUTE_PID_MAX_IOUT  0.0f
 
-//pitch encode angle close-loop PID params, max out and max iout
 //pitch 角度环 角度由编码器 PID参数以及 PID最大输出，积分输出
 #define PITCH_ENCODE_RELATIVE_PID_KP 15.0f  //15
 #define PITCH_ENCODE_RELATIVE_PID_KI 0.00f
@@ -73,7 +68,6 @@
 #define PITCH_ENCODE_RELATIVE_PID_MAX_OUT 10.0f
 #define PITCH_ENCODE_RELATIVE_PID_MAX_IOUT 0.0f
 
-//yaw encode angle close-loop PID params, max out and max iout
 //yaw 角度环 角度由编码器 PID参数以及 PID最大输出，积分输出
 #define YAW_ENCODE_RELATIVE_PID_KP        1.0f  //8
 #define YAW_ENCODE_RELATIVE_PID_KI        0.0f
@@ -95,8 +89,8 @@
 #define TURN_R_90_KEYBOARD KEY_PRESSED_OFFSET_E
 //向后转头180 按键
 #define TURN_180_KEYBOARD KEY_PRESSED_OFFSET_V
-//掉头云台速度
-#define TURN_SPEED    0.04f
+//转头云台速度
+#define TURN_SPEED    0.004f  
 //测试按键尚未使用
 #define TEST_KEYBOARD KEY_PRESSED_OFFSET_R
 //rocker value deadband
