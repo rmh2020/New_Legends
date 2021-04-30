@@ -50,6 +50,8 @@
 #include "cmsis_os.h"
 #include "chassis_task.h"
 #include "arm_math.h"
+#include "referee.h"
+
 
 #include "gimbal_behaviour.h"
 
@@ -335,8 +337,8 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
     
     static uint8_t swing_flag = 0;
 
-    //判断是否要摇摆  当键盘长按ctrl或者装甲板收到伤害
-    if ((chassis_move_rc_to_vector->chassis_RC->key.v & SWING_KEY))
+    //判断是否要摇摆  当键盘长按ctrl或者装甲板受到伤害
+    if ((chassis_move_rc_to_vector->chassis_RC->key.v & SWING_KEY) || if_hit())
     {
         if (swing_flag == 0)
         {

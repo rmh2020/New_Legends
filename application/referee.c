@@ -227,26 +227,47 @@ uint16_t get_remain_hp()
 
 }
 
-
-
+// uint16_t hp_detect_time = 0;  //血量检测间隔
+// uint16_t miss_shake_time = 0; //闪避摇摆时间
+// uint16_t last_hp = 0;         //记录血量
 //是否被击打
-bool_t if_hit()
+bool if_hit()
 {
-    static uint16_t hp_detect_time = 0;
-    static uint16_t last_hp = 0;
+    static uint16_t hp_detect_time = 0;    //血量检测间隔
+    static uint16_t miss_shake_time = 700; //闪避摇摆时间
 
+    static uint16_t last_hp = 0;
+    static uint8_t miss_flag = FALSE;
+
+
+    //初始化血量记录
     if (last_hp == 0)
         last_hp = robot_state.remain_HP;
-
-    if(last_hp != robot_state.remain_HP)
-        return TRUE;
-    else
-        return FALSE;
-
-    if (hp_detect_time++ > 100)
+    
+    if (hp_detect_time++ > 300)
     {
         last_hp = robot_state.remain_HP;
+        hp_detect_time = 0;
     }
+
+
+    //受到高于10点的伤害,开始扭腰
+    if(last_hp - robot_state.remain_HP >= 10)
+        miss_flag = TRUE ;
+            
+    if(miss_flag == TRUE)
+        miss_shake_time--;
+    
+    if(miss_shake_time == 0)
+    {
+        miss_flag = FALSE ;
+        miss_shake_time = 700;
+    }
+
+
+    return miss_flag;
+
+    
 
     
 

@@ -188,4 +188,6 @@ extern void get_shoot_heat0_limit_and_heat0(uint16_t *heat0_limit, uint16_t *hea
 extern void get_shoot_heat1_limit_and_heat1(uint16_t *heat1_limit, uint16_t *heat1);
 extern void determine_ID(void);
 extern bool is_red_or_blue(void);
+
+extern bool if_hit(void);
 #endif
