@@ -27,35 +27,12 @@ Project File Date:  04/30/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-compiling servo_task.c...
-compiling chassis_task.c...
 compiling chassis_behaviour.c...
-..\application\chassis_behaviour.c(413): warning:  #550-D: variable "last_chassis_turn_keyboard"  was set but never used
-      static uint8_t last_chassis_turn_keyboard = 0;
-..\application\chassis_behaviour.c: 1 warning, 0 errors
-compiling gimbal_behaviour.c...
-..\application\vision.h(167): warning:  #1295-D: Deprecated declaration vision_if_update - give arg types
-  bool vision_if_update();
-..\application\vision.h(172): warning:  #1-D: last line of file ends without a newline
-  #endif
-..\application\gimbal_behaviour.c: 2 warnings, 0 errors
-compiling shoot.c...
-..\application\shoot.c(286): warning:  #223-D: function "abs" declared implicitly
-      if(shoot_control.shoot_mode == SHOOT_READY_FRIC && abs(shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[RIGHT].require_speed))
-..\application\shoot.c(340): warning:  #223-D: function "get_shooter_heat0_cooling_limit_and_heat0" declared implicitly
-      get_shooter_heat0_cooling_limit_and_heat0(&shoot_control.heat_limit, &shoot_control.heat);
-..\application\shoot.c: 2 warnings, 0 errors
-compiling gimbal_task.c...
-..\application\gimbal_task.c(518): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-      init->gimbal_pitch_motor.max_relative_angle = 
-AX_PITCH;
-..\application\gimbal_task.c(222): warning:  #177-D: variable "shoot_can_set_current"  was declared but never referenced
-  static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
-..\application\gimbal_task.c: 2 warnings, 0 errors
+compiling chassis_task.c...
 linking...
-Program Size: Code=113992 RO-data=14724 RW-data=1348 ZI-data=59212  
+Program Size: Code=113752 RO-data=14724 RW-data=1348 ZI-data=59212  
 FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 7 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -73,7 +50,7 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:05
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

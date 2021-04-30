@@ -10,6 +10,7 @@
         "*.tcc": "c",
         "gimbal_behaviour.h": "c",
         "ui_task.h": "c",
-        "main.h": "c"
+        "main.h": "c",
+        "arm_math.h": "c"
     }
 }

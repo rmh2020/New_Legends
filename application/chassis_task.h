@@ -113,8 +113,16 @@
 #define SWING_NO_MOVE_ANGLE 0.7f  //0.7
 //摇摆过程底盘运动最大角度(rad)
 #define SWING_MOVE_ANGLE 0.31415926535897932384626433832795f
+// //自动闪避原地不动底盘摆动角度(rad)
+// #define MISS_NO_MOVE_ANGLE 0.7
+// //自动闪避(rad)
+// #define SWING_MOVE_ANGLE 0.31415926535897932384626433832795f
 
-//原地旋转小陀螺模式下Z轴转速
+
+
+
+
+//原地旋转小陀螺下Z轴转速
 #define TOP_WZ_ANGLE_STAND 0.2f //2.0
 //移动状态下小陀螺转速
 #define TOP_WZ_ANGLE_MOVE 0.15f

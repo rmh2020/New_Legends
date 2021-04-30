@@ -181,6 +181,7 @@ uint8_t get_robot_id(void)
 }
 
 
+//************************功率控制***********************************
 //底盘输出功率,底盘功率缓存
 void get_chassis_power_and_buffer(fp32 *power, fp32 *buffer)
 {
@@ -218,6 +219,47 @@ void get_shooter_heat1_speed_limit_and_heat1(uint16_t *heat1_limit, uint16_t *he
     *heat1_limit = robot_state.shooter_heat1_speed_limit;
     *heat1 = shoot_data_t.bullet_speed;
 }
+
+//当前血量
+uint16_t get_remain_hp()
+{
+    return robot_state.remain_HP;
+
+}
+
+
+
+//是否被击打
+bool_t if_hit()
+{
+    static uint16_t hp_detect_time = 0;
+    static uint16_t last_hp = 0;
+
+    if (last_hp == 0)
+        last_hp = robot_state.remain_HP;
+
+    if(last_hp != robot_state.remain_HP)
+        return TRUE;
+    else
+        return FALSE;
+
+    if (hp_detect_time++ > 100)
+    {
+        last_hp = robot_state.remain_HP;
+    }
+
+    
+
+}
+
+
+
+
+
+
+
+
+
 /**
   * @brief  判断自己红蓝方
   * @param  void
