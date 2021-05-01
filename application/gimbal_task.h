@@ -54,8 +54,8 @@
 #define PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT 0.0f
 
 //yaw 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define YAW_GYRO_ABSOLUTE_PID_KP        26.0f  //26
-#define YAW_GYRO_ABSOLUTE_PID_KI        0.0f
+#define YAW_GYRO_ABSOLUTE_PID_KP        30.0f  //26
+#define YAW_GYRO_ABSOLUTE_PID_KI        1.0f
 #define YAW_GYRO_ABSOLUTE_PID_KD        0.0f
 #define YAW_GYRO_ABSOLUTE_PID_MAX_OUT   10.0f
 #define YAW_GYRO_ABSOLUTE_PID_MAX_IOUT  0.0f
@@ -91,9 +91,6 @@
 #define TURN_180_KEYBOARD KEY_PRESSED_OFFSET_V
 //转头云台速度
 #define TURN_SPEED    0.004f  
-//测试按键尚未使用
-#define TEST_KEYBOARD KEY_PRESSED_OFFSET_R
-//rocker value deadband
 //遥控器输入死区，因为遥控器存在差异，摇杆在中间，其值不一定为零
 #define RC_DEADBAND   10
 
