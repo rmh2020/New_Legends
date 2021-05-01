@@ -20,27 +20,30 @@
 #include "cmsis_os.h"
 #include "bsp_servo_pwm.h"
 #include "remote_control.h"
+#include "shoot.h"
 
 #define SERVO_MIN_PWM   500
 #define SERVO_MAX_PWM   2500
 
 #define PWM_DETAL_VALUE 10
 
-#define SERVO1_ADD_PWM_KEY  KEY_PRESSED_OFFSET_Z
-#define SERVO2_ADD_PWM_KEY  KEY_PRESSED_OFFSET_X
-#define SERVO3_ADD_PWM_KEY  KEY_PRESSED_OFFSET_C
-#define SERVO4_ADD_PWM_KEY  KEY_PRESSED_OFFSET_V
+//弹仓舵机开关
+#define SERVO_MAGAZINE_KEY KEY_PRESSED_OFFSET_R
 
-#define SERVO_MINUS_PWM_KEY KEY_PRESSED_OFFSET_SHIFT
 
 const RC_ctrl_t *servo_rc;
-const static uint16_t servo_key[4] = {SERVO1_ADD_PWM_KEY, SERVO2_ADD_PWM_KEY, SERVO3_ADD_PWM_KEY, SERVO4_ADD_PWM_KEY};
+extern shoot_control_t shoot_control;          //射击数据
+
+
+//0号舵机为弹仓舵机 1号舵机为限位舵机
+//舵机运动初始位置
+const uint16_t servo_open_pwm[4] = {SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM};
+//舵机运动最终位置
+const uint16_t servo_close_pwm[4] = {SERVO_MAX_PWM, SERVO_MAX_PWM, SERVO_MAX_PWM, SERVO_MAX_PWM};
+//舵机发送的控制值
 uint16_t servo_pwm[4] = {SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM};
-/**
-  * @brief          servo_task
-  * @param[in]      pvParameters: NULL
-  * @retval         none
-  */
+
+
 /**
   * @brief          舵机任务
   * @param[in]      pvParameters: NULL
@@ -52,19 +55,37 @@ void servo_task(void const * argument)
 
     while(1)
     {
+        //按下R键 打开或弹仓
+        if((servo_rc->key.v & SERVO_MAGAZINE_KEY) && shoot_control.magazine_status == FALSE)
+        {
+            //打开弹仓
+            servo_pwm[0] = servo_open_pwm[0];
+            shoot_control.magazine_status = TRUE;
+        }
+        else if((servo_rc->key.v & SERVO_MAGAZINE_KEY) && shoot_control.magazine_status == TRUE)
+        {
+            //关闭弹仓
+            servo_pwm[0] = servo_close_pwm[0];
+            shoot_control.magazine_status = FALSE;
+        }
+
+        
+        //限位开关
+        if((shoot_control.speed_set != 0) && shoot_control.limit_switch_status == FALSE)
+        {
+            //当拨盘电机开始旋转时 限位开关打开
+            servo_pwm[1] = servo_open_pwm[1];
+            shoot_control.limit_switch_status = TRUE;
+        }
+        else if((shoot_control.speed_set == 0) && shoot_control.limit_switch_status == TRUE)
+        {
+            //当拨盘电机停止旋转时 限位开关关闭
+            servo_pwm[1] = servo_close_pwm[1];
+            shoot_control.limit_switch_status = FALSE;
+        }
+            
         for(uint8_t i = 0; i < 4; i++)
         {
-
-            if( (servo_rc->key.v & SERVO_MINUS_PWM_KEY) && (servo_rc->key.v & servo_key[i]))
-            {
-                servo_pwm[i] -= PWM_DETAL_VALUE;
-            }
-            else if(servo_rc->key.v & servo_key[i])
-            {
-                servo_pwm[i] += PWM_DETAL_VALUE;
-            }
-
-            //limit the pwm
            //限制pwm
             if(servo_pwm[i] < SERVO_MIN_PWM)
             {
@@ -77,6 +98,8 @@ void servo_task(void const * argument)
 
             servo_pwm_set(servo_pwm[i], i);
         }
+
+       
         osDelay(10);
     }
 }

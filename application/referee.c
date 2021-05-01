@@ -28,7 +28,11 @@ ext_shoot_data_t shoot_data_t;
 ext_bullet_remaining_t bullet_remaining_t;
 ext_student_interactive_data_t student_interactive_data_t;
 
+uint8_t Judge_Self_ID;//当前机器人的ID
+uint16_t Judge_SelfClient_ID;//发送者机器人对应的客户端ID
 
+#define BLUE  0
+#define RED   1
 
 
 void init_referee_struct_data(void)
@@ -168,28 +172,144 @@ void referee_data_solve(uint8_t *frame)
     }
 }
 
-void get_chassis_power_and_buffer(fp32 *power, fp32 *buffer)
-{
-    *power = power_heat_data_t.chassis_power;
-    *buffer = power_heat_data_t.chassis_power_buffer;
-
-}
 
 
+//返回机器人ID
 uint8_t get_robot_id(void)
 {
     return robot_state.robot_id;
 }
 
-void get_shoot_heat0_limit_and_heat0(uint16_t *heat0_limit, uint16_t *heat0)
+
+//************************功率控制***********************************
+//底盘输出功率,底盘功率缓存
+void get_chassis_power_and_buffer(fp32 *power, fp32 *buffer)
+{
+    *power = power_heat_data_t.chassis_power;
+    *buffer = power_heat_data_t.chassis_power_buffer;
+}
+
+
+//17mm枪口热量上限, 17mm枪口实时热量
+void get_shooter_heat0_cooling_limit_and_heat0(uint16_t *heat0_limit, uint16_t *heat0)
 {
     *heat0_limit = robot_state.shooter_heat0_cooling_limit;
     *heat0 = power_heat_data_t.shooter_heat0;
 }
 
-void get_shoot_heat1_limit_and_heat1(uint16_t *heat1_limit, uint16_t *heat1)
+
+//17mm枪口枪口射速上限,17mm实时射速
+void get_shooter_heat0_speed_limit_and_heat0(uint16_t *heat0_limit, uint16_t *heat0)
+{
+    *heat0_limit = robot_state.shooter_heat0_speed_limit;
+    *heat0 = shoot_data_t.bullet_speed;
+}
+
+
+//42mm枪口热量上限, 42mm枪口实时热量
+void get_shooter_heat1_cooling_limit_and_heat1(uint16_t *heat1_limit, uint16_t *heat1)
 {
     *heat1_limit = robot_state.shooter_heat1_cooling_limit;
     *heat1 = power_heat_data_t.shooter_heat1;
 }
+
+//42mm枪口枪口射速上限,42mm实时射速
+void get_shooter_heat1_speed_limit_and_heat1(uint16_t *heat1_limit, uint16_t *heat1)
+{
+    *heat1_limit = robot_state.shooter_heat1_speed_limit;
+    *heat1 = shoot_data_t.bullet_speed;
+}
+
+//当前血量
+uint16_t get_remain_hp()
+{
+    return robot_state.remain_HP;
+
+}
+
+//是否被击打
+bool if_hit()
+{
+    static uint16_t hp_detect_time = 0;    //血量检测间隔
+    static uint16_t miss_shake_time = 700; //闪避摇摆时间
+
+    static uint16_t last_hp = 0;
+    static uint8_t miss_flag = FALSE;
+
+
+    //初始化血量记录
+    if (last_hp == 0)
+        last_hp = robot_state.remain_HP;
+    
+    if (hp_detect_time++ > 300)
+    {
+        last_hp = robot_state.remain_HP;
+        hp_detect_time = 0;
+    }
+
+    //受到高于10点的伤害,开始扭腰
+    if(last_hp - robot_state.remain_HP >= 10)
+        miss_flag = TRUE ;
+
+    //开始扭腰,扭腰倒计时开始        
+    if(miss_flag == TRUE)
+        miss_shake_time--;
+    //结束并退出扭腰
+    if(miss_shake_time == 0)
+    {
+        miss_flag = FALSE ;
+        miss_shake_time = 700;
+    }
+
+    return miss_flag;
+}
+
+
+
+
+
+
+
+
+
+/**
+  * @brief  判断自己红蓝方
+  * @param  void
+  * @retval RED   BLUE
+  * @attention  数据打包,打包完成后通过串口发送到裁判系统
+  */
+bool Color;
+bool is_red_or_blue(void)
+{
+	Judge_Self_ID = robot_state.robot_id;//读取当前机器人ID
+	
+	if(robot_state.robot_id > 10)
+	{
+		return BLUE;
+	}
+	else 
+	{
+		return RED;
+	}
+}
+/**
+  * @brief  判断自身ID，选择客户端ID
+  * @param  void
+  * @retval RED   BLUE
+  * @attention  数据打包,打包完成后通过串口发送到裁判系统
+  */
+void determine_ID(void)
+{
+	Color = is_red_or_blue();
+	if(Color == BLUE)
+	{
+		Judge_SelfClient_ID = 0x0110 + (Judge_Self_ID-0x10);//计算客户端ID
+	}
+	else if(Color == RED)
+	{
+		Judge_SelfClient_ID = 0x0100 + Judge_Self_ID;//计算客户端ID
+	}
+}
+
+
 

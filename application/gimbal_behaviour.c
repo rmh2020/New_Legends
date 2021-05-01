@@ -19,34 +19,7 @@
   *
   @verbatim
   ==============================================================================
-    add a gimbal behaviour mode
-    1. in gimbal_behaviour.h , add a new behaviour name in gimbal_behaviour_e
-    erum
-    {  
-        ...
-        ...
-        GIMBAL_XXX_XXX, // new add
-    }gimbal_behaviour_e,
-    2. implement new function. gimbal_xxx_xxx_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
-        "yaw, pitch" param is gimbal movement contorl input. 
-        first param: 'yaw' usually means  yaw axis move,usaully means increment angle.
-            positive value means counterclockwise move, negative value means clockwise move.
-        second param: 'pitch' usually means pitch axis move,usaully means increment angle.
-            positive value means counterclockwise move, negative value means clockwise move.
 
-        in this new function, you can assign set-point to "yaw" and "pitch",as your wish
-    3.  in "gimbal_behavour_set" function, add new logical judgement to assign GIMBAL_XXX_XXX to  "gimbal_behaviour" variable,
-        and in the last of the "gimbal_behaviour_mode_set" function, add "else if(gimbal_behaviour == GIMBAL_XXX_XXX)" 
-        choose a gimbal control mode.
-        four mode:
-        GIMBAL_MOTOR_RAW : will use 'yaw' and 'pitch' as motor current set,  derectly sent to can bus.
-        GIMBAL_MOTOR_ENCONDE : 'yaw' and 'pitch' are angle increment,  control enconde relative angle.
-        GIMBAL_MOTOR_GYRO : 'yaw' and 'pitch' are angle increment,  control gyro absolute angle.
-    4. in the last of "gimbal_behaviour_control_set" function, add
-        else if(gimbal_behaviour == GIMBAL_XXX_XXX)
-        {
-            gimbal_xxx_xxx_control(&rc_add_yaw, &rc_add_pit, gimbal_control_set);
-        }
 
         
     如果要添加一个新的行为模式
@@ -84,6 +57,7 @@
 #include "bsp_buzzer.h"
 #include "detect_task.h"
 #include "vision.h"
+#include "shoot.h"
 
 #include "user_lib.h"
 
@@ -239,14 +213,7 @@ static void gimbal_cali_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal
   */
 static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
 
-/**
-  * @brief          when gimbal behaviour mode is GIMBAL_RELATIVE_ANGLE, the function is called
-  *                 and gimbal control mode is encode mode. 
-  * @param[out]     yaw: yaw axia relative angle increment, unit rad
-  * @param[out]     pitch: pitch axia relative angle increment,unit rad
-  * @param[in]      gimbal_control_set: gimbal data
-  * @retval         none
-  */
+
 /**
   * @brief          云台编码值控制，电机是相对角度控制，
   * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
@@ -256,14 +223,7 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
   */
 static void gimbal_relative_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
 
-/**
-  * @brief          when gimbal behaviour mode is GIMBAL_MOTIONLESS, the function is called
-  *                 and gimbal control mode is encode mode. 
-  * @param[out]     yaw: yaw axia relative angle increment,  unit rad
-  * @param[out]     pitch: pitch axia relative angle increment, unit rad
-  * @param[in]      gimbal_control_set: gimbal data
-  * @retval         none
-  */
+
 /**
   * @brief          云台进入遥控器无输入控制，电机是相对角度控制，
   * @author         RM
@@ -286,7 +246,11 @@ static void gimbal_motionless_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
 static void gimbal_auto_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
 
 //云台行为状态机
-static gimbal_behaviour_e gimbal_behaviour = GIMBAL_ZERO_FORCE;
+gimbal_behaviour_e gimbal_behaviour = GIMBAL_ZERO_FORCE;
+gimbal_behaviour_e last_gimbal_behaviour = GIMBAL_ZERO_FORCE;
+
+extern shoot_control_t shoot_control;          //射击数据
+
 
 /**
   * @brief          the function is called by gimbal_set_mode function in gimbal_task.c
@@ -349,14 +313,7 @@ void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set)
     }
 }
 
-/**
-  * @brief          the function is called by gimbal_set_contorl function in gimbal_task.c
-  *                 accoring to the gimbal_behaviour variable, call the corresponding function
-  * @param[out]     add_yaw:yaw axis increment angle, unit rad
-  * @param[out]     add_pitch:pitch axis increment angle,unit rad
-  * @param[in]      gimbal_mode_set: gimbal data
-  * @retval         none
-  */
+
 /**
   * @brief          云台行为控制，根据不同行为采用不同控制函数
   * @param[out]     add_yaw:设置的yaw角度增加值，单位 rad
@@ -404,11 +361,7 @@ void gimbal_behaviour_control_set(fp32 *add_yaw, fp32 *add_pitch, gimbal_control
 
 }
 
-/**
-  * @brief          in some gimbal mode, need chassis keep no move
-  * @param[in]      none
-  * @retval         1: no move 0:normal
-  */
+
 /**
   * @brief          云台在某些行为下，需要底盘不动
   * @param[in]      none
@@ -421,17 +374,17 @@ bool_t gimbal_cmd_to_chassis_stop(void)
     {
         return 1;
     }
+    else if(shoot_control.magazine_status == TRUE)   //当弹仓打开,底盘无法运动
+    {
+        return 1;
+    }
     else
     {
         return 0;
     }
 }
 
-/**
-  * @brief          in some gimbal mode, need shoot keep no move
-  * @param[in]      none
-  * @retval         1: no move 0:normal
-  */
+
 /**
   * @brief          云台在某些行为下，需要射击停止
   * @param[in]      none
@@ -451,11 +404,7 @@ bool_t gimbal_cmd_to_shoot_stop(void)
 }
 
 
-/**
-  * @brief          gimbal behave mode set.
-  * @param[in]      gimbal_mode_set: gimbal data
-  * @retval         none
-  */
+
 /**
   * @brief          云台行为状态机设置.
   * @param[in]      gimbal_mode_set: 云台数据指针
@@ -467,13 +416,11 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
     {
         return;
     }
-    //in cali mode, return
     //校准行为，return 不会设置其他的模式
     if (gimbal_behaviour == GIMBAL_CALI && gimbal_mode_set->gimbal_cali.step != GIMBAL_CALI_END_STEP)
     {
         return;
     }
-    //if other operate make step change to start, means enter cali mode
     //如果外部使得校准步骤从0 变成 start，则进入校准模式
     if (gimbal_mode_set->gimbal_cali.step == GIMBAL_CALI_START_STEP && !toe_is_error(DBUS_TOE))
     {
@@ -481,7 +428,6 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
         return;
     }
 
-    //init mode, judge if gimbal is in middle place
     //初始化模式判断是否到达中值位置
     if (gimbal_behaviour == GIMBAL_INIT)
     {
@@ -531,7 +477,7 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
     
     if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
-        gimbal_behaviour = GIMBAL_RELATIVE_ANGLE;
+        gimbal_behaviour = GIMBAL_ABSOLUTE_ANGLE;
     }
     else if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
@@ -549,10 +495,9 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
         gimbal_behaviour = GIMBAL_ZERO_FORCE;
     }
 
-    //enter init mode
     //判断进入init状态机
     {
-        static gimbal_behaviour_e last_gimbal_behaviour = GIMBAL_ZERO_FORCE;
+       
         if (last_gimbal_behaviour == GIMBAL_ZERO_FORCE && gimbal_behaviour != GIMBAL_ZERO_FORCE)
         {
             gimbal_behaviour = GIMBAL_INIT;
@@ -560,19 +505,12 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
         last_gimbal_behaviour = gimbal_behaviour;
     }
 
+   
 
 
 }
 
-/**
-  * @brief          when gimbal behaviour mode is GIMBAL_ZERO_FORCE, the function is called
-  *                 and gimbal control mode is raw. The raw mode means set value
-  *                 will be sent to CAN bus derectly, and the function will set all zero.
-  * @param[out]     yaw: yaw motor current set, it will be sent to CAN bus derectly.
-  * @param[out]     pitch: pitch motor current set, it will be sent to CAN bus derectly.
-  * @param[in]      gimbal_control_set: gimbal data
-  * @retval         none
-  */
+
 /**
   * @brief          当云台行为模式是GIMBAL_ZERO_FORCE, 这个函数会被调用,云台控制模式是raw模式.原始模式意味着
   *                 设定值会直接发送到CAN总线上,这个函数将会设置所有为0.
@@ -591,15 +529,7 @@ static void gimbal_zero_force_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
     *yaw = 0.0f;
     *pitch = 0.0f;
 }
-/**
-  * @brief          when gimbal behaviour mode is GIMBAL_INIT, the function is called
-  *                 and gimbal control mode is gyro mode. gimbal will lift the pitch axis
-  *                 and rotate yaw axis.
-  * @param[out]     yaw: yaw motor relative angle increment, unit rad.
-  * @param[out]     pitch: pitch motor absolute angle increment, unit rad.
-  * @param[in]      gimbal_control_set: gimbal data
-  * @retval         none
-  */
+
 /**
   * @brief          云台初始化控制，电机是陀螺仪角度控制，云台先抬起pitch轴，后旋转yaw轴
   * @author         RM
@@ -614,30 +544,14 @@ static void gimbal_init_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal
     {
         return;
     }
+ 
+    //初始化状态控制量计算  注意此处应先初始化pitch中值 这里为了便于调试,设置为先初始化yaw
+    *pitch = (INIT_PITCH_SET - gimbal_control_set->gimbal_pitch_motor.absolute_angle) * GIMBAL_INIT_PITCH_SPEED;
+    *yaw = (INIT_YAW_SET - gimbal_control_set->gimbal_yaw_motor.relative_angle) * GIMBAL_INIT_YAW_SPEED;
 
-    //初始化状态控制量计算
-    if (fabs(INIT_PITCH_SET - gimbal_control_set->gimbal_pitch_motor.absolute_angle) > GIMBAL_INIT_ANGLE_ERROR)
-    {
-        *pitch = (INIT_PITCH_SET - gimbal_control_set->gimbal_pitch_motor.absolute_angle) * GIMBAL_INIT_PITCH_SPEED;
-        *yaw = 0.0f;
-    }
-    else
-    {
-        *pitch = (INIT_PITCH_SET - gimbal_control_set->gimbal_pitch_motor.absolute_angle) * GIMBAL_INIT_PITCH_SPEED;
-        *yaw = (INIT_YAW_SET - gimbal_control_set->gimbal_yaw_motor.relative_angle) * GIMBAL_INIT_YAW_SPEED;
-    }
 }
 
-/**
-  * @brief          when gimbal behaviour mode is GIMBAL_CALI, the function is called
-  *                 and gimbal control mode is raw mode. gimbal will lift the pitch axis, 
-  *                 and then put down the pitch axis, and rotate yaw axis counterclockwise,
-  *                 and rotate yaw axis clockwise.
-  * @param[out]     yaw: yaw motor current set, will be sent to CAN bus decretly
-  * @param[out]     pitch: pitch motor current set, will be sent to CAN bus decretly
-  * @param[in]      gimbal_control_set: gimbal data
-  * @retval         none
-  */
+
 /**
   * @brief          云台校准控制，电机是raw控制，云台先抬起pitch，放下pitch，在正转yaw，最后反转yaw，记录当时的角度和编码值
   * @author         RM
@@ -701,14 +615,6 @@ static void gimbal_cali_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal
 
 
 /**
-  * @brief          when gimbal behaviour mode is GIMBAL_ABSOLUTE_ANGLE, the function is called
-  *                 and gimbal control mode is gyro mode. 
-  * @param[out]     yaw: yaw axia absolute angle increment, unit rad
-  * @param[out]     pitch: pitch axia absolute angle increment,unit rad
-  * @param[in]      gimbal_control_set: gimbal data
-  * @retval         none
-  */
-/**
   * @brief          云台陀螺仪控制，电机是陀螺仪角度控制，
   * @param[out]     yaw: yaw轴角度控制，为角度的增量 单位 rad
   * @param[out]     pitch:pitch轴角度控制，为角度的增量 单位 rad
@@ -733,10 +639,29 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
 
     {
         static uint16_t last_turn_keyboard = 0;
-        static uint8_t gimbal_turn_flag = 0;
+        static uint8_t gimbal_turn_flag = 0;  
         static fp32 gimbal_end_angle = 0.0f;
 
-        if ((gimbal_control_set->gimbal_rc_ctrl->key.v & TURN_KEYBOARD) && !(last_turn_keyboard & TURN_KEYBOARD))
+        //按下 Q云台左转90度, E云台右转90度, V云台向后转180度.
+        if ((gimbal_control_set->gimbal_rc_ctrl->key.v & TURN_L_90_KEYBOARD) && !(last_turn_keyboard & TURN_L_90_KEYBOARD))
+        {
+            if (gimbal_turn_flag == 0)
+            {
+                gimbal_turn_flag = 1;
+                //保存掉头的目标值
+                gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI/2);
+            }
+        }
+        else if ((gimbal_control_set->gimbal_rc_ctrl->key.v & TURN_R_90_KEYBOARD) && !(last_turn_keyboard & TURN_R_90_KEYBOARD))
+        {
+            if (gimbal_turn_flag == 0)
+            {
+                gimbal_turn_flag = 1;
+                //保存掉头的目标值
+                gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle - PI/2);
+            }
+        }
+        else if ((gimbal_control_set->gimbal_rc_ctrl->key.v & TURN_180_KEYBOARD) && !(last_turn_keyboard & TURN_180_KEYBOARD))
         {
             if (gimbal_turn_flag == 0)
             {
@@ -745,37 +670,34 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
                 gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
             }
         }
+        
+
+
         last_turn_keyboard = gimbal_control_set->gimbal_rc_ctrl->key.v ;
 
         if (gimbal_turn_flag)
         {
             //不断控制到掉头的目标值，正转，反装是随机
             if (rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle) > 0.0f)
-            {
+            {      
                 *yaw += TURN_SPEED;
             }
             else
-            {
+            {        
                 *yaw -= TURN_SPEED;
             }
         }
-        //到达pi （180°）后停止
+        //到达对应角度后停止
         if (gimbal_turn_flag && fabs(rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle)) < 0.01f)
         {
             gimbal_turn_flag = 0;
         }
     }
+
 }
 
 
-/**
-  * @brief          when gimbal behaviour mode is GIMBAL_RELATIVE_ANGLE, the function is called
-  *                 and gimbal control mode is encode mode. 
-  * @param[out]     yaw: yaw axia relative angle increment, unit rad
-  * @param[out]     pitch: pitch axia relative angle increment,unit rad
-  * @param[in]      gimbal_control_set: gimbal data
-  * @retval         none
-  */
+
 /**
   * @brief          云台编码值控制，电机是相对角度控制，
   * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
@@ -800,14 +722,7 @@ static void gimbal_relative_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
 
 }
 
-/**
-  * @brief          when gimbal behaviour mode is GIMBAL_MOTIONLESS, the function is called
-  *                 and gimbal control mode is encode mode. 
-  * @param[out]     yaw: yaw axia relative angle increment,  unit rad
-  * @param[out]     pitch: pitch axia relative angle increment, unit rad
-  * @param[in]      gimbal_control_set: gimbal data
-  * @retval         none
-  */
+
 /**
   * @brief          云台进入遥控器无输入控制，电机是相对角度控制，
   * @author         RM

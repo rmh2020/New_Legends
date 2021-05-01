@@ -177,6 +177,12 @@ void INS_task(void const *pvParameters)
 {
     //wait a time
     osDelay(INS_TASK_INIT_TIME);
+
+    while(gimbal_cmd_to_chassis_stop())
+    {
+      osDelay(100);
+    }
+     
     while(BMI088_init())
     {
         osDelay(100);
@@ -222,9 +228,9 @@ void INS_task(void const *pvParameters)
         }
 
 
-        if(gyro_update_flag & (1 << IMU_UPDATE_SHFITS))
+        if(gyro_update_flag & (1 << IMU_NOTIFY_SHFITS))
         {
-            gyro_update_flag &= ~(1 << IMU_UPDATE_SHFITS);
+            gyro_update_flag &= ~(1 << IMU_NOTIFY_SHFITS);
             BMI088_gyro_read_over(gyro_dma_rx_buf + BMI088_GYRO_RX_BUF_DATA_OFFSET, bmi088_real_data.gyro);
         }
 
@@ -646,6 +652,8 @@ void DMA2_Stream2_IRQHandler(void)
 
         if(gyro_update_flag & (1 << IMU_UPDATE_SHFITS))
         {
+            gyro_update_flag &= ~(1 << IMU_UPDATE_SHFITS);
+            gyro_update_flag |= (1 << IMU_NOTIFY_SHFITS);
             __HAL_GPIO_EXTI_GENERATE_SWIT(GPIO_PIN_0);
         }
     }

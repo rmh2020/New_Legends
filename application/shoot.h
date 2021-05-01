@@ -32,16 +32,20 @@
 
 #define SHOOT_CONTROL_TIME          GIMBAL_CONTROL_TIME
 
-#define SHOOT_FRIC_PWM_ADD_VALUE    100.0f
+//开启摩擦轮的斜坡
+#define SHOOT_FRIC_ADD_VALUE    0.1f
 
 //射击摩擦轮激光打开 关闭
-#define SHOOT_ON_KEYBOARD           KEY_PRESSED_OFFSET_Q
-#define SHOOT_OFF_KEYBOARD          KEY_PRESSED_OFFSET_E
+#define SHOOT_KEYBOARD           KEY_PRESSED_OFFSET_G
 
 //射击完成后 子弹弹出去后，判断时间，以防误触发
 #define SHOOT_DONE_KEY_OFF_TIME     15
 //鼠标长按判断
 #define PRESS_LONG_TIME             400
+//摩擦轮开启按键延时
+#define KEY_FRIC_LONG_TIME             200
+
+
 //遥控器射击开关打下档一段时间后 连续发射子弹 用于清单
 #define RC_S_LONG_TIME              2000
 //摩擦轮高速 加速 时间
@@ -73,43 +77,70 @@
 #define PI                          3.1415926f
 
 //拨弹轮电机PID
-#define TRIGGER_ANGLE_PID_KP        800.0f
-#define TRIGGER_ANGLE_PID_KI        0.5f
+#define TRIGGER_ANGLE_PID_KP        80.0f  //800
+#define TRIGGER_ANGLE_PID_KI        0.01f  //0.5
 #define TRIGGER_ANGLE_PID_KD        0.0f
 
 #define TRIGGER_BULLET_PID_MAX_OUT  10000.0f
-#define TRIGGER_BULLET_PID_MAX_IOUT 9000.0f
+#define TRIGGER_BULLET_PID_MAX_IOUT 200.0f
 
 #define TRIGGER_READY_PID_MAX_OUT   10000.0f
-#define TRIGGER_READY_PID_MAX_IOUT  7000.0f
+#define TRIGGER_READY_PID_MAX_IOUT  200.0f
 
+
+//摩擦轮电机PID
+#define FRIC_SPEED_PID_KP        2.0f
+#define FRIC_SPEED_PID_KI        0.5f
+#define FRIC_SPEED_PID_KD        0.0f
+
+#define FRIC_PID_MAX_OUT  8000.0f
+#define FRIC_PID_MAX_IOUT 200.0f
+
+
+#define FRIC_MAX_SPEED_RMP 4000.0f
+#define FRIC_REQUIRE_SPEED_RMP 500.0f
 
 #define SHOOT_HEAT_REMAIN_VALUE     80
 //拨盘格数
 #define TRIGGER_GRID_NUM 12     
 #define TRIGGER_ONCE PI/TRIGGER_GRID_NUM
 
+
+#define LEFT 0
+#define RIGHT 1
+
 typedef enum
 {
-    SHOOT_STOP = 0,
-    SHOOT_READY_FRIC,
-    SHOOT_READY_BULLET,
-    SHOOT_READY,
-    SHOOT_BULLET,
-    SHOOT_CONTINUE_BULLET,
-    SHOOT_DONE,
+    SHOOT_STOP = 0,    //停止发射结构
+    SHOOT_READY_FRIC,  //摩擦轮准备中
+    SHOOT_READY_BULLET,//拨盘准备中,摩擦轮已达到转速
+    SHOOT_READY,       //整个发射机构准备完成
+    SHOOT_BULLET,      //单发
+    SHOOT_CONTINUE_BULLET,//连发
+    SHOOT_DONE,      
 } shoot_mode_e;
 
+typedef struct
+{
+  const motor_measure_t *fric_motor_measure;
+  fp32 accel;
+  fp32 speed;
+  fp32 speed_set;
+  int16_t give_current;
+
+  fp32 max_speed;  //摩擦轮旋转最大速度
+  fp32 min_speed;  //摩擦轮旋转最小速度
+  fp32 require_speed; //允许拨盘开启的最低速度
+
+} fric_motor_t;
 
 typedef struct
 {
     shoot_mode_e shoot_mode;
     const RC_ctrl_t *shoot_rc;
-    const motor_measure_t *shoot_motor_measure;
-    ramp_function_source_t fric1_ramp;
-    uint16_t fric_pwm1;
-    ramp_function_source_t fric2_ramp;
-    uint16_t fric_pwm2;
+    
+    //拨弹电机数据
+    const motor_measure_t *trigger_motor_measure;
     pid_type_def trigger_motor_pid;
     fp32 trigger_speed_set;
     fp32 speed;
@@ -118,6 +149,16 @@ typedef struct
     fp32 set_angle;
     int16_t given_current;
     int8_t ecd_count;
+
+    //摩擦轮电机数据
+    fric_motor_t fric_motor[2]; 
+    pid_type_def fric_speed_pid[2];
+
+    //摩擦轮电机 弹仓舵机
+    bool_t fric_status;
+    bool_t magazine_status;
+    bool_t limit_switch_status;
+  
 
     bool_t press_l;
     bool_t press_r;
@@ -140,6 +181,6 @@ typedef struct
 
 //由于射击和云台使用同一个can的id故也射击任务在云台任务中执行
 extern void shoot_init(void);
-extern int16_t shoot_control_loop(void);
+extern void shoot_control_loop(void);
 
 #endif

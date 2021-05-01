@@ -79,12 +79,15 @@
 //chassis control frequence, no use now.
 //底盘任务控制频率，尚未使用这个宏
 #define CHASSIS_CONTROL_FREQUENCE 500.0f
-//chassis 3508 max motor control current
 //底盘3508最大can发送电流值
 #define MAX_MOTOR_CAN_CURRENT 16000.0f
 //press the key, chassis will swing
 //底盘摇摆按键
 #define SWING_KEY KEY_PRESSED_OFFSET_CTRL
+//底盘小陀螺按键
+#define TOP_KEY KEY_PRESSED_OFFSET_F
+
+
 //chassi forward, back, left, right key
 //底盘前后左右控制按键
 #define CHASSIS_FRONT_KEY KEY_PRESSED_OFFSET_W
@@ -97,29 +100,32 @@
 #define M3508_MOTOR_RPM_TO_VECTOR 0.000415809748903494517209f
 #define CHASSIS_MOTOR_RPM_TO_VECTOR_SEN M3508_MOTOR_RPM_TO_VECTOR
 
-//single chassis motor max speed
 //单个底盘电机最大速度
 #define MAX_WHEEL_SPEED 4.0f
-//chassis forward or back max speed
 //底盘运动过程最大前进速度
-#define NORMAL_MAX_CHASSIS_SPEED_X 2.0f
-//chassis left or right max speed
+#define NORMAL_MAX_CHASSIS_SPEED_X 0.8f  //2.0
 //底盘运动过程最大平移速度
-#define NORMAL_MAX_CHASSIS_SPEED_Y 1.5f
+#define NORMAL_MAX_CHASSIS_SPEED_Y 0.8f  //1.5
 
 #define CHASSIS_WZ_SET_SCALE 0.1f
 
-//when chassis is not set to move, swing max angle
 //摇摆原地不动摇摆最大角度(rad)
-#define SWING_NO_MOVE_ANGLE 0.7f
-//when chassis is set to move, swing max angle
+#define SWING_NO_MOVE_ANGLE 0.7f  //0.7
 //摇摆过程底盘运动最大角度(rad)
 #define SWING_MOVE_ANGLE 0.31415926535897932384626433832795f
+// //自动闪避原地不动底盘摆动角度(rad)
+// #define MISS_NO_MOVE_ANGLE 0.7
+// //自动闪避(rad)
+// #define SWING_MOVE_ANGLE 0.31415926535897932384626433832795f
 
-//原地旋转小陀螺模式下Z轴转速
-#define TOP_WZ_ANGLE_STAND 2.0f
+
+
+
+
+//原地旋转小陀螺下Z轴转速
+#define TOP_WZ_ANGLE_STAND 0.2f //2.0
 //移动状态下小陀螺转速
-#define TOP_WZ_ANGLE_MOVE 0.8f
+#define TOP_WZ_ANGLE_MOVE 0.15f
 
 
 
@@ -133,7 +139,7 @@
 
 //chassis follow angle PID
 //底盘旋转跟随PID
-#define CHASSIS_FOLLOW_GIMBAL_PID_KP 40.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_KP 30.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_KD 0.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 6.0f
@@ -180,7 +186,8 @@ typedef struct
   fp32 wz_set;                      //chassis set rotation speed,positive means counterclockwise,unit rad/s.底盘设定旋转角速度，逆时针为正 单位 rad/s
   fp32 chassis_relative_angle;      //the relative angle between chassis and gimbal.底盘与云台的相对角度，单位 rad
   fp32 chassis_relative_angle_set;  //the set relative angle.设置相对云台控制角度
-  fp32 chassis_yaw_set;             
+  fp32 chassis_yaw_set; 
+              
 
   fp32 vx_max_speed;  //max forward speed, unit m/s.前进方向最大速度 单位m/s
   fp32 vx_min_speed;  //max backward speed, unit m/s.后退方向最大速度 单位m/s

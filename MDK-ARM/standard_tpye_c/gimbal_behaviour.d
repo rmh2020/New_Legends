@@ -59,4 +59,5 @@ standard_tpye_c\gimbal_behaviour.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4x
 standard_tpye_c\gimbal_behaviour.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h
 standard_tpye_c\gimbal_behaviour.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
 standard_tpye_c\gimbal_behaviour.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
+standard_tpye_c\gimbal_behaviour.o: ..\application\shoot.h
 standard_tpye_c\gimbal_behaviour.o: ..\components\algorithm\user_lib.h

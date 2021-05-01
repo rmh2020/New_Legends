@@ -63,3 +63,8 @@ standard_tpye_c\servo_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include
 standard_tpye_c\servo_task.o: ..\bsp\boards\bsp_servo_pwm.h
 standard_tpye_c\servo_task.o: ..\application\remote_control.h
 standard_tpye_c\servo_task.o: ..\bsp\boards\bsp_rc.h
+standard_tpye_c\servo_task.o: ..\application\shoot.h
+standard_tpye_c\servo_task.o: ..\application\CAN_receive.h
+standard_tpye_c\servo_task.o: ..\application\gimbal_task.h
+standard_tpye_c\servo_task.o: ..\components\controller\pid.h
+standard_tpye_c\servo_task.o: ..\components\algorithm\user_lib.h
