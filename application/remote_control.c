@@ -55,30 +55,14 @@ static void sbus_to_rc(volatile const uint8_t *sbus_buf, RC_ctrl_t *rc_ctrl);
 
 //remote control data 
 //遥控器控制变量
-RC_ctrl_t rc_ctrl;
+RC_ctrl_t rc_ctrl; 
+RC_ctrl_t last_rc_ctrl;
+
+bool_t if_get_first_data = 0;
+
 //接收原始数据，为18个字节，给了36个字节长度，防止DMA传输越界
 static uint8_t sbus_rx_buf[2][SBUS_RX_BUF_NUM];
 
-
-// /* 检测键盘按键状态 
-//    若对应按键被按下，则逻辑表达式的值为1，否则为0 */
-// #define    IF_KEY_PRESSED         (  rc_ctrl.key.v  )
-// #define    IF_KEY_PRESSED_W       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_W)    != 0 )
-// #define    IF_KEY_PRESSED_S       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_S)    != 0 )
-// #define    IF_KEY_PRESSED_A       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_A)    != 0 )
-// #define    IF_KEY_PRESSED_D       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_D)    != 0 )
-// #define    IF_KEY_PRESSED_Q       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_Q)    != 0 )
-// #define    IF_KEY_PRESSED_E       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_E)    != 0 )
-// #define    IF_KEY_PRESSED_G       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_G)    != 0 )
-// #define    IF_KEY_PRESSED_X       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_X)    != 0 )
-// #define    IF_KEY_PRESSED_Z       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_Z)    != 0 )
-// #define    IF_KEY_PRESSED_C       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_C)    != 0 )
-// #define    IF_KEY_PRESSED_B       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_B)    != 0 )
-// #define    IF_KEY_PRESSED_V       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_V)    != 0 )
-// #define    IF_KEY_PRESSED_F       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_F)    != 0 )
-// #define    IF_KEY_PRESSED_R       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_R)    != 0 )
-// #define    IF_KEY_PRESSED_CTRL    ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_CTRL) != 0 )
-// #define    IF_KEY_PRESSED_SHIFT   ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_SHIFT) != 0 )
 
 
 /**
@@ -259,12 +243,7 @@ static int16_t RC_abs(int16_t value)
         return -value;
     }
 }
-/**
-  * @brief          remote control protocol resolution
-  * @param[in]      sbus_buf: raw data point
-  * @param[out]     rc_ctrl: remote control data struct point
-  * @retval         none
-  */
+
 /**
   * @brief          遥控器协议解析
   * @param[in]      sbus_buf: 原生数据指针
@@ -278,6 +257,11 @@ static void sbus_to_rc(volatile const uint8_t *sbus_buf, RC_ctrl_t *rc_ctrl)
         return;
     }
 
+    // if (if_get_first_data != 0)
+    //     last_rc_ctrl = *rc_ctrl;             //当遥控器有输入时保留上一次数据
+    // else
+    //     if_get_first_data = 1;
+      
     rc_ctrl->rc.ch[0] = (sbus_buf[0] | (sbus_buf[1] << 8)) & 0x07ff;        //!< Channel 0
     rc_ctrl->rc.ch[1] = ((sbus_buf[1] >> 3) | (sbus_buf[2] << 5)) & 0x07ff; //!< Channel 1
     rc_ctrl->rc.ch[2] = ((sbus_buf[2] >> 6) | (sbus_buf[3] << 2) |          //!< Channel 2
@@ -298,6 +282,8 @@ static void sbus_to_rc(volatile const uint8_t *sbus_buf, RC_ctrl_t *rc_ctrl)
     rc_ctrl->rc.ch[2] -= RC_CH_VALUE_OFFSET;
     rc_ctrl->rc.ch[3] -= RC_CH_VALUE_OFFSET;
     rc_ctrl->rc.ch[4] -= RC_CH_VALUE_OFFSET;
+
+    
 }
 
 /**

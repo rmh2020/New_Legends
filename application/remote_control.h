@@ -58,6 +58,9 @@
 #define KEY_PRESSED_OFFSET_V            ((uint16_t)1 << 14)
 #define KEY_PRESSED_OFFSET_B            ((uint16_t)1 << 15)
 
+
+
+
 /* ----------------------- Data Struct ------------------------------------- */
 typedef __packed struct
 {
@@ -81,6 +84,49 @@ typedef __packed struct
 
 } RC_ctrl_t;
 
+extern RC_ctrl_t rc_ctrl;
+extern RC_ctrl_t last_rc_ctrl;
+
+
+/* 检测键盘按键状态 
+   若对应按键被按下，则逻辑表达式的值为1，否则为0 */
+#define    IF_KEY_PRESSED         (  rc_ctrl.key.v  )
+#define    IF_KEY_PRESSED_W       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_W)    != 0 )
+#define    IF_KEY_PRESSED_S       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_S)    != 0 )
+#define    IF_KEY_PRESSED_A       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_A)    != 0 )
+#define    IF_KEY_PRESSED_D       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_D)    != 0 )
+#define    IF_KEY_PRESSED_Q       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_Q)    != 0 )
+#define    IF_KEY_PRESSED_E       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_E)    != 0 )
+#define    IF_KEY_PRESSED_G       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_G)    != 0 )
+#define    IF_KEY_PRESSED_X       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_X)    != 0 )
+#define    IF_KEY_PRESSED_Z       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_Z)    != 0 )
+#define    IF_KEY_PRESSED_C       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_C)    != 0 )
+#define    IF_KEY_PRESSED_B       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_B)    != 0 )
+#define    IF_KEY_PRESSED_V       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_V)    != 0 )
+#define    IF_KEY_PRESSED_F       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_F)    != 0 )
+#define    IF_KEY_PRESSED_R       ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_R)    != 0 )
+#define    IF_KEY_PRESSED_CTRL    ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_CTRL) != 0 )
+#define    IF_KEY_PRESSED_SHIFT   ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_SHIFT) != 0 )
+
+/* 检测键盘按键状态 
+   若对应按键被按下，则逻辑表达式的值为1，否则为0 */
+#define LAST_KEY_PRESSED (last_last_rc_ctrl.key.v)
+#define    LAST_IF_KEY_PRESSED_W     ( (last_last_rc_ctrl.key.v & KEY_PRESSED_W)    != 0 )
+#define    LAST_IF_KEY_PRESSED_S       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_S)    != 0 )
+#define    LAST_IF_KEY_PRESSED_A       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_A)    != 0 )
+#define    LAST_IF_KEY_PRESSED_D       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_D)    != 0 )
+#define    LAST_IF_KEY_PRESSED_Q       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_Q)    != 0 )
+#define    LAST_IF_KEY_PRESSED_E       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_E)    != 0 )
+#define    LAST_IF_KEY_PRESSED_G       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_G)    != 0 )
+#define    LAST_IF_KEY_PRESSED_X       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_X)    != 0 )
+#define    LAST_IF_KEY_PRESSED_Z       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_Z)    != 0 )
+#define    LAST_IF_KEY_PRESSED_C       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_C)    != 0 )
+#define    LAST_IF_KEY_PRESSED_B       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_B)    != 0 )
+#define    LAST_IF_KEY_PRESSED_V       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_V)    != 0 )
+#define    LAST_IF_KEY_PRESSED_F       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_F)    != 0 )
+#define    LAST_IF_KEY_PRESSED_R       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_R)    != 0 )
+#define    LAST_IF_KEY_PRESSED_CTRL    ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_CTRL) != 0 )
+#define    LAST_IF_KEY_PRESSED_SHIFT   ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_SHIFT) != 0 )
 /* ----------------------- Internal Data ----------------------------------- */
 
 extern void remote_control_init(void);

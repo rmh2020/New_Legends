@@ -164,8 +164,8 @@ void vision_error_angle(float *yaw_angle_error, float *pitch_angle_error);
 
 
 
-bool vision_if_update();
-bool vision_if_armor(void);
+bool_t vision_if_update();
+bool_t vision_if_armor(void);
 void vision_clean_update_flag(void);
 void vision_clean_ammorflag(void);
 

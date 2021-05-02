@@ -66,6 +66,15 @@ typedef enum
                                         // 遥控器的值乘以比例成电流值 直接发送到can总线上
 } chassis_behaviour_e;
 
+//留意，这个底盘行为模式变量
+extern chassis_behaviour_e chassis_behaviour_mode ;
+extern chassis_behaviour_e last_chassis_behaviour_mode;
+
+
+//小陀螺控制数据
+
+extern bool_t top_switch; 
+
 #define CHASSIS_OPEN_RC_SCALE 10 // in CHASSIS_OPEN mode, multiply the value. 在chassis_open 模型下，遥控器乘以该比例发送到can上
 
 //小陀螺控制键盘延时

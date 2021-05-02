@@ -626,6 +626,8 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
     if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
     {
         return;
+
+        
     }
 
     static int16_t yaw_channel = 0, pitch_channel = 0;

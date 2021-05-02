@@ -228,7 +228,7 @@ uint16_t get_remain_hp()
 }
 
 //是否被击打
-bool if_hit()
+bool_t if_hit()
 {
     static uint16_t hp_detect_time = 0;    //血量检测间隔
     static uint16_t miss_shake_time = 700; //闪避摇摆时间
@@ -278,8 +278,8 @@ bool if_hit()
   * @retval RED   BLUE
   * @attention  数据打包,打包完成后通过串口发送到裁判系统
   */
-bool Color;
-bool is_red_or_blue(void)
+bool_t Color;
+bool_t is_red_or_blue(void)
 {
 	Judge_Self_ID = robot_state.robot_id;//读取当前机器人ID
 	

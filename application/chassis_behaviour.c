@@ -51,6 +51,7 @@
 #include "chassis_task.h"
 #include "arm_math.h"
 #include "referee.h"
+#include "remote_control.h"
 
 
 #include "gimbal_behaviour.h"
@@ -129,14 +130,13 @@ static void chassis_open_set_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, c
 
 
 
-
-
 //留意，这个底盘行为模式变量
 chassis_behaviour_e chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
 chassis_behaviour_e last_chassis_behaviour_mode = CHASSIS_NO_MOVE;
 
-//小陀螺接收机
-uint8_t top_flag = 0;
+//小陀螺控制数据
+fp32 top_angle = 0;
+bool_t top_switch = 0;   
 
 /**
   * @brief          通过逻辑判断，赋值"chassis_behaviour_mode"成哪种模式
@@ -325,16 +325,14 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
     chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
 
 
-    //**************************扭腰控制输入*******************************
+    /**************************扭腰控制输入*******************************/
     //摇摆角度是利用sin函数生成，swing_time 是sin函数的输入值
     static fp32 swing_time = 0.0f;
-    
     static fp32 swing_angle = 0.0f;
-    //max_angle 是sin函数的幅值
+    //是sin函数的幅值
     static fp32 max_angle = SWING_NO_MOVE_ANGLE;
-    //swing_time 在一个控制周期内，加上 add_time
+    //在一个控制周期内，加上 add_time
     static fp32 const add_time = 2 * PI * 0.5f * configTICK_RATE_HZ / CHASSIS_CONTROL_TIME_MS;
-    
     static uint8_t swing_flag = 0;
 
     //判断是否要摇摆  当键盘长按ctrl或者装甲板受到伤害
@@ -379,34 +377,18 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
 
 
    
-    //**************************小陀螺控制输入*******************************
-    static fp32 top_angle = 0;
-    static uint16_t key_top_delay_time = 0;
-
-
-
-
-    //开启小陀螺
-    if((chassis_move_rc_to_vector->chassis_RC->key.v & TOP_KEY) && top_flag == 0)
+    /**************************小陀螺控制输入********************************/
+    if(IF_KEY_PRESSED_F && !LAST_IF_KEY_PRESSED_F && top_switch == 0 )  //开启小陀螺
     {
-        if(key_top_delay_time++ > KEY_TOP_LONG_TIME)
-        {
-            top_flag = 1;
-            key_top_delay_time = 0;      
-        }
-    }   
-    //关闭小陀螺
-    if((chassis_move_rc_to_vector->chassis_RC->key.v & TOP_KEY) && top_flag == 1)
+        top_switch = 1;
+    }
+    else if(IF_KEY_PRESSED_F && !LAST_IF_KEY_PRESSED_F && top_switch == 1 ) //关闭小陀螺
     {
-        if(key_top_delay_time++ > KEY_TOP_LONG_TIME)
-        {   
-            top_flag = 0;
-            key_top_delay_time = 0;
-        }
-    }   
+        top_switch = 0;
+    }
 
-
-    if(top_flag == 1)
+    
+    if(top_switch == 1)
     {
         if((fabs(*vx_set)<0.001)&&(fabs(*vy_set)<0.001)) 
         top_angle = TOP_WZ_ANGLE_STAND;
@@ -415,6 +397,13 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
     }
     else
         top_angle = 0;
+
+
+
+    /****************************45度角对敌*********************************************/
+    static fp32 pisa_angle = 0;
+    static uint16_t pisa_top_delay_time = 0;
+
 
     *angle_set = swing_angle + top_angle;
 }

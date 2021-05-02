@@ -106,6 +106,8 @@ uint32_t chassis_high_water;
 chassis_move_t chassis_move;
 
 extern uint8_t top_flag;
+extern bool_t top_switch;
+
 extern chassis_behaviour_e chassis_behaviour_mode;
 extern chassis_behaviour_e last_chassis_behaviour_mode;
 
@@ -159,6 +161,8 @@ void chassis_task(void const *pvParameters)
                                 chassis_move.motor_chassis[2].give_current, chassis_move.motor_chassis[3].give_current);
             }
         }
+        //保留上一次遥控器数据
+        last_rc_ctrl = rc_ctrl;
         //系统延时
         vTaskDelay(CHASSIS_CONTROL_TIME_MS);
 
@@ -420,7 +424,7 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
         chassis_move_control->chassis_relative_angle_set = rad_format(angle_set);
 
         //计算旋转PID角速度 如果是小陀螺,固定转速
-        if(top_flag == 1)
+        if(top_switch == 1)
             chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, 0, chassis_move_control->chassis_relative_angle_set);
         else
             chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, chassis_move_control->chassis_relative_angle, chassis_move_control->chassis_relative_angle_set);

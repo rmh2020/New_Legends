@@ -54,3 +54,5 @@
 *.scvd
 *.iex
 *.ini
+
+*.[oa]

@@ -11,6 +11,7 @@
         "gimbal_behaviour.h": "c",
         "ui_task.h": "c",
         "main.h": "c",
-        "arm_math.h": "c"
+        "arm_math.h": "c",
+        "remote_control.h": "c"
     }
 }

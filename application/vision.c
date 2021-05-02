@@ -176,7 +176,7 @@ void vision_error_angle(float *yaw_angle_error, float *pitch_angle_error)
   * @retval TRUE更新了   FALSE没更新
   * @attention  为自瞄做准备,串口空闲中断每触发一次且通过校验,则Vision_Get_New_Data置TRUE
   */
-bool vision_if_update(void)
+bool_t vision_if_update(void)
 {
 	return Vision_Get_New_Data;
 }
@@ -198,7 +198,7 @@ void vision_clean_update_flag(void)
   * @retval TRUE换了   FALSE没换
   * @attention  为自动打符做准备,串口空闲中断每触发一次且通过校验,则Vision_Armor置TRUE
   */
-bool vision_if_armor(void)
+bool_t vision_if_armor(void)
 {
 	return Vision_Armor;
 }
