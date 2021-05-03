@@ -22,7 +22,6 @@
 #include "CAN_receive.h"
 #include "gimbal_task.h"
 #include "pid.h"
-#include "remote_control.h"
 #include "user_lib.h"
 
 //in the beginning of task ,wait a time
@@ -113,11 +112,6 @@
 #define SWING_NO_MOVE_ANGLE 0.7f  //0.7
 //摇摆过程底盘运动最大角度(rad)
 #define SWING_MOVE_ANGLE 0.31415926535897932384626433832795f
-// //自动闪避原地不动底盘摆动角度(rad)
-// #define MISS_NO_MOVE_ANGLE 0.7
-// //自动闪避(rad)
-// #define SWING_MOVE_ANGLE 0.31415926535897932384626433832795f
-
 
 
 
@@ -199,6 +193,8 @@ typedef struct
 
 } chassis_move_t;
 
+//底盘运动数据
+extern chassis_move_t chassis_move;
 /**
   * @brief          chassis task, osDelay CHASSIS_CONTROL_TIME_MS (2ms) 
   * @param[in]      pvParameters: null

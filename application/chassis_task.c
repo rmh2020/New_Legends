@@ -27,7 +27,9 @@
 #include "CAN_receive.h"
 #include "detect_task.h"
 #include "INS_task.h"
-#include "chassis_power_control.h"
+#include "referee_control.h"
+
+
 
 #define rc_deadband_limit(input, output, dealine)        \
     {                                                    \
@@ -105,11 +107,8 @@ uint32_t chassis_high_water;
 //底盘运动数据
 chassis_move_t chassis_move;
 
-extern uint8_t top_flag;
-extern bool_t top_switch;
 
-extern chassis_behaviour_e chassis_behaviour_mode;
-extern chassis_behaviour_e last_chassis_behaviour_mode;
+
 
 
 /**
@@ -408,6 +407,7 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
     chassis_behaviour_control_set(&vx_set, &vy_set, &angle_set, chassis_move_control);
 
 
+		
     //跟随云台模式
     if (chassis_move_control->chassis_mode == CHASSIS_VECTOR_FOLLOW_GIMBAL_YAW)
     {
@@ -426,6 +426,10 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
         //计算旋转PID角速度 如果是小陀螺,固定转速
         if(top_switch == 1)
             chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, 0, chassis_move_control->chassis_relative_angle_set);
+        else if(pisa_switch == PISA_LEFT)
+             chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, chassis_move_control->chassis_relative_angle-PI/4, chassis_move_control->chassis_relative_angle_set);
+        else if(pisa_switch == PISA_RIGHT)
+             chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, chassis_move_control->chassis_relative_angle+PI/4, chassis_move_control->chassis_relative_angle_set);
         else
             chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, chassis_move_control->chassis_relative_angle, chassis_move_control->chassis_relative_angle_set);
 

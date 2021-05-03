@@ -118,8 +118,6 @@ typedef __packed struct       //17 Byte
 //STM32发送,直接将打包好的数据一个字节一个字节地发送出去
 typedef struct
 {
-
-	
 	/* 数据 */
 	float     pitch_angle;     //当前角度
 	float     yaw_angle;       //当前角度                                              (机械?陀螺仪?)�)???????????

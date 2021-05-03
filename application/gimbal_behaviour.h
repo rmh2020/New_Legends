@@ -66,6 +66,11 @@ typedef enum
 } gimbal_behaviour_e;
 
 
+//云台行为状态机
+extern gimbal_behaviour_e gimbal_behaviour;
+extern gimbal_behaviour_e last_gimbal_behaviour;
+
+
 /**
   * @brief          被gimbal_set_mode函数调用在gimbal_task.c,云台行为状态机以及电机状态机设置
   * @param[out]     gimbal_mode_set: 云台数据指针

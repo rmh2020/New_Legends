@@ -27,90 +27,11 @@ Project File Date:  05/01/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-compiling calibrate_task.c...
-compiling freertos.c...
-../Src/freertos.c(189): warning:  #144-D: a value of type "void (*)(void *)" cannot be used to initialize an entity of type "os_pthread"
-      
-sThreadDef(UI, ui_task, osPriorityNormal, 0, 512);
-../Src/freertos.c: 1 warning, 0 errors
-compiling chassis_power_control.c...
-compiling main.c...
-..\application\vision.h(167): warning:  #1295-D: Deprecated declaration vision_if_update - give arg types
-  bool_t vision_if_update();
-..\application\vision.h(172): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Src/main.c(151): warning:  #223-D: function "vision_init" declared implicitly
-      vision_init();
-../Src/main.c: 3 warnings, 0 errors
-compiling gimbal_behaviour.c...
-..\application\vision.h(167): warning:  #1295-D: Deprecated declaration vision_if_update - give arg types
-  bool_t vision_if_update();
-..\application\vision.h(172): warning:  #1-D: last line of file ends without a newline
-  #endif
-..\application\gimbal_behaviour.c: 2 warnings, 0 errors
-compiling chassis_behaviour.c...
-..\application\chassis_behaviour.c(444): warning:  #177-D: variable "pisa_angle"  was declared but never referenced
-      static fp32 pisa_angle = 0;
-..\application\chassis_behaviour.c(445): warning:  #177-D: variable "pisa_top_delay_time"  was declared but never referenced
-      static uint16_t pisa_top_delay_time = 0;
-..\application\chassis_behaviour.c(140): warning:  #177-D: variable "key_top_delay_time"  was declared but never referenced
-  static uint16_t key_top_delay_time = 0;
-..\application\chassis_behaviour.c: 3 warnings, 0 errors
-compiling chassis_task.c...
-compiling gimbal_task.c...
-..\application\gimbal_task.c(518): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-      init->gimbal_pitch_motor.max_relative_angle = 
-AX_PITCH;
-..\application\gimbal_task.c(222): warning:  #177-D: variable "shoot_can_set_current"  was declared but never referenced
-  static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
-..\application\gimbal_task.c: 2 warnings, 0 errors
-compiling remote_control.c...
-compiling vision.c...
-..\application\vision.h(167): warning:  #1295-D: Deprecated declaration vision_if_update - give arg types
-  bool_t vision_if_update();
-..\application\vision.h(172): warning:  #1-D: last line of file ends without a newline
-  #endif
-..\application\vision.c(43): warning:  #223-D: function "usart1_init" declared implicitly
-      usart1_init(Vision_Buffer[0], Vision_Buffer[1], VISION_BUFFER_LEN);
-..\application\vision.c(62): warning:  #223-D: function "get_CRC8_check_sum" declared implicitly
-  		if(get_CRC8_check_sum( ReadFormUart, VISION_LEN_HEADER ) == TRUE)
-..\application\vision.c(65): warning:  #223-D: function "get_CRC16_check_sum" declared implicitly
-  			if(get_CRC16_check_sum( ReadFormUart, VISION_LEN_PACKED ) == TRUE)
-..\application\vision.c(68): warning:  #223-D: function "memcpy" declared implicitly
-  				memcpy( &VisionRecvData, ReadFormUart, VISION_LEN_PACKED);	
-..\application\vision.c(72): warning:  #223-D: function "xTaskGetTickCount" declared implicitly
-  				Vision_Time_Test[
-OW] = xTaskGetTickCount();
-..\application\vision.c(109): warning:  #223-D: function "memcpy" declared implicitly
-  	memcpy( vision_send_pack, &VisionSendHeader, VISION_LEN_HEADER );
-..\application\vision.c(112): warning:  #223-D: function "append_CRC8_check_sum" declared implicitly
-  	append_CRC8_check_sum( vision_send_pack, VISION_LEN_HEADER );
-..\application\vision.c(142): warning:  #223-D: function "append_CRC16_check_sum" declared implicitly
-  	append_CRC16_check_sum( vision_send_pack, VISION_LEN_PACKED );
-..\application\vision.c(150): warning:  #223-D: function "memset" declared implicitly
-  	memset(vision_send_pack, 0, 50);
-..\application\vision.c(103): warning:  #177-D: variable "i"  was declared but never referenced
-  	int i;    //循环发送次�?
-..\application\vision.c(240): warning:  #223-D: function "memset" declared implicitly
-              memset(Vision_Buffer[0], 0, 200);    
-..\application\vision.c(252): warning:  #223-D: function "memset" declared implicitly
-  			memset(Vision_Buffer[1], 0, 200);    //对象   内容  长度
-..\application\vision.c(229): warning:  #550-D: variable "this_time_rx_len"  was set but never used
-          static uint16_t this_time_rx_len = 0;
-..\application\vision.c(256): warning:  #1-D: last line of file ends without a newline
-  }
-..\application\vision.c: 16 warnings, 0 errors
 compiling servo_task.c...
-compiling shoot.c...
-..\application\shoot.c(286): warning:  #223-D: function "abs" declared implicitly
-      if(shoot_control.shoot_mode == SHOOT_READY_FRIC && abs(shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[RIGHT].require_speed))
-..\application\shoot.c(340): warning:  #223-D: function "get_shooter_heat0_cooling_limit_and_heat0" declared implicitly
-      get_shooter_heat0_cooling_limit_and_heat0(&shoot_control.heat_limit, &shoot_control.heat);
-..\application\shoot.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=113896 RO-data=14724 RW-data=1364 ZI-data=59236  
+Program Size: Code=113792 RO-data=14724 RW-data=1380 ZI-data=59236  
 FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 29 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -128,7 +49,7 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:05
+Build Time Elapsed:  00:00:04
 </pre>
 </body>
 </html>

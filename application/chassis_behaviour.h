@@ -71,14 +71,20 @@ extern chassis_behaviour_e chassis_behaviour_mode ;
 extern chassis_behaviour_e last_chassis_behaviour_mode;
 
 
-//小陀螺控制数据
-
+//小陀螺动作开关
 extern bool_t top_switch; 
+//45度角对敌动作开关
+extern bool_t pisa_switch;  
+
+#define PISA_CLOSE 0
+#define PISA_LEFT 1
+#define PISA_RIGHT 2
+
 
 #define CHASSIS_OPEN_RC_SCALE 10 // in CHASSIS_OPEN mode, multiply the value. 在chassis_open 模型下，遥控器乘以该比例发送到can上
 
-//小陀螺控制键盘延时
-#define KEY_TOP_LONG_TIME 200
+
+
 
 
 

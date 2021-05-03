@@ -156,7 +156,7 @@ static fp32 INS_gyro[3] = {0.0f, 0.0f, 0.0f};
 static fp32 INS_accel[3] = {0.0f, 0.0f, 0.0f};
 static fp32 INS_mag[3] = {0.0f, 0.0f, 0.0f};
 static fp32 INS_quat[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-fp32 INS_angle[3] = {0.0f, 0.0f, 0.0f};      //euler angle, unit rad.欧拉角 单位 rad
+fp32 INS_angle[3] = {0.0f, 0.0f, 0.0f};      //euler angle, unit rad.欧拉角 单位 rad yaw pitch roll
 
 
 
@@ -288,16 +288,6 @@ void INS_task(void const *pvParameters)
 
 
 
-/**
-  * @brief          rotate the gyro, accel and mag, and calculate the zero drift, because sensors have 
-  *                 different install derection.
-  * @param[out]     gyro: after plus zero drift and rotate
-  * @param[out]     accel: after plus zero drift and rotate
-  * @param[out]     mag: after plus zero drift and rotate
-  * @param[in]      bmi088: gyro and accel data
-  * @param[in]      ist8310: mag data
-  * @retval         none
-  */
 /**
   * @brief          旋转陀螺仪,加速度计和磁力计,并计算零漂,因为设备有不同安装方式
   * @param[out]     gyro: 加上零漂和旋转

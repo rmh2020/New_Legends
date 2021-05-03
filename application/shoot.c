@@ -31,6 +31,7 @@
 #include "gimbal_behaviour.h"
 #include "detect_task.h"
 #include "pid.h"
+#include "referee_control.h"
 
 #define shoot_fric1_on(pwm) fric1_on((pwm)) //摩擦轮1pwm宏定义
 #define shoot_fric2_on(pwm) fric2_on((pwm)) //摩擦轮2pwm宏定义
@@ -41,17 +42,7 @@
 //微动开关IO
 #define BUTTEN_TRIG_PIN HAL_GPIO_ReadPin(BUTTON_TRIG_GPIO_Port, BUTTON_TRIG_Pin)
 
-//通过读取裁判数据,直接修改射速和射频等级
-//射速等级  摩擦电机
-fp32 shoot_fric_grade[3] = {1000, 2000, 4000};
 
-//射频等级 拨弹电机
-fp32 shoot_grigger_grade[3] = {10.0f, 15.0f, 20.0f};
-
-//当前射速等级
-
-
-//当前射频等级
 
 
 /**
@@ -84,6 +75,8 @@ static void shoot_bullet_control(void);
 
 
 shoot_control_t shoot_control;          //射击数据
+
+
 
 
 /**
@@ -216,6 +209,9 @@ void shoot_control_loop(void)
     }
     else
     {
+        //17mm发射机构射速和热量控制
+        //shoot_heat0_speed_and_cooling_control(&shoot_control);
+
         shoot_laser_on(); //激光开启
         //计算拨弹轮电机PID
         PID_calc(&shoot_control.trigger_motor_pid, shoot_control.speed, shoot_control.speed_set);
@@ -225,8 +221,8 @@ void shoot_control_loop(void)
             shoot_control.given_current = 0;
         }
 
-        shoot_control.fric_motor[LEFT].speed_set = shoot_fric_grade[0];
-        shoot_control.fric_motor[RIGHT].speed_set = -shoot_fric_grade[0];
+        shoot_control.fric_motor[LEFT].speed_set = shoot_fric_grade[1];
+        shoot_control.fric_motor[RIGHT].speed_set = -shoot_fric_grade[1];
 
     }
 
@@ -249,7 +245,6 @@ void shoot_control_loop(void)
 static void shoot_set_mode(void)
 {
     static int8_t last_s = RC_SW_UP;
-    static uint16_t key_fric_long_time = 0; //摩擦轮按键延时,也为了防止键盘检测过快,开启后自动关闭摩擦轮
 
     //上拨判断， 一次开启，再次关闭
     if ((switch_is_up(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_up(last_s) && shoot_control.shoot_mode == SHOOT_STOP))
@@ -264,28 +259,20 @@ static void shoot_set_mode(void)
 
 
     //处于中档， 可以使用键盘开启摩擦轮
-    if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && (shoot_control.shoot_rc->key.v & SHOOT_KEYBOARD) && shoot_control.fric_status == FALSE && shoot_control.shoot_mode == SHOOT_STOP)
-    {
-        if (key_fric_long_time++ > KEY_FRIC_LONG_TIME)
-        {
-            key_fric_long_time = 0;
-            shoot_control.shoot_mode = SHOOT_READY_FRIC;
-        }
+    if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && IF_KEY_SINGAL_PRESSED_G && shoot_control.fric_status == FALSE && shoot_control.shoot_mode == SHOOT_STOP)
+    { 
+        shoot_control.shoot_mode = SHOOT_READY_FRIC; 
     }
     //处于中档， 可以使用键盘关闭摩擦轮
-    else if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && (shoot_control.shoot_rc->key.v & SHOOT_KEYBOARD) && shoot_control.fric_status == TRUE && shoot_control.shoot_mode != SHOOT_STOP)
+    else if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && IF_KEY_SINGAL_PRESSED_G && shoot_control.fric_status == TRUE && shoot_control.shoot_mode != SHOOT_STOP)
     {
-        if (key_fric_long_time++ > KEY_FRIC_LONG_TIME)
-        {
-            key_fric_long_time = 0;
-            shoot_control.shoot_mode = SHOOT_STOP;
-        }
+        shoot_control.shoot_mode = SHOOT_STOP;      
     }
 
-    //摩擦轮速度达到一定值,才可开启拨盘  为了便于测试,这里只需要一个摩擦轮电机达到拨盘启动要求就可以开启拨盘
-    if(shoot_control.shoot_mode == SHOOT_READY_FRIC && abs(shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[RIGHT].require_speed))
+    //摩擦轮速度达到一定值,才可开启拨盘  为了便于测试,这里至少需要一个摩擦轮电机达到拨盘启动要求就可以开启拨盘
+    if(shoot_control.shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed) || abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed)))
     {
-        shoot_control.fric_status = TRUE;
+        shoot_control.fric_status = TRUE;     
         shoot_control.shoot_mode = SHOOT_READY_BULLET;
     }
     else if(shoot_control.shoot_mode == SHOOT_READY_BULLET && shoot_control.key == SWITCH_TRIGGER_ON)

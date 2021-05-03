@@ -205,6 +205,11 @@ void get_shooter_heat0_speed_limit_and_heat0(uint16_t *heat0_limit, uint16_t *he
     *heat0 = shoot_data_t.bullet_speed;
 }
 
+//17mm枪口热量冷却
+void get_shooter_heat0_speed_limit_rate(uint16_t *heat0_cooling_rate)
+{   
+    *heat0_cooling_rate = robot_state.shooter_heat0_cooling_rate;
+}
 
 //42mm枪口热量上限, 42mm枪口实时热量
 void get_shooter_heat1_cooling_limit_and_heat1(uint16_t *heat1_limit, uint16_t *heat1)
@@ -219,6 +224,15 @@ void get_shooter_heat1_speed_limit_and_heat1(uint16_t *heat1_limit, uint16_t *he
     *heat1_limit = robot_state.shooter_heat1_speed_limit;
     *heat1 = shoot_data_t.bullet_speed;
 }
+
+
+//42mm枪口热量冷却
+void get_shooter_heat1_speed_limit_rate(uint16_t *heat1_cooling_rate)
+{   
+    *heat1_cooling_rate = robot_state.shooter_heat1_cooling_rate;
+}
+
+
 
 //当前血量
 uint16_t get_remain_hp()

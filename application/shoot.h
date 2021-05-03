@@ -21,7 +21,6 @@
 
 #include "CAN_receive.h"
 #include "gimbal_task.h"
-#include "remote_control.h"
 #include "user_lib.h"
 
 
@@ -109,6 +108,8 @@
 #define LEFT 0
 #define RIGHT 1
 
+
+
 typedef enum
 {
     SHOOT_STOP = 0,    //停止发射结构
@@ -178,6 +179,11 @@ typedef struct
     uint16_t heat_limit;
     uint16_t heat;
 } shoot_control_t;
+
+
+extern shoot_control_t shoot_control;          //射击数据
+
+
 
 //由于射击和云台使用同一个can的id故也射击任务在云台任务中执行
 extern void shoot_init(void);

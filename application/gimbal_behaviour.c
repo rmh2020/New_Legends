@@ -58,6 +58,7 @@
 #include "detect_task.h"
 #include "vision.h"
 #include "shoot.h"
+#include "remote_control.h"
 
 #include "user_lib.h"
 
@@ -249,7 +250,6 @@ static void gimbal_auto_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal
 gimbal_behaviour_e gimbal_behaviour = GIMBAL_ZERO_FORCE;
 gimbal_behaviour_e last_gimbal_behaviour = GIMBAL_ZERO_FORCE;
 
-extern shoot_control_t shoot_control;          //射击数据
 
 
 /**
@@ -644,34 +644,34 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
         static uint8_t gimbal_turn_flag = 0;  
         static fp32 gimbal_end_angle = 0.0f;
 
-        //按下 Q云台左转90度, E云台右转90度, V云台向后转180度.
-        if ((gimbal_control_set->gimbal_rc_ctrl->key.v & TURN_L_90_KEYBOARD) && !(last_turn_keyboard & TURN_L_90_KEYBOARD))
-        {
-            if (gimbal_turn_flag == 0)
-            {
-                gimbal_turn_flag = 1;
-                //保存掉头的目标值
-                gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI/2);
-            }
-        }
-        else if ((gimbal_control_set->gimbal_rc_ctrl->key.v & TURN_R_90_KEYBOARD) && !(last_turn_keyboard & TURN_R_90_KEYBOARD))
-        {
-            if (gimbal_turn_flag == 0)
-            {
-                gimbal_turn_flag = 1;
-                //保存掉头的目标值
-                gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle - PI/2);
-            }
-        }
-        else if ((gimbal_control_set->gimbal_rc_ctrl->key.v & TURN_180_KEYBOARD) && !(last_turn_keyboard & TURN_180_KEYBOARD))
-        {
-            if (gimbal_turn_flag == 0)
-            {
-                gimbal_turn_flag = 1;
-                //保存掉头的目标值
-                gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
-            }
-        }
+        // //按下 Q云台左转90度, E云台右转90度, V云台向后转180度.
+        // if (IF_KEY_SINGAL_PRESSED_Q)
+        // {
+        //     if (gimbal_turn_flag == 0)
+        //     {
+        //         gimbal_turn_flag = 1;
+        //         //保存掉头的目标值
+        //         gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI/2);
+        //     }
+        // }
+        // else if (IF_KEY_SINGAL_PRESSED_E)
+        // {
+        //     if (gimbal_turn_flag == 0)
+        //     {
+        //         gimbal_turn_flag = 1;
+        //         //保存掉头的目标值
+        //         gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle - PI/2);
+        //     }
+        // }
+        // else if (IF_KEY_SINGAL_PRESSED_V)
+        // {
+        //     if (gimbal_turn_flag == 0)
+        //     {
+        //         gimbal_turn_flag = 1;
+        //         //保存掉头的目标值
+        //         gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
+        //     }
+        // }
         
 
 

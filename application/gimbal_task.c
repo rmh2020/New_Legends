@@ -214,7 +214,6 @@ static void J_scope_gimbal_test(void);
 //云台控制所有相关数据
 gimbal_control_t gimbal_control;
 
-extern shoot_control_t shoot_control;          //射击数据
 
 
 //motor current 
@@ -561,10 +560,7 @@ static void gimbal_init(gimbal_control_t *init)
     init->gimbal_pitch_motor.relative_angle_set = init->gimbal_pitch_motor.relative_angle;
     init->gimbal_pitch_motor.motor_gyro_set = init->gimbal_pitch_motor.motor_gyro;
 
-    // //斜坡函数，使云台平稳移动至中央
-    // RAMP_float(init->gimbal_pitch_motor.mid_relative_angle, init->gimbal_pitch_motor.relative_angle, GIMBAL_ACCEL_PITCH_NUM);
-    // RAMP_float(init->gimbal_yaw_motor.mid_relative_angle, init->gimbal_yaw_motor.relative_angle, GIMBAL_ACCEL_YAW_NUM);
-
+ 
 
 }
 
@@ -850,8 +846,11 @@ static void gimbal_motor_absolute_angle_control(gimbal_motor_t *gimbal_motor)
     {
         return;
     }
+
+
     //角度环，速度环串级pid调试
     gimbal_motor->motor_gyro_set = gimbal_PID_calc(&gimbal_motor->gimbal_motor_absolute_angle_pid, gimbal_motor->absolute_angle, gimbal_motor->absolute_angle_set, gimbal_motor->motor_gyro/100);
+    //gimbal_motor->motor_gyro_set = gimbal_PID_calc(&gimbal_motor->gimbal_motor_absolute_angle_pid, gimbal_motor->absolute_angle, gimbal_motor->absolute_angle_set, 0);
     gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_gyro_pid, gimbal_motor->motor_gyro, gimbal_motor->motor_gyro_set);
     //控制值赋值
     gimbal_motor->given_current = (int16_t)(gimbal_motor->current_set);
@@ -871,6 +870,7 @@ static void gimbal_motor_relative_angle_control(gimbal_motor_t *gimbal_motor)
 
     //角度环，速度环串级pid调试
     gimbal_motor->motor_gyro_set = gimbal_PID_calc(&gimbal_motor->gimbal_motor_relative_angle_pid, gimbal_motor->relative_angle, gimbal_motor->relative_angle_set, gimbal_motor->motor_gyro/100);
+    //gimbal_motor->motor_gyro_set = gimbal_PID_calc(&gimbal_motor->gimbal_motor_relative_angle_pid, gimbal_motor->relative_angle, gimbal_motor->relative_angle_set, 0);
     gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_gyro_pid, gimbal_motor->motor_gyro, gimbal_motor->motor_gyro_set);
     //控制值赋值
     gimbal_motor->given_current = (int16_t)(gimbal_motor->current_set);

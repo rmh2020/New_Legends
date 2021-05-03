@@ -1,6 +1,6 @@
 /**
   ****************************(C) COPYRIGHT 2019 DJI****************************
-  * @file       chassis_power_control.c/h
+  * @file       referee_control.c/h
   * @brief      chassis power control.底盘功率控制
   * @note       this is only controling 80 w power, mainly limit motor current set.
   *             if power limit is 40w, reduce the value JUDGE_TOTAL_CURRENT_LIMIT 
@@ -19,10 +19,13 @@
   @endverbatim
   ****************************(C) COPYRIGHT 2019 DJI****************************
   */
-#include "chassis_power_control.h"
+#include "referee_control.h"
 #include "referee.h"
 #include "arm_math.h"
 #include "detect_task.h"
+
+
+
 
 #define POWER_LIMIT         80.0f
 #define WARNING_POWER       40.0f   
@@ -31,6 +34,29 @@
 #define NO_JUDGE_TOTAL_CURRENT_LIMIT    64000.0f    //16000 * 4, 
 #define BUFFER_TOTAL_CURRENT_LIMIT      16000.0f
 #define POWER_TOTAL_CURRENT_LIMIT       20000.0f
+
+
+
+/*
+17mm射速上限 15 18 30 m/s
+17mm热量上限 50 100 150 280 400
+17mm热量冷却 10 20 30 40 60 80
+一发17mm 10热量
+
+42mm射速上限 10 16 m/s
+42mm热量上限 100 200 300 350 500
+42mm热量冷却 20 40 60 80 100 120
+一发42mm 100热量
+*/
+
+
+//通过读取裁判数据,直接修改射速和射频等级
+//射速等级  摩擦电机
+fp32 shoot_fric_grade[4] = {0, 1000, 2000, 4000};
+
+//射频等级 拨弹电机
+fp32 shoot_grigger_grade[6] = {0, 5.0f, 10.0f, 15.0f, 28.0f, 40.0f};
+
 
 
 /**
@@ -70,7 +96,6 @@ void chassis_power_control(chassis_move_t *chassis_power_control)
                 //only left 10% of WARNING_POWER_BUFF
                 power_scale = 5.0f / WARNING_POWER_BUFF;
             }
-            //scale down
             //缩小
             total_current_limit = BUFFER_TOTAL_CURRENT_LIMIT * power_scale;
         }
@@ -121,4 +146,81 @@ void chassis_power_control(chassis_move_t *chassis_power_control)
         chassis_power_control->motor_speed_pid[2].out*=current_scale;
         chassis_power_control->motor_speed_pid[3].out*=current_scale;
     }
+}
+
+
+
+/**
+  * @brief          限制17mm发射机构射速和射频，主要限制电机电流
+  * @param[in]      shoot_heat0_speed_and_cooling_control: 发送机构数据
+  * @retval         none
+  */
+ void shoot_heat0_speed_and_cooling_control(shoot_control_t *shoot_heat0_speed_and_cooling_control)
+{
+    //17mm枪口热量上限, 17mm枪口实时热量
+    uint16_t heat0_cooling_limit;
+    uint16_t heat0;
+    //17mm枪口枪口射速上限,17mm实时射速
+    uint16_t heat0_speed_limit; 
+    uint16_t bullet_speed;
+    //拨盘等级 摩擦轮等级
+    uint8_t grigger_speed_grade;
+    uint8_t fric_speed_grade;
+
+
+
+    if(toe_is_error(REFEREE_TOE))
+    {
+        grigger_speed_grade = 0;
+        fric_speed_grade = 0;
+    }
+    else
+    {
+        get_shooter_heat0_cooling_limit_and_heat0(&heat0_cooling_limit,&heat0);   //获取17mm枪口热量上限, 17mm枪口实时热量
+        get_shooter_heat0_speed_limit_and_heat0(&heat0_speed_limit, &bullet_speed); // 获取17mm枪口枪口射速上限,17mm实时射速
+
+        //根据热量和射速上限修改等级
+        //热量
+        if(heat0_cooling_limit == 50)
+            grigger_speed_grade = 1;
+        else if(heat0_cooling_limit == 100)
+            grigger_speed_grade = 2;
+        else if(heat0_cooling_limit == 150)
+            grigger_speed_grade = 3;
+        else if(heat0_cooling_limit == 280)
+            grigger_speed_grade = 4;
+        else if(heat0_cooling_limit == 400)
+            grigger_speed_grade = 5;
+
+        //射速
+        if(heat0_speed_limit == 15)
+            fric_speed_grade = 1;
+        else if(heat0_speed_limit == 18)
+            fric_speed_grade = 2;
+        else if(heat0_speed_limit == 30)
+            fric_speed_grade = 3;
+
+
+        //当调试射速和射频等级数组时可以暂时注释
+        //根据当前热量和射速修改等级,确保不会因超限扣血,
+        //热量 当剩余热量低于30,强制降低拨盘转速 低于0,强制制动
+        if(heat0_cooling_limit - heat0 <= 30)
+            grigger_speed_grade -- ;
+        else if(heat0_speed_limit <= 0)
+            grigger_speed_grade = 0;
+        
+        //射速 超射速,强制降低摩擦轮转速
+        if(bullet_speed < heat0_speed_limit)
+            fric_speed_grade -- ;
+
+    }
+
+
+    //对摩擦轮电机输入控制值
+    shoot_heat0_speed_and_cooling_control->fric_motor[LEFT].speed_set = shoot_fric_grade[fric_speed_grade];
+    shoot_heat0_speed_and_cooling_control->fric_motor[RIGHT].speed_set = shoot_fric_grade[fric_speed_grade];
+    //对拨盘电机输入控制值
+    shoot_heat0_speed_and_cooling_control->speed_set = shoot_grigger_grade[grigger_speed_grade];
+
+
 }

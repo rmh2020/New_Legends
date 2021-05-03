@@ -12,6 +12,12 @@
         "ui_task.h": "c",
         "main.h": "c",
         "arm_math.h": "c",
-        "remote_control.h": "c"
+        "remote_control.h": "c",
+        "chassis_power_control.h": "c",
+        "calibrate_task.h": "c",
+        "referee_control.h": "c",
+        "shoot.h": "c",
+        "detect_task.h": "c",
+        "servo_task.h": "c"
     }
 }

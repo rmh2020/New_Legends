@@ -22,6 +22,8 @@
 #include "remote_control.h"
 #include "shoot.h"
 
+
+
 #define SERVO_MIN_PWM   500
 #define SERVO_MAX_PWM   2500
 
@@ -31,10 +33,6 @@
 #define SERVO_MAGAZINE_KEY KEY_PRESSED_OFFSET_R
 
 
-const RC_ctrl_t *servo_rc;
-extern shoot_control_t shoot_control;          //射击数据
-
-
 //0号舵机为弹仓舵机 1号舵机为限位舵机
 //舵机运动初始位置
 const uint16_t servo_open_pwm[4] = {SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM};
@@ -42,7 +40,8 @@ const uint16_t servo_open_pwm[4] = {SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM,
 const uint16_t servo_close_pwm[4] = {SERVO_MAX_PWM, SERVO_MAX_PWM, SERVO_MAX_PWM, SERVO_MAX_PWM};
 //舵机发送的控制值
 uint16_t servo_pwm[4] = {SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM};
-
+//弹仓按键计算 保证双击情况下打开弹仓
+uint8_t magazine_key_num = 0;
 
 /**
   * @brief          舵机任务
@@ -51,22 +50,26 @@ uint16_t servo_pwm[4] = {SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_
   */
 void servo_task(void const * argument)
 {
-    servo_rc = get_remote_control_point();
-
     while(1)
-    {
+    {       
+    
+        // if(IF_KEY_SINGAL_PRESSED_R)
+        //     magazine_key_num++;
+
         //按下R键 打开或弹仓
-        if((servo_rc->key.v & SERVO_MAGAZINE_KEY) && shoot_control.magazine_status == FALSE)
+        if(IF_KEY_SINGAL_PRESSED_R && shoot_control.magazine_status == FALSE)
         {
             //打开弹仓
             servo_pwm[0] = servo_open_pwm[0];
             shoot_control.magazine_status = TRUE;
+            magazine_key_num = 0;
         }
-        else if((servo_rc->key.v & SERVO_MAGAZINE_KEY) && shoot_control.magazine_status == TRUE)
+        else if(IF_KEY_SINGAL_PRESSED_R && shoot_control.magazine_status == TRUE)
         {
             //关闭弹仓
             servo_pwm[0] = servo_close_pwm[0];
             shoot_control.magazine_status = FALSE;
+            magazine_key_num = 0;
         }
 
         
@@ -76,6 +79,7 @@ void servo_task(void const * argument)
             //当拨盘电机开始旋转时 限位开关打开
             servo_pwm[1] = servo_open_pwm[1];
             shoot_control.limit_switch_status = TRUE;
+
         }
         else if((shoot_control.speed_set == 0) && shoot_control.limit_switch_status == TRUE)
         {
@@ -84,6 +88,7 @@ void servo_task(void const * argument)
             shoot_control.limit_switch_status = FALSE;
         }
             
+
         for(uint8_t i = 0; i < 4; i++)
         {
            //限制pwm

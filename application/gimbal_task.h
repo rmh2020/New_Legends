@@ -110,7 +110,7 @@
 //云台测试模式 宏定义 0 为不使用测试模式
 #define GIMBAL_TEST_MODE 1
 
-#define PITCH_TURN  1
+#define PITCH_TURN  0
 #define YAW_TURN    0
 
 //电机码盘值最大以及中值
@@ -125,10 +125,10 @@
 #define GIMBAL_INIT_PITCH_SPEED     0.004f
 #define GIMBAL_INIT_YAW_SPEED       0.002f  //0.005
 
-#define INIT_YAW_SET    2.05f
-#define INIT_PITCH_SET  -0.05f
+#define INIT_YAW_SET    -1.5f
+#define INIT_PITCH_SET  0.0f
 
-#define CHASSIS_COORD_CHANGE -2.05f  //底盘坐标变换
+#define CHASSIS_COORD_CHANGE 1.5f  //底盘坐标变换
 
 
 //云台校准中值的时候，发送原始电流值，以及堵转时间，通过陀螺仪判断堵转
@@ -158,8 +158,8 @@
 #define MIN_YAW         -2*PI
 #define MAX_YAW         2*PI
 #define MID_PITCH       0.0f
-#define MIN_PITCH      -0.3*PI
-#define MAX_PITCH       0.2*PI
+#define MIN_PITCH      -2.1f
+#define MAX_PITCH       2.2f
 
 
 #define GIMBAL_ACCEL_YAW_NUM 0.002f
@@ -247,6 +247,8 @@ typedef struct
     gimbal_motor_t gimbal_pitch_motor;
     gimbal_step_cali_t gimbal_cali;
 } gimbal_control_t;
+
+extern gimbal_control_t gimbal_control;
 
 
 /**

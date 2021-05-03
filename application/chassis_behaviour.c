@@ -46,12 +46,12 @@
   ****************************(C) COPYRIGHT 2019 DJI****************************
   */
 
+
 #include "chassis_behaviour.h"
 #include "cmsis_os.h"
 #include "chassis_task.h"
 #include "arm_math.h"
 #include "referee.h"
-#include "remote_control.h"
 
 
 #include "gimbal_behaviour.h"
@@ -134,9 +134,24 @@ static void chassis_open_set_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, c
 chassis_behaviour_e chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
 chassis_behaviour_e last_chassis_behaviour_mode = CHASSIS_NO_MOVE;
 
+//扭腰控制数据
+fp32 swing_angle = 0.0f;
+bool_t swing_switch = 0;
+uint8_t key_pressed_num_ctrl = 0;
+
 //小陀螺控制数据
 fp32 top_angle = 0;
 bool_t top_switch = 0;   
+
+//45度角对敌数据
+fp32 pisa_angle = 0;    //保留45度对敌前的云台相对底盘角度
+bool_t pisa_switch = 0; 
+
+uint8_t key_pressed_num_q = 0;
+uint8_t key_pressed_num_e = 0;
+
+
+
 
 /**
   * @brief          通过逻辑判断，赋值"chassis_behaviour_mode"成哪种模式
@@ -328,26 +343,30 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
     /**************************扭腰控制输入*******************************/
     //摇摆角度是利用sin函数生成，swing_time 是sin函数的输入值
     static fp32 swing_time = 0.0f;
-    static fp32 swing_angle = 0.0f;
-    //是sin函数的幅值
+    
+    //max_angle是sin函数的幅值
     static fp32 max_angle = SWING_NO_MOVE_ANGLE;
     //在一个控制周期内，加上 add_time
     static fp32 const add_time = 2 * PI * 0.5f * configTICK_RATE_HZ / CHASSIS_CONTROL_TIME_MS;
-    static uint8_t swing_flag = 0;
 
-    //判断是否要摇摆  当键盘长按ctrl或者装甲板受到伤害
-    if ((chassis_move_rc_to_vector->chassis_RC->key.v & SWING_KEY) || if_hit())
-    {
-        if (swing_flag == 0)
-        {
-            swing_flag = 1;
-            swing_time = 0.0f;
-        }
-    }
-    else
-    {
-        swing_flag = 0;
-    }
+  
+
+    // //判断是否要摇摆  当键盘仅单击ctrl或者装甲板受到伤害
+    // if (((IF_KEY_SINGAL_PRESSED_CTRL )|| if_hit() ) && swing_switch == 0)
+    // {   
+    //     if(!(IF_KEY_PRESSED_Q || IF_KEY_PRESSED_E))
+    //     {
+    //         swing_switch = 1;
+    //         swing_time = 0.0f;
+    //     }
+    // }
+    // else if ((IF_KEY_SINGAL_PRESSED_CTRL && !IF_KEY_PRESSED_Q && !IF_KEY_PRESSED_E) && swing_switch == 1)
+    // {
+    //     if(!(IF_KEY_PRESSED_Q || IF_KEY_PRESSED_E))
+    //     {
+    //         swing_switch = 0;
+    //     }
+    // }
 
     //判断键盘输入是不是在控制底盘运动，底盘在运动减小摇摆角度
     if (chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_FRONT_KEY || chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_BACK_KEY ||
@@ -360,7 +379,7 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
         max_angle = SWING_NO_MOVE_ANGLE;
     }
     
-    if (swing_flag)
+    if (swing_switch)
     {
         swing_angle = max_angle * arm_sin_f32(swing_time);
         swing_time += add_time;
@@ -375,14 +394,13 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
         swing_time -= 2 * PI;
     }
 
-
    
     /**************************小陀螺控制输入********************************/
-    if(IF_KEY_PRESSED_F && !LAST_IF_KEY_PRESSED_F && top_switch == 0 )  //开启小陀螺
+    if(IF_KEY_SINGAL_PRESSED_F && top_switch == 0 )  //开启小陀螺
     {
         top_switch = 1;
     }
-    else if(IF_KEY_PRESSED_F && !LAST_IF_KEY_PRESSED_F && top_switch == 1 ) //关闭小陀螺
+    else if(IF_KEY_SINGAL_PRESSED_F && top_switch == 1 ) //关闭小陀螺
     {
         top_switch = 0;
     }
@@ -401,9 +419,19 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
 
 
     /****************************45度角对敌*********************************************/
-    static fp32 pisa_angle = 0;
-    static uint16_t pisa_top_delay_time = 0;
-
+    //先按ctrl同时按下q或者e,开启45度角对敌;重复操作取消45度角对敌
+    if((IF_KEY_SINGAL_PRESSED_Q && IF_KEY_PRESSED_CTRL) && pisa_switch == 0 )  //开启左侧45度角对敌
+    {
+        pisa_switch = PISA_LEFT;
+    }
+    else if((IF_KEY_SINGAL_PRESSED_E && IF_KEY_PRESSED_CTRL) && pisa_switch == 0 ) //开启右侧45度角对敌
+    {
+        pisa_switch = PISA_RIGHT;
+    }
+    else if(((IF_KEY_SINGAL_PRESSED_Q && IF_KEY_PRESSED_CTRL) || (IF_KEY_SINGAL_PRESSED_E && IF_KEY_PRESSED_CTRL)) && pisa_switch != 0) //关闭45度角对敌
+    {
+        pisa_switch = PISA_CLOSE;
+    }
 
     *angle_set = swing_angle + top_angle;
 }

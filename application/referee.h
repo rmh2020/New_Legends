@@ -185,7 +185,16 @@ extern void get_chassis_power_and_buffer(fp32 *power, fp32 *buffer);
 extern uint8_t get_robot_id(void);
 
 extern void get_shoot_heat0_limit_and_heat0(uint16_t *heat0_limit, uint16_t *heat0);
+extern void get_shooter_heat0_speed_limit_and_heat0(uint16_t *heat0_limit, uint16_t *heat0);
+extern void get_shooter_heat0_speed_limit_rate(uint16_t *heat0_cooling_rate);
+
+
 extern void get_shoot_heat1_limit_and_heat1(uint16_t *heat1_limit, uint16_t *heat1);
+extern void get_shooter_heat1_speed_limit_and_heat1(uint16_t *heat1_limit, uint16_t *heat1);
+extern void get_shooter_heat1_speed_limit_rate(uint16_t *heat1_cooling_rate);
+
+
+
 extern void determine_ID(void);
 extern bool_t is_red_or_blue(void);
 
