@@ -78,7 +78,7 @@ void servo_task(void const * argument)
         {
             //当拨盘电机开始旋转时 限位开关打开
             servo_pwm[1] = servo_open_pwm[1];
-            shoot_control.limit_switch_status = TRUE;
+            shoot_control.limit_switch_status = TRUE; 
 
         }
         else if((shoot_control.speed_set == 0) && shoot_control.limit_switch_status == TRUE)
