@@ -3,7 +3,7 @@
 <title>Static Call Graph - [standard_tpye_c\standard_tpye_c.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image standard_tpye_c\standard_tpye_c.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Mon May 03 20:20:58 2021
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Mon May 03 22:43:20 2021
 <BR><P>
 <H3>Maximum Stack Usage =        512 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -4609,7 +4609,7 @@ Global Symbols
 <LI><a href="#[2d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_motionless_control
 <LI><a href="#[2d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_init_control
 <LI><a href="#[2d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_cali_control
-<LI><a href="#[2cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_auto_control
+<LI><a href="#[2d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_auto_control
 <LI><a href="#[2cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
 </UL>
 <BR>[Called By]<UL><LI><a href="#[2e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_set_control
@@ -4760,7 +4760,7 @@ Global Symbols
 </UL>
 <P><STRONG><a name="[2af]"></a>loop_fp32_constrain</STRONG> (Thumb, 96 bytes, Stack size 0 bytes, user_lib.o(i.loop_fp32_constrain))
 <BR><BR>[Called By]<UL><LI><a href="#[33c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;shoot_bullet_control
-<LI><a href="#[2ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_limit
+<LI><a href="#[2d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_limit
 <LI><a href="#[2cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_PID_calc
 <LI><a href="#[2cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
 <LI><a href="#[2bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_set_contorl
@@ -5298,15 +5298,17 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[2d2]"></a>vision_clean_update_flag</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, vision.o(i.vision_clean_update_flag))
-<BR><BR>[Called By]<UL><LI><a href="#[2cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_auto_control
+<BR><BR>[Called By]<UL><LI><a href="#[2d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_auto_control
 </UL>
 
-<P><STRONG><a name="[2d1]"></a>vision_error_angle</STRONG> (Thumb, 150 bytes, Stack size 0 bytes, vision.o(i.vision_error_angle))
-<BR><BR>[Called By]<UL><LI><a href="#[2cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_auto_control
+<P><STRONG><a name="[2cf]"></a>vision_error_angle</STRONG> (Thumb, 150 bytes, Stack size 0 bytes, vision.o(i.vision_error_angle))
+<BR><BR>[Called By]<UL><LI><a href="#[2d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_auto_control
+<LI><a href="#[2cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
 </UL>
 
-<P><STRONG><a name="[2d0]"></a>vision_if_update</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, vision.o(i.vision_if_update))
-<BR><BR>[Called By]<UL><LI><a href="#[2cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_auto_control
+<P><STRONG><a name="[2ce]"></a>vision_if_update</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, vision.o(i.vision_if_update))
+<BR><BR>[Called By]<UL><LI><a href="#[2d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_auto_control
+<LI><a href="#[2cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
 </UL>
 
 <P><STRONG><a name="[2fe]"></a>vision_init</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, vision.o(i.vision_init))
@@ -6105,10 +6107,12 @@ Local Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[2a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_control_loop
 </UL>
 
-<P><STRONG><a name="[2cd]"></a>gimbal_absolute_angle_control</STRONG> (Thumb, 386 bytes, Stack size 40 bytes, gimbal_behaviour.o(i.gimbal_absolute_angle_control))
+<P><STRONG><a name="[2cd]"></a>gimbal_absolute_angle_control</STRONG> (Thumb, 464 bytes, Stack size 40 bytes, gimbal_behaviour.o(i.gimbal_absolute_angle_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = gimbal_absolute_angle_control &rArr; __aeabi_cdcmple
 </UL>
-<BR>[Calls]<UL><LI><a href="#[2af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;loop_fp32_constrain
+<BR>[Calls]<UL><LI><a href="#[2ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vision_if_update
+<LI><a href="#[2cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vision_error_angle
+<LI><a href="#[2af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;loop_fp32_constrain
 <LI><a href="#[2aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_fabs
 <LI><a href="#[2a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
 <LI><a href="#[2b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdcmple
@@ -6116,11 +6120,11 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[2d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
 </UL>
 
-<P><STRONG><a name="[2cf]"></a>gimbal_auto_control</STRONG> (Thumb, 40 bytes, Stack size 16 bytes, gimbal_behaviour.o(i.gimbal_auto_control))
+<P><STRONG><a name="[2d1]"></a>gimbal_auto_control</STRONG> (Thumb, 40 bytes, Stack size 16 bytes, gimbal_behaviour.o(i.gimbal_auto_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = gimbal_auto_control
 </UL>
-<BR>[Calls]<UL><LI><a href="#[2d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vision_if_update
-<LI><a href="#[2d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vision_error_angle
+<BR>[Calls]<UL><LI><a href="#[2ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vision_if_update
+<LI><a href="#[2cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vision_error_angle
 <LI><a href="#[2d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vision_clean_update_flag
 </UL>
 <BR>[Called By]<UL><LI><a href="#[2d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
@@ -6191,7 +6195,7 @@ Local Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[2e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_init
 </UL>
 
-<P><STRONG><a name="[2ce]"></a>gimbal_absolute_angle_limit</STRONG> (Thumb, 228 bytes, Stack size 16 bytes, gimbal_task.o(i.gimbal_absolute_angle_limit))
+<P><STRONG><a name="[2d0]"></a>gimbal_absolute_angle_limit</STRONG> (Thumb, 228 bytes, Stack size 16 bytes, gimbal_task.o(i.gimbal_absolute_angle_limit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = gimbal_absolute_angle_limit
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;loop_fp32_constrain
@@ -6271,7 +6275,7 @@ Local Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = gimbal_set_control &rArr; gimbal_behaviour_control_set &rArr; gimbal_absolute_angle_control &rArr; __aeabi_cdcmple
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_relative_angle_limit
-<LI><a href="#[2ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_limit
+<LI><a href="#[2d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_limit
 <LI><a href="#[2d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
 </UL>
 <BR>[Called By]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_task
@@ -6337,7 +6341,7 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[2ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;shoot_control_loop
 </UL>
 
-<P><STRONG><a name="[33f]"></a>shoot_feedback_update</STRONG> (Thumb, 598 bytes, Stack size 8 bytes, shoot.o(i.shoot_feedback_update))
+<P><STRONG><a name="[33f]"></a>shoot_feedback_update</STRONG> (Thumb, 456 bytes, Stack size 8 bytes, shoot.o(i.shoot_feedback_update))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = shoot_feedback_update
 </UL>
 <BR>[Calls]<UL><LI><a href="#[342]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_ReadPin
@@ -6346,7 +6350,7 @@ Local Symbols
 <LI><a href="#[2ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;shoot_control_loop
 </UL>
 
-<P><STRONG><a name="[33e]"></a>shoot_set_mode</STRONG> (Thumb, 588 bytes, Stack size 24 bytes, shoot.o(i.shoot_set_mode))
+<P><STRONG><a name="[33e]"></a>shoot_set_mode</STRONG> (Thumb, 572 bytes, Stack size 24 bytes, shoot.o(i.shoot_set_mode))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = shoot_set_mode &rArr; __aeabi_f2d
 </UL>
 <BR>[Calls]<UL><LI><a href="#[346]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_shooter_heat0_cooling_limit_and_heat0

@@ -250,7 +250,8 @@ static void gimbal_auto_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal
 gimbal_behaviour_e gimbal_behaviour = GIMBAL_ZERO_FORCE;
 gimbal_behaviour_e last_gimbal_behaviour = GIMBAL_ZERO_FORCE;
 
-
+//自瞄开关
+bool_t auto_switch = 0;
 
 /**
   * @brief          the function is called by gimbal_set_mode function in gimbal_task.c
@@ -630,13 +631,30 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
         
     }
 
-    static int16_t yaw_channel = 0, pitch_channel = 0;
+    //单击右键 打开自瞄 再次单击 关闭自瞄
+    if(IF_MOUSE_SINGAL_PRESSED_R && auto_switch == FALSE)
+    {
+        auto_switch = TRUE;
+    }
+    else  if (IF_MOUSE_SINGAL_PRESSED_R && auto_switch ==  TRUE)
+    {
+        auto_switch = FALSE;
+    }
 
-    rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[YAW_CHANNEL], yaw_channel, RC_DEADBAND);
-    rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[PITCH_CHANNEL], pitch_channel, RC_DEADBAND);
+    //当在自瞄模式下且识别到目标,云台控制权交给mini pc
+    if (auto_switch == TRUE && vision_if_update() == TRUE)
+    {
+        vision_error_angle(yaw, pitch); //获取yaw 和 pitch的偏移量
+    }
+    else
+    {
+        static int16_t yaw_channel = 0, pitch_channel = 0;
 
-    *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
-    *pitch = pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN;
+        rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[YAW_CHANNEL], yaw_channel, RC_DEADBAND);
+        rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[PITCH_CHANNEL], pitch_channel, RC_DEADBAND);
+
+        *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
+        *pitch = pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN;
 
 
     {
@@ -694,8 +712,16 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
         {
             gimbal_turn_flag = 0;
         }
+
+
+
     }
 
+
+    }
+
+
+    
 }
 
 

@@ -70,6 +70,9 @@ typedef enum
 extern gimbal_behaviour_e gimbal_behaviour;
 extern gimbal_behaviour_e last_gimbal_behaviour;
 
+//自瞄开关
+extern  bool_t auto_switch;
+
 
 /**
   * @brief          被gimbal_set_mode函数调用在gimbal_task.c,云台行为状态机以及电机状态机设置

@@ -88,6 +88,27 @@ extern RC_ctrl_t rc_ctrl;
 extern RC_ctrl_t last_rc_ctrl;
 
 
+/*
+        记录当前鼠标值
+*/
+#define    IF_MOUSE_PRESSED_L         (  rc_ctrl.mouse.press_l !=0)
+#define    IF_MOUSE_PRESSED_R         (  rc_ctrl.mouse.press_r !=0)
+
+
+
+/*
+        记录当前鼠标值
+*/
+#define    LAST_IF_MOUSE_PRESSED_L         (  last_rc_ctrl.mouse.press_l !=0)
+#define    LAST_IF_MOUSE_PRESSED_R         (  last_rc_ctrl.mouse.press_r !=0)
+
+/* 
+        单击鼠标
+*/
+#define IF_MOUSE_SINGAL_PRESSED_L          (IF_MOUSE_PRESSED_L && !LAST_IF_MOUSE_PRESSED_L)
+#define IF_MOUSE_SINGAL_PRESSED_R          (IF_MOUSE_PRESSED_R && !LAST_IF_MOUSE_PRESSED_R)
+
+
 /* 
         记录当前值
         检测键盘按键状态   
