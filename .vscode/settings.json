@@ -19,6 +19,10 @@
         "shoot.h": "c",
         "detect_task.h": "c",
         "servo_task.h": "c",
+<<<<<<< HEAD
+=======
+        "crc8_crc16.h": "c",
+>>>>>>> 右键自瞄
         "referee.h": "c"
     }
 }

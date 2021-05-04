@@ -20,6 +20,8 @@ typedef double fp64;
 #define FALSE 0
 #define TRUE  1
 
+#define PI                          3.1415926f
+
 void Vision_Read_Data(uint8_t *ReadFormUart7);
 
 #endif

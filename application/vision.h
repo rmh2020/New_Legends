@@ -49,6 +49,8 @@
 #define COMPENSATION_PITCH_DIST 0
 
 
+ 
+
 
 /* 	STM32 -> PC
 
@@ -124,12 +126,10 @@ typedef struct
 }VisionSendData_t;
 
 
-
+extern uint8_t CmdID;
 
 
 //命令码ID,用来判断接收的是什么数据
-
-
 void vision_read_data(uint8_t *ReadFormUart1);
 void vision_send_data(uint8_t CmdID );
 void vision_error_angle(float *yaw_angle_error, float *pitch_angle_error);
@@ -139,9 +139,8 @@ void vision_error_angle(float *yaw_angle_error, float *pitch_angle_error);
 
 
 
-bool_t vision_if_update();
+bool_t vision_if_find_target();
 bool_t vision_if_armor(void);
-void vision_clean_update_flag(void);
 void vision_clean_ammorflag(void);
 
 #endif

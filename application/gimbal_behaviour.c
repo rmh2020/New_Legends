@@ -250,7 +250,8 @@ static void gimbal_auto_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal
 gimbal_behaviour_e gimbal_behaviour = GIMBAL_ZERO_FORCE;
 gimbal_behaviour_e last_gimbal_behaviour = GIMBAL_ZERO_FORCE;
 
-
+//自瞄开关
+bool_t auto_switch = 0;
 
 /**
   * @brief          the function is called by gimbal_set_mode function in gimbal_task.c
@@ -306,11 +307,7 @@ void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set)
         gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_ENCONDE;
         gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_ENCONDE;
     }
-    else if (gimbal_behaviour == GIMBAL_AUTO)
-    {
-        gimbal_mode_set->gimbal_yaw_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;
-        gimbal_mode_set->gimbal_pitch_motor.gimbal_motor_mode = GIMBAL_MOTOR_GYRO;
-    }
+
 }
 
 
@@ -353,10 +350,6 @@ void gimbal_behaviour_control_set(fp32 *add_yaw, fp32 *add_pitch, gimbal_control
     else if (gimbal_behaviour == GIMBAL_MOTIONLESS)
     {
         gimbal_motionless_control(add_yaw, add_pitch, gimbal_control_set);
-    }
-    else if (gimbal_behaviour == GIMBAL_AUTO)
-    {
-        gimbal_auto_control(add_yaw, add_pitch, gimbal_control_set);
     }
 
 }
@@ -630,13 +623,37 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
         
     }
 
-    static int16_t yaw_channel = 0, pitch_channel = 0;
+    //单击右键 打开自瞄 再次单击 关闭自瞄
+    if(IF_MOUSE_SINGAL_PRESSED_R && auto_switch == FALSE)
+    {
+        auto_switch = TRUE;
+    }
+    else  if (IF_MOUSE_SINGAL_PRESSED_R && auto_switch ==  TRUE)
+    {
+        auto_switch = FALSE;
+    }
 
-    rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[YAW_CHANNEL], yaw_channel, RC_DEADBAND);
-    rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[PITCH_CHANNEL], pitch_channel, RC_DEADBAND);
+    //按下按键Z 转换装甲颜色
 
-    *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
-    *pitch = pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN;
+
+    
+
+
+    //当在自瞄模式下且识别到目标,云台控制权交给mini pc
+    if (auto_switch == TRUE && vision_if_find_target() == TRUE)
+    {
+        vision_error_angle(yaw, pitch); //获取yaw 和 pitch的偏移量
+        vision_send_data(CmdID);       //发送指令给小电脑
+    }
+    else
+    {
+        static int16_t yaw_channel = 0, pitch_channel = 0;
+
+        rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[YAW_CHANNEL], yaw_channel, RC_DEADBAND);
+        rc_deadband_limit(gimbal_control_set->gimbal_rc_ctrl->rc.ch[PITCH_CHANNEL], pitch_channel, RC_DEADBAND);
+
+        *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
+        *pitch = pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN;
 
 
     {
@@ -694,8 +711,16 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
         {
             gimbal_turn_flag = 0;
         }
+
+
+
     }
 
+
+    }
+
+
+    
 }
 
 
@@ -743,26 +768,6 @@ static void gimbal_motionless_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
     *pitch = 0.0f;
 }
 
-/**
-  * @brief          云台进入自瞄模式无输入控制，电机是绝对角度控制，
-  * @author         RM
-  * @param[in]      yaw: yaw轴角度控制，为角度的增量 单位 rad
-  * @param[in]      pitch: pitch轴角度控制，为角度的增量 单位 rad
-  * @param[in]      gimbal_control_set:云台数据指针
-  * @retval         none
-  */
-static void gimbal_auto_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set)
-{
-    if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
-    {
-        return;
-    }
 
-    if(vision_if_update() == TRUE)
-    {
-      vision_error_angle(yaw, pitch); //获取yaw 和 pitch的偏移量
-      vision_clean_update_flag();
-    }
-}
 
 

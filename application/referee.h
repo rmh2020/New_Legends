@@ -5,6 +5,9 @@
 
 #include "protocol.h"
 
+#define RED   0
+#define BLUE  1
+
 typedef enum
 {
     RED_HERO        = 1,
@@ -115,7 +118,7 @@ typedef __packed struct //0x0202
 {
     uint16_t chassis_volt;        //底盘输出电压
     uint16_t chassis_current;     //底盘输出电流
-    float chassis_power;          //底盘输出功率
+    fp32 chassis_power;          //底盘输出功率
     uint16_t chassis_power_buffer; //底盘功率缓冲
     uint16_t shooter_id1_17mm_cooling_heat;  //1号17mm 枪口热量
     uint16_t shooter_id2_17mm_cooling_heat;  //2号17mm枪口热量
@@ -124,10 +127,10 @@ typedef __packed struct //0x0202
 
 typedef __packed struct //0x0203
 {
-    float x;
-    float y;
-    float z;
-    float yaw;
+    fp32 x;
+    fp32 y;
+    fp32 z;
+    fp32 yaw;
 } ext_game_robot_pos_t;
 
 typedef __packed struct //0x0204
@@ -152,7 +155,7 @@ typedef __packed struct //0x0207
     uint8_t bullet_type;  //子弹类型: 1：17mm弹丸 2：42mm弹丸
     uint8_t shooter_id;  //发射机构ID： 1：1号17mm发射机构 2：2号17mm发射机构 3：42mm 发射机构
     uint8_t bullet_freq; //子弹射频 单位 Hz
-    float bullet_speed;  //子弹射速 单位 m/s
+    fp32 bullet_speed;  //子弹射速 单位 m/s
 } ext_shoot_data_t;
 
 typedef __packed struct
@@ -172,9 +175,9 @@ typedef __packed struct //0x0301
 
 typedef __packed struct
 {
-    float data1;
-    float data2;
-    float data3;
+    fp32 data1;
+    fp32 data2;
+    fp32 data3;
     uint8_t data4;
 } custom_data_t;
 
@@ -201,7 +204,7 @@ extern uint8_t get_robot_id(void);
 //17mm枪口热量上限, 17mm枪口实时热量 默认ID1
 void get_shooter_id1_17mm_cooling_limit_and_heat(uint16_t *id1_17mm_cooling_limit, uint16_t *id1_17mm_cooling_heat);
 //17mm枪口枪口射速上限,17mm实时射速 默认ID1
-void get_shooter_id1_17mm_speed_limit_and_bullet_speed(uint16_t *id1_17mm_speed_limit, uint16_t *bullet_speed);
+void get_shooter_id1_17mm_speed_limit_and_bullet_speed(uint16_t *id1_17mm_speed_limit, fp32 *bullet_speed);
 //17mm枪口热量冷却 默认ID1
 void get_shooter_id1_17mm_cooling_rate(uint16_t *id1_17mm_cooling_rate);
 

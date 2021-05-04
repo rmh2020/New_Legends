@@ -31,8 +31,8 @@ ext_student_interactive_data_t student_interactive_data_t;
 uint8_t Judge_Self_ID;//当前机器人的ID
 uint16_t Judge_SelfClient_ID;//发送者机器人对应的客户端ID
 
-#define BLUE  0
-#define RED   1
+
+
 
 
 void init_referee_struct_data(void)
@@ -199,7 +199,7 @@ void get_shooter_id1_17mm_cooling_limit_and_heat(uint16_t *id1_17mm_cooling_limi
 
 
 //17mm枪口枪口射速上限,17mm实时射速 默认ID1
-void get_shooter_id1_17mm_speed_limit_and_bullet_speed(uint16_t *id1_17mm_speed_limit, uint16_t *bullet_speed)
+void get_shooter_id1_17mm_speed_limit_and_bullet_speed(uint16_t *id1_17mm_speed_limit, fp32 *bullet_speed)
 {
     *id1_17mm_speed_limit = robot_state.shooter_id1_17mm_speed_limit;
     *bullet_speed = shoot_data_t.bullet_speed;
@@ -277,9 +277,6 @@ bool_t if_hit()
 
     return miss_flag;
 }
-
-
-
 
 
 

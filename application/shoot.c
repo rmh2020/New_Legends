@@ -33,6 +33,8 @@
 #include "pid.h"
 #include "referee_control.h"
 
+
+
 #define shoot_fric1_on(pwm) fric1_on((pwm)) //摩擦轮1pwm宏定义
 #define shoot_fric2_on(pwm) fric2_on((pwm)) //摩擦轮2pwm宏定义
 #define shoot_fric_off()    fric_off()      //关闭两个摩擦轮
@@ -86,6 +88,8 @@ shoot_control_t shoot_control;          //射击数据
   */
 void shoot_init(void)
 {
+  
+    
 
     static const fp32 Trigger_speed_pid[3] = {TRIGGER_ANGLE_PID_KP, TRIGGER_ANGLE_PID_KI, TRIGGER_ANGLE_PID_KD};
     static const fp32 Fric_speed_pid[3] = {FRIC_SPEED_PID_KP, FRIC_SPEED_PID_KI, FRIC_SPEED_PID_KD};
@@ -209,7 +213,7 @@ void shoot_control_loop(void)
     }
     else
     {
-        //17mm发射机构射速和热量控制
+        //17mm发射机构射速和热量控制,还未测试完
         //shoot_heat0_speed_and_cooling_control(&shoot_control);
 
         shoot_laser_on(); //激光开启
@@ -286,7 +290,7 @@ static void shoot_set_mode(void)
     else if(shoot_control.shoot_mode == SHOOT_READY)
     {
         //下拨一次或者鼠标按下一次，进入射击状态
-        if ((switch_is_down(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_down(last_s)) || (shoot_control.press_l && shoot_control.last_press_l == 0) || (shoot_control.press_r && shoot_control.last_press_r == 0))
+        if ((switch_is_down(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_down(last_s)) || IF_MOUSE_SINGAL_PRESSED_L )
         {
             shoot_control.shoot_mode = SHOOT_BULLET;
         }
@@ -406,18 +410,18 @@ static void shoot_feedback_update(void)
     {
         shoot_control.press_l_time = 0;
     }
-
-    if (shoot_control.press_r)
-    {
-        if (shoot_control.press_r_time < PRESS_LONG_TIME)
-        {
-            shoot_control.press_r_time++;
-        }
-    }
-    else
-    {
-        shoot_control.press_r_time = 0;
-    }
+    
+    // if (shoot_control.press_r)
+    // {
+    //     if (shoot_control.press_r_time < PRESS_LONG_TIME)
+    //     {
+    //         shoot_control.press_r_time++;
+    //     }
+    // }
+    // else
+    // {
+    //     shoot_control.press_r_time = 0;
+    // }
 
     //射击开关下档时间计时
     if (shoot_control.shoot_mode != SHOOT_STOP && switch_is_down(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]))
@@ -433,24 +437,24 @@ static void shoot_feedback_update(void)
         shoot_control.rc_s_time = 0;
     }
 
-    //鼠标右键按下加速摩擦轮，使得左键低速射击， 右键高速射击
-    static uint16_t up_time = 0;
-    if (shoot_control.press_r)
-    {
-        up_time = UP_ADD_TIME;
-    }
+    // //鼠标右键按下加速摩擦轮，使得左键低速射击， 右键高速射击 单击右键改为自瞄
+    // static uint16_t up_time = 0;
+    // if (shoot_control.press_r)
+    // {
+    //     up_time = UP_ADD_TIME;
+    // }
 
-    if (up_time > 0)
-    {
-        shoot_control.fric_motor[LEFT].max_speed = shoot_fric_grade[1];
-        shoot_control.fric_motor[RIGHT].max_speed = shoot_fric_grade[1];
-        up_time--;
-    }
-    else
-    {
-        shoot_control.fric_motor[LEFT].max_speed = shoot_fric_grade[1]/2;
-        shoot_control.fric_motor[RIGHT].max_speed = shoot_fric_grade[1]/2;
-    }
+    // if (up_time > 0)
+    // {
+    //     shoot_control.fric_motor[LEFT].max_speed = shoot_fric_grade[1];
+    //     shoot_control.fric_motor[RIGHT].max_speed = shoot_fric_grade[1];
+    //     up_time--;
+    // }
+    // else
+    // {
+    //     shoot_control.fric_motor[LEFT].max_speed = shoot_fric_grade[1]/2;
+    //     shoot_control.fric_motor[RIGHT].max_speed = shoot_fric_grade[1]/2;
+    // }
 
 
 }

@@ -40,6 +40,8 @@
 #include "INS_task.h"
 #include "shoot.h"
 #include "pid.h"
+#include "vision.h"
+#include "referee.h"
 
 
 //motor enconde value format, range[0-8191]
@@ -244,6 +246,8 @@ void gimbal_task(void const *pvParameters)
 
     while (1)
     {
+       
+
         gimbal_set_mode(&gimbal_control);                    //设置云台控制模式
         gimbal_mode_change_control_transit(&gimbal_control); //控制模式切换 控制数据过渡
         gimbal_feedback_update(&gimbal_control);             //云台数据反馈
@@ -510,6 +514,15 @@ const gimbal_motor_t *get_pitch_motor_point(void)
   */
 static void gimbal_init(gimbal_control_t *init)
 {
+    //发送给小电脑敌方装甲颜色
+    if(is_red_or_blue() == RED)
+        CmdID = VISION_BLUE;
+    else if(is_red_or_blue() == BLUE)
+        CmdID = VISION_RED;
+
+    vision_send_data(CmdID);
+
+
     //初始化限幅
     init->gimbal_yaw_motor.max_relative_angle = MAX_YAW;
     init->gimbal_yaw_motor.min_relative_angle = MIN_YAW;

@@ -76,7 +76,7 @@
 
 #define PI_FOUR                     0.78539816339744830961566084581988f
 #define PI_TEN                      0.314f
-#define PI                          3.1415926f
+
 
 //²¦µ¯ÂÖµç»úPID
 #define TRIGGER_ANGLE_PID_KP        80.0f  //800

@@ -61,7 +61,6 @@ typedef enum
   GIMBAL_ABSOLUTE_ANGLE,            //云台陀螺仪绝对角度控制
   GIMBAL_RELATIVE_ANGLE,            //云台电机编码值相对角度控制
   GIMBAL_MOTIONLESS,                //云台在遥控器无输入一段时间后保持不动，避免陀螺仪漂移
-  GIMBAL_AUTO,                      //自瞄模式
 
 } gimbal_behaviour_e;
 
@@ -69,6 +68,9 @@ typedef enum
 //云台行为状态机
 extern gimbal_behaviour_e gimbal_behaviour;
 extern gimbal_behaviour_e last_gimbal_behaviour;
+
+//自瞄开关
+extern  bool_t auto_switch;
 
 
 /**

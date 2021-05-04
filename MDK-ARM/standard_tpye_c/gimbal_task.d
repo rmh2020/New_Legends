@@ -73,3 +73,7 @@ standard_tpye_c\gimbal_task.o: ..\application\detect_task.h
 standard_tpye_c\gimbal_task.o: ..\application\gimbal_behaviour.h
 standard_tpye_c\gimbal_task.o: ..\application\INS_task.h
 standard_tpye_c\gimbal_task.o: ..\application\shoot.h
+standard_tpye_c\gimbal_task.o: ..\application\vision.h
+standard_tpye_c\gimbal_task.o: ..\bsp\boards\bsp_usart.h
+standard_tpye_c\gimbal_task.o: ..\application\referee.h
+standard_tpye_c\gimbal_task.o: ..\application\protocol\protocol.h
