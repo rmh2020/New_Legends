@@ -43,32 +43,33 @@
 
 #include "referee.h"
 
-fp32 Input_Vot;
-fp32 Supercap_Vot;
-fp32 Input_Current;
-fp32 Target_Power;
+fp32 input_vot;
+fp32 supercap_vot;
+fp32 input_current;
+fp32 target_power;
 
 extern ext_game_robot_state_t robot_state; //0x0201     比赛机器人状态
 
-void Cap_Update_Cap_Inputvot(int16_t inputvot)
+void cap_update_cap_inputvot(int16_t inputvot)
 {
-	Input_Vot = inputvot; //获取输入电压
+	input_vot = inputvot; //获取输入电压
 }
 
-void Cap_Update_Cap_Capvot(int16_t capvot)
+void cap_update_cap_capvot(int16_t capvot)
 {
-	Supercap_Vot = capvot; //获取电容电压
+	supercap_vot = capvot; //获取电容电压
 }
 
-void Cap_Update_Cap_Test_current(int16_t current)
+void cap_update_cap_test_current(int16_t current)
 {
-	Input_Current = current; //获取输入电流
+	input_current = current; //获取输入电流
 }
 
-void Cap_Update_Cap_Target_Power(int16_t power)
+void cap_update_cap_target_power(int16_t power)
 {
-	Target_Power = power; //获取输入功率
+	target_power = power; //获取输入功率
 }
+
 //主任务
 void Super_cap_task(void)
 {
@@ -79,50 +80,50 @@ void Super_cap_task(void)
 	for (;;)
 	{
 
-		if (Supercap_Vot <= 15) //电容电压不要低于12V，这可能会造成C620低压保护
+		if (supercap_vot <= 15) //电容电压不要低于12V，这可能会造成C620低压保护
 		{
-			CAN1_Cap_Send(13000);
+			CAN_cmd_super_cap(13000);
 		}
 		else if (robot_state.chassis_power_limit <= 40) //当前底盘最大功率限制<40  目标功率为39w
 		{
-			CAN1_Cap_Send(3900);
+			CAN_cmd_super_cap(3900);
 		}
 		else if (robot_state.chassis_power_limit > 40 && robot_state.chassis_power_limit <= 50) //当前底盘最大功率限制40-50w  目标功率为49w
 		{
-			CAN1_Cap_Send(4900);
+			CAN_cmd_super_cap(4900);
 		}
 		else if (robot_state.chassis_power_limit > 50 && robot_state.chassis_power_limit <= 60) //当前底盘最大功率限制50-60w  目标功率为59w
 		{
-			CAN1_Cap_Send(5900);
+			CAN_cmd_super_cap(5900);
 		}
 		else if (robot_state.chassis_power_limit > 60 && robot_state.chassis_power_limit <= 70) //当前底盘最大功率限制60-70w  目标功率为79w
 		{
-			CAN1_Cap_Send(6900);
+			CAN_cmd_super_cap(6900);
 		}
 		else if (robot_state.chassis_power_limit > 70 && robot_state.chassis_power_limit <= 80) //当前底盘最大功率限制70-80w  目标功率为79w
 		{
-			CAN1_Cap_Send(7900);
+			CAN_cmd_super_cap(7900);
 		}
 		else if (robot_state.chassis_power_limit > 80 && robot_state.chassis_power_limit <= 100) //当前底盘最大功率限制80-100w  目标功率为99w
 		{
-			CAN1_Cap_Send(9900);
+			CAN_cmd_super_cap(9900);
 		}
 		else if (robot_state.chassis_power_limit > 100 && robot_state.chassis_power_limit < 120) //当前底盘最大功率限制100-120w  目标功率为119w
 		{
-			CAN1_Cap_Send(11900);
+			CAN_cmd_super_cap(11900);
 		}
 		else if (robot_state.chassis_power_limit >= 120) //当前底盘最大功率限制>120w  目标功率为130w
 		{
-			CAN1_Cap_Send(13000);
+			CAN_cmd_super_cap(13000);
 		}
 
 		vTaskDelay(SUPER_CONTROL_TIME);
 	}
 }
 
-void Cap_Init()
+void cap_init()
 {
-	CAN1_Cap_Send(13000);
+	CAN_cmd_super_cap(13000);
 }
 
 /*********************************************************************************************/ //仅用于测试

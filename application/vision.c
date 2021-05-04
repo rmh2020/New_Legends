@@ -2,6 +2,7 @@
 #include "remote_control.h"
 #include "struct_typedef.h"
 #include "stdio.h"
+#include "referee.h"
 
 extern UART_HandleTypeDef huart1;
 extern DMA_HandleTypeDef hdma_usart1_rx;
@@ -59,7 +60,7 @@ void vision_read_data(uint8_t *ReadFormUart)
 	if(ReadFormUart[0] == VISION_BEGIN)
 	{
 		//判断帧头数据是否为0xff
-		if(ReadFormUart[19] == VISION_END)
+		if(ReadFormUart[17] == VISION_END)
 		{
 
 		//接收数据拷贝
@@ -91,12 +92,14 @@ uint8_t vision_send_pack[50] = {0};//大于22就行
 void vision_send_data(uint8_t CmdID)
 {
 	int i;    //循环发送次数
-
+	uint16_t id1_17mm_speed_limit;
+	uint16_t bullet_speed;
+	get_shooter_id1_17mm_speed_limit_and_bullet_speed(&id1_17mm_speed_limit, &bullet_speed);	
 
 	VisionSendData.BEGIN = VISION_BEGIN;
 	
 	VisionSendData.CmdID   = CmdID;
-	VisionSendData.speed   = 30;
+	VisionSendData.speed   =bullet_speed;
 	
 	VisionSendData.END    = VISION_END;
 

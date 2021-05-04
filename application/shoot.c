@@ -324,7 +324,7 @@ static void shoot_set_mode(void)
         }
     }
 
-    get_shooter_heat0_cooling_limit_and_heat0(&shoot_control.heat_limit, &shoot_control.heat);
+    
     //检测两个摩擦轮同时上线，为了便于调试，暂时注释
     // if(!toe_is_error(REFEREE_TOE) && (shoot_control.heat + SHOOT_HEAT_REMAIN_VALUE > shoot_control.heat_limit))
     // {

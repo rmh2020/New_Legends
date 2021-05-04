@@ -179,8 +179,8 @@ void chassis_power_control(chassis_move_t *chassis_power_control)
     }
     else
     {
-        get_shooter_heat0_cooling_limit_and_heat0(&heat0_cooling_limit,&heat0);   //获取17mm枪口热量上限, 17mm枪口实时热量
-        get_shooter_heat0_speed_limit_and_heat0(&heat0_speed_limit, &bullet_speed); // 获取17mm枪口枪口射速上限,17mm实时射速
+        get_shooter_id1_17mm_cooling_limit_and_heat(&heat0_cooling_limit,&heat0);   //获取17mm枪口热量上限, 17mm枪口实时热量
+        get_shooter_id1_17mm_speed_limit_and_bullet_speed(&heat0_speed_limit, &bullet_speed); // 获取17mm枪口枪口射速上限,17mm实时射速
 
         //根据热量和射速上限修改等级
         //热量

@@ -19,8 +19,8 @@
 #define    VISION_DATA_CORRECT    1          //视觉数据错误
 
 #define    VISION_LEN_HEADER      2          //帧头长
-#define    VISION_LEN_DATA        17         //数据段长度,可自定义
-#define    VISION_LEN_PACKED      20         //数据包长度
+#define    VISION_LEN_DATA        15         //数据段长度,可自定义
+#define    VISION_LEN_PACKED      18         //数据包长度
 
 
 
@@ -90,8 +90,8 @@ typedef __packed struct    //3 Byte
 }VisionSendHeader_t;
 
 
-//STM32接收,直接将串口接收到的数据拷贝进结构体 22帧
-typedef __packed struct       //17 Byte
+//STM32接收,直接将串口接收到的数据拷贝进结构体 18帧
+typedef __packed struct       //18 Byte
 {
 	/* 头 */
 	uint8_t  BEGIN;			//帧头起始位,暂定0xA5
@@ -105,8 +105,6 @@ typedef __packed struct       //17 Byte
 	uint8_t	  identify_target;	//视野内是否有目标/是否识别到了目标   0否  1是	
 	uint8_t   identify_buff;	//打符时是否识别到了目标，1是，2识别到切换了装甲，0没识别到
 	
-	uint8_t	  blank_b;			//预留
-	uint8_t	  auto_too_close;   //目标距离太近,视觉发1，否则发0
 	
 	uint8_t   END;
 	

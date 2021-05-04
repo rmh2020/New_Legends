@@ -18,6 +18,7 @@
         "referee_control.h": "c",
         "shoot.h": "c",
         "detect_task.h": "c",
-        "servo_task.h": "c"
+        "servo_task.h": "c",
+        "referee.h": "c"
     }
 }

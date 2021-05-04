@@ -190,46 +190,46 @@ void get_chassis_power_and_buffer(fp32 *power, fp32 *buffer)
 }
 
 
-//17mm枪口热量上限, 17mm枪口实时热量
-void get_shooter_heat0_cooling_limit_and_heat0(uint16_t *heat0_limit, uint16_t *heat0)
+//17mm枪口热量上限, 17mm枪口实时热量 默认ID1
+void get_shooter_id1_17mm_cooling_limit_and_heat(uint16_t *id1_17mm_cooling_limit, uint16_t *id1_17mm_cooling_heat)
 {
-    *heat0_limit = robot_state.shooter_heat0_cooling_limit;
-    *heat0 = power_heat_data_t.shooter_heat0;
+    *id1_17mm_cooling_limit = robot_state.shooter_id1_17mm_cooling_limit;
+    *id1_17mm_cooling_heat = power_heat_data_t.shooter_id1_17mm_cooling_heat;
 }
 
 
-//17mm枪口枪口射速上限,17mm实时射速
-void get_shooter_heat0_speed_limit_and_heat0(uint16_t *heat0_limit, uint16_t *heat0)
+//17mm枪口枪口射速上限,17mm实时射速 默认ID1
+void get_shooter_id1_17mm_speed_limit_and_bullet_speed(uint16_t *id1_17mm_speed_limit, uint16_t *bullet_speed)
 {
-    *heat0_limit = robot_state.shooter_heat0_speed_limit;
-    *heat0 = shoot_data_t.bullet_speed;
+    *id1_17mm_speed_limit = robot_state.shooter_id1_17mm_speed_limit;
+    *bullet_speed = shoot_data_t.bullet_speed;
 }
 
-//17mm枪口热量冷却
-void get_shooter_heat0_speed_limit_rate(uint16_t *heat0_cooling_rate)
+//17mm枪口热量冷却 默认ID1
+void get_shooter_id1_17mm_cooling_rate(uint16_t *id1_17mm_cooling_rate)
 {   
-    *heat0_cooling_rate = robot_state.shooter_heat0_cooling_rate;
+    *id1_17mm_cooling_rate = robot_state.shooter_id1_17mm_cooling_rate;
 }
 
 //42mm枪口热量上限, 42mm枪口实时热量
-void get_shooter_heat1_cooling_limit_and_heat1(uint16_t *heat1_limit, uint16_t *heat1)
+void get_shooter_id1_42mm_cooling_limit_and_heat(uint16_t *id1_42mm_cooling_limit, uint16_t *id1_42mm_cooling_heat)
 {
-    *heat1_limit = robot_state.shooter_heat1_cooling_limit;
-    *heat1 = power_heat_data_t.shooter_heat1;
+    *id1_42mm_cooling_limit = robot_state.shooter_id1_42mm_cooling_limit;
+    *id1_42mm_cooling_heat = power_heat_data_t.shooter_id1_42mm_cooling_heat;
 }
 
 //42mm枪口枪口射速上限,42mm实时射速
-void get_shooter_heat1_speed_limit_and_heat1(uint16_t *heat1_limit, uint16_t *heat1)
+void get_shooter_id1_42mm_speed_limit_and_bullet_speed(uint16_t *id1_42mm_speed_limit, uint16_t *bullet_speed)
 {
-    *heat1_limit = robot_state.shooter_heat1_speed_limit;
-    *heat1 = shoot_data_t.bullet_speed;
+    *id1_42mm_speed_limit = robot_state.shooter_id1_42mm_speed_limit;
+    *bullet_speed = shoot_data_t.bullet_speed;
 }
 
 
 //42mm枪口热量冷却
-void get_shooter_heat1_speed_limit_rate(uint16_t *heat1_cooling_rate)
+void get_shooter_id1_42mm_cooling_rate(uint16_t *id1_42mm_cooling_rate)
 {   
-    *heat1_cooling_rate = robot_state.shooter_heat1_cooling_rate;
+    *id1_42mm_cooling_rate = robot_state.shooter_id1_42mm_cooling_rate;
 }
 
 
@@ -277,8 +277,6 @@ bool_t if_hit()
 
     return miss_flag;
 }
-
-
 
 
 

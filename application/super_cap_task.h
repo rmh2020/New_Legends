@@ -10,14 +10,13 @@
 //任务初始化 空闲一段时间
 #define SUPER_CAP_TASK_INIT_TIME 201
 
-void Cap_Update_Cap_Inputvot(int16_t inputvot );
-void Cap_Update_Cap_Capvot(int16_t capvot );
-void Cap_Update_Cap_Test_current(int16_t current );
-void Cap_Update_Cap_Target_Power(int16_t power );
+void cap_update_cap_inputvot(int16_t inputvot );
+void cap_update_cap_capvot(int16_t capvot );
+void cap_update_cap_test_current(int16_t current );
+void cap_update_cap_target_power(int16_t power );
 
-void Cap_Init(void);
+void cap_init(void);
 void Super_cap_task(void);
-void CAN1_Cap_Send(uint16_t temPower);
 
 
 #endif
