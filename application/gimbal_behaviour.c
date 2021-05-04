@@ -250,8 +250,14 @@ static void gimbal_auto_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal
 gimbal_behaviour_e gimbal_behaviour = GIMBAL_ZERO_FORCE;
 gimbal_behaviour_e last_gimbal_behaviour = GIMBAL_ZERO_FORCE;
 
+
+uint16_t turn_flag_if_double_pressed = 0;  //防止两次按键被误识别为一次 主要是怕与45度角对敌产生冲突
+
+
 //自瞄开关
 bool_t auto_switch = 0;
+//云台转头开关
+uint8_t gimbal_turn_switch = 0; 
 
 /**
   * @brief          the function is called by gimbal_set_mode function in gimbal_task.c
@@ -633,12 +639,6 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
         auto_switch = FALSE;
     }
 
-    //按下按键Z 转换装甲颜色
-
-
-    
-
-
     //当在自瞄模式下且识别到目标,云台控制权交给mini pc
     if (auto_switch == TRUE && vision_if_find_target() == TRUE)
     {
@@ -657,44 +657,49 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
 
 
     {
-        static uint16_t last_turn_keyboard = 0;
-        static uint8_t gimbal_turn_flag = 0;  
+         //由于云台不稳,暂时注释
+        //左转 后转 向后转开关 0表示无操作 1表示左转 2表示右转 3表示后转
+         
         static fp32 gimbal_end_angle = 0.0f;
 
-        // //按下 Q云台左转90度, E云台右转90度, V云台向后转180度.
-        // if (IF_KEY_SINGAL_PRESSED_Q)
-        // {
-        //     if (gimbal_turn_flag == 0)
-        //     {
-        //         gimbal_turn_flag = 1;
-        //         //保存掉头的目标值
-        //         gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI/2);
-        //     }
-        // }
-        // else if (IF_KEY_SINGAL_PRESSED_E)
-        // {
-        //     if (gimbal_turn_flag == 0)
-        //     {
-        //         gimbal_turn_flag = 1;
-        //         //保存掉头的目标值
+        if(gimbal_turn_switch != 0 && turn_flag_if_double_pressed<300)
+            turn_flag_if_double_pressed++;
+
+        //由于云台不稳暂时注释
+        // if(turn_flag_if_double_pressed >= 300)
+        // {   
+        //     if(gimbal_turn_switch == 1)
         //         gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle - PI/2);
-        //     }
+        //     else if(gimbal_turn_switch == 2)
+        //         gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI/2);
+        //     else if(gimbal_turn_switch == 3)
+        //     gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
         // }
-        // else if (IF_KEY_SINGAL_PRESSED_V)
-        // {
-        //     if (gimbal_turn_flag == 0)
-        //     {
-        //         gimbal_turn_flag = 1;
-        //         //保存掉头的目标值
-        //         gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
-        //     }
-        // }
+
+        // 单击Q云台左转90度, 单击E云台右转90度, 单击V云台向后转180度.
+        if (IF_KEY_SINGAL_PRESSED_Q && !IF_KEY_PRESSED_CTRL)
+        {           
+            if (gimbal_turn_switch == 0)      
+                gimbal_turn_switch = 1;      
+        }
+        else if (IF_KEY_SINGAL_PRESSED_E && !IF_KEY_PRESSED_CTRL)
+        {
+            if (gimbal_turn_switch == 0)
+                gimbal_turn_switch = 2;
+        }
+        else if (IF_KEY_SINGAL_PRESSED_V && !IF_KEY_PRESSED_CTRL)
+        {
+            if (gimbal_turn_switch == 0)
+            {
+                gimbal_turn_switch = 1;
+                //保存掉头的目标值
+            }
+        }
         
+       
 
 
-        last_turn_keyboard = gimbal_control_set->gimbal_rc_ctrl->key.v ;
-
-        if (gimbal_turn_flag)
+        if (gimbal_turn_switch != 0)
         {
             //不断控制到掉头的目标值，正转，反装是随机
             if (rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle) > 0.0f)
@@ -707,9 +712,10 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
             }
         }
         //到达对应角度后停止
-        if (gimbal_turn_flag && fabs(rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle)) < 0.01f)
+        if (gimbal_turn_switch != 0 && fabs(rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle)) < 0.01f)
         {
-            gimbal_turn_flag = 0;
+            gimbal_turn_switch = 0;
+            turn_flag_if_double_pressed = 0;
         }
 
 

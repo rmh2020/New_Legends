@@ -71,7 +71,10 @@ extern gimbal_behaviour_e last_gimbal_behaviour;
 
 //自瞄开关
 extern  bool_t auto_switch;
+//云台转头开关
+extern uint8_t gimbal_turn_switch;
 
+extern uint16_t turn_flag_if_double_pressed ;  //防止两次按键被误识别为一次 主要是怕与45度角对敌产生冲突
 
 /**
   * @brief          被gimbal_set_mode函数调用在gimbal_task.c,云台行为状态机以及电机状态机设置

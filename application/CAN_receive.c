@@ -27,6 +27,7 @@
 
 
 #include "detect_task.h"
+#include "super_cap_task.h"
 
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
@@ -39,6 +40,9 @@ extern CAN_HandleTypeDef hcan2;
         (ptr)->given_current = (uint16_t)((data)[4] << 8 | (data)[5]);  \
         (ptr)->temperate = (data)[6];                                   \
     }
+    
+
+
 /*
 电机数据, 
 0:底盘电机1 3508电机,  1:底盘电机2 3508电机,2:底盘电机3 3508电机,3:底盘电机4 3508电机;
@@ -55,6 +59,12 @@ static CAN_TxHeaderTypeDef  shoot_tx_message;
 static uint8_t              shoot_can_send_data[8];
 static CAN_TxHeaderTypeDef  super_cap_tx_message;
 static uint8_t              super_cap_can_send_data[8];      
+
+
+extern fp32 input_vot;
+extern fp32 supercap_vot;
+extern fp32 input_current;
+extern fp32 target_power;
 
 /**
   * @brief          hal库CAN回调函数,接收电机数据
@@ -79,13 +89,24 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
         case CAN_TRIGGER_MOTOR_ID:
         case CAN_YAW_MOTOR_ID:
         case CAN_PIT_MOTOR_ID:
+        case CAN_SUPER_CAP_ID:
         {
-            static uint8_t i = 0;
-            //get motor id
-            i = rx_header.StdId - CAN_3508_M1_ID;
-            get_motor_measure(&motor_chassis[i], rx_data);
-            detect_hook(CHASSIS_MOTOR1_TOE + i);
-            break;
+            // if(rx_header.StdId == CAN_SUPER_CAP_ID)  //超电
+            // {                                  
+            //   input_vot = (uint16_t)((rx_data)[0] << 8 | (rx_data)[1]);            
+            //   supercap_vot = (uint16_t)((rx_data)[2] << 8 | (rx_data)[3]);      
+            //   input_current = (uint16_t)((rx_data)[4] << 8 | (rx_data)[5]);  
+            //   target_power = (uint16_t)((rx_data)[6] << 8 | (rx_data)[7]);       
+            // }
+            // else
+            // {
+              static uint8_t i = 0;
+              //get motor id
+              i = rx_header.StdId - CAN_3508_M1_ID;
+              get_motor_measure(&motor_chassis[i], rx_data);
+              detect_hook(CHASSIS_MOTOR1_TOE + i);
+            //}
+              break;
         }
 
         default:
@@ -93,6 +114,8 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
             break;
         }
     }
+
+
 }
 
 
@@ -211,7 +234,7 @@ void CAN_cmd_shoot(int16_t left_fric, int16_t right_fric, int16_t trigger, int16
 void CAN_cmd_super_cap(int16_t temPower)
 {	
    uint32_t send_mail_box;
-    super_cap_tx_message.StdId = CAN_CAP_ALL_ID;
+    super_cap_tx_message.StdId = CAN_SUPER_CAP_ALL_ID;
     super_cap_tx_message.IDE = CAN_ID_STD;
     super_cap_tx_message.RTR = CAN_RTR_DATA;
     super_cap_tx_message.DLC = 0x08;

@@ -49,8 +49,8 @@ typedef enum
     CAN_PIT_MOTOR_ID = 0x20A,
     CAN_GIMBAL_ALL_ID = 0x2FF,
   //超级电容接收ID
-    CAN_CAP_ALL_ID = 0X210,
-    CAN_CAP_ID = 0x211,  
+    CAN_SUPER_CAP_ALL_ID = 0X210,
+    CAN_SUPER_CAP_ID = 0x211,  
 
 } can_msg_id_e; 
 

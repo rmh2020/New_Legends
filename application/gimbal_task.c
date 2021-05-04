@@ -246,8 +246,6 @@ void gimbal_task(void const *pvParameters)
 
     while (1)
     {
-       
-
         gimbal_set_mode(&gimbal_control);                    //设置云台控制模式
         gimbal_mode_change_control_transit(&gimbal_control); //控制模式切换 控制数据过渡
         gimbal_feedback_update(&gimbal_control);             //云台数据反馈

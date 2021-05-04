@@ -349,24 +349,16 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
     //在一个控制周期内，加上 add_time
     static fp32 const add_time = 2 * PI * 0.5f * configTICK_RATE_HZ / CHASSIS_CONTROL_TIME_MS;
 
-  
-
-    // //判断是否要摇摆  当键盘仅单击ctrl或者装甲板受到伤害
-    // if (((IF_KEY_SINGAL_PRESSED_CTRL )|| if_hit() ) && swing_switch == 0)
-    // {   
-    //     if(!(IF_KEY_PRESSED_Q || IF_KEY_PRESSED_E))
-    //     {
-    //         swing_switch = 1;
-    //         swing_time = 0.0f;
-    //     }
-    // }
-    // else if ((IF_KEY_SINGAL_PRESSED_CTRL && !IF_KEY_PRESSED_Q && !IF_KEY_PRESSED_E) && swing_switch == 1)
-    // {
-    //     if(!(IF_KEY_PRESSED_Q || IF_KEY_PRESSED_E))
-    //     {
-    //         swing_switch = 0;
-    //     }
-    // }
+    //判断是否要摇摆  当键盘单击ctrl            (或者装甲板受到伤害摇摆 这个暂时有问题)
+    if ((IF_KEY_SINGAL_PRESSED_CTRL) && swing_switch == 0)
+    {   
+        swing_switch = 1;
+        swing_time = 0.0f;
+    }
+    else if ((IF_KEY_SINGAL_PRESSED_CTRL) && swing_switch == 1)
+    {
+        swing_switch = 0;
+    }
 
     //判断键盘输入是不是在控制底盘运动，底盘在运动减小摇摆角度
     if (chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_FRONT_KEY || chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_BACK_KEY ||
@@ -419,18 +411,34 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
 
 
     /****************************45度角对敌*********************************************/
-    //先按ctrl同时按下q或者e,开启45度角对敌;重复操作取消45度角对敌
-    if((IF_KEY_SINGAL_PRESSED_Q && IF_KEY_PRESSED_CTRL) && pisa_switch == 0 )  //开启左侧45度角对敌
+    //双击 q或者e,开启45度角对敌;重复操作取消45度角对敌
+    if(IF_KEY_SINGAL_PRESSED_Q)
+        key_pressed_num_q++;
+    if(IF_KEY_SINGAL_PRESSED_E)
+        key_pressed_num_e++;
+
+    if(turn_flag_if_double_pressed >= 300)
+    {
+        key_pressed_num_q = 0;
+        key_pressed_num_e = 0;
+    }
+
+
+    if(key_pressed_num_q == 2 && pisa_switch == 0 )  //开启左侧45度角对敌
     {
         pisa_switch = PISA_LEFT;
+        key_pressed_num_q = 0;
     }
-    else if((IF_KEY_SINGAL_PRESSED_E && IF_KEY_PRESSED_CTRL) && pisa_switch == 0 ) //开启右侧45度角对敌
+    else if(key_pressed_num_e == 2 && pisa_switch == 0 ) //开启右侧45度角对敌
     {
         pisa_switch = PISA_RIGHT;
+        key_pressed_num_e = 0;
     }
-    else if(((IF_KEY_SINGAL_PRESSED_Q && IF_KEY_PRESSED_CTRL) || (IF_KEY_SINGAL_PRESSED_E && IF_KEY_PRESSED_CTRL)) && pisa_switch != 0) //关闭45度角对敌
+    else if((key_pressed_num_q == 2 || key_pressed_num_e == 2) && pisa_switch != 0) //关闭45度角对敌
     {
         pisa_switch = PISA_CLOSE;
+        key_pressed_num_q = 0;
+        key_pressed_num_e = 0;
     }
 
     *angle_set = swing_angle + top_angle;

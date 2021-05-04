@@ -38,7 +38,7 @@
   */
 #include "super_cap_task.h"
 #include "can.h"
-#include "remote_Control.h"
+#include "remote_control.h"
 #include "CAN_receive.h"
 
 #include "referee.h"

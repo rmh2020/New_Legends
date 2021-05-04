@@ -10,6 +10,8 @@
 //任务初始化 空闲一段时间
 #define SUPER_CAP_TASK_INIT_TIME 201
 
+
+
 void cap_update_cap_inputvot(int16_t inputvot );
 void cap_update_cap_capvot(int16_t capvot );
 void cap_update_cap_test_current(int16_t current );

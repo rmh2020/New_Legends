@@ -27,49 +27,11 @@ Project File Date:  05/04/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-compiling vision.c...
-..\application\vision.h(142): warning:  #1295-D: Deprecated declaration vision_if_find_target - give arg types
-  bool_t vision_if_find_target();
-..\application\vision.h(146): warning:  #1-D: last line of file ends without a newline
-  #endif
-..\application\vision.c(44): warning:  #223-D: function "usart1_init" declared implicitly
-      usart1_init(Vision_Buffer[0], Vision_Buffer[1], VISION_BUFFER_LEN);
-..\application\vision.c(67): warning:  #223-D: function "memcpy" declared implicitly
-  		memcpy( &VisionRecvData, ReadFormUart, VISION_LEN_PACKED);	
-..\application\vision.c(77): warning:  #223-D: function "xTaskGetTickCount" declared implicitly
-  		Vision_Time_Test[
-OW] = xTaskGetTickCount();
-..\application\vision.c(114): warning:  #223-D: function "memcpy" declared implicitly
-  	memcpy(vision_send_pack, &VisionSendData, 4);
-..\application\vision.c(121): warning:  #223-D: function "memset" declared implicitly
-  	memset(vision_send_pack, 0, 50);
-..\application\vision.c(101): warning:  #177-D: variable "i"  was declared but never referenced
-  	int i;    //循环发送次�?
-..\application\vision.c(102): warning:  #177-D: variable "id1_17mm_speed_limit"  was declared but never referenced
-  	uint16_t id1_17mm_speed_limit;
-..\application\vision.c(103): warning:  #177-D: variable "bullet_speed"  was declared but never referenced
-  	uint16_t bullet_speed;
-..\application\vision.c(197): warning:  #223-D: function "memset" declared implicitly
-              memset(Vision_Buffer[0], 0, 200);    
-..\application\vision.c(209): warning:  #223-D: function "memset" declared implicitly
-  			memset(Vision_Buffer[1], 0, 200);    //对象   内容  长度
-..\application\vision.c(186): warning:  #550-D: variable "this_time_rx_len"  was set but never used
-          static uint16_t this_time_rx_len = 0;
-..\application\vision.c(216): warning:  #1-D: last line of file ends without a newline
-    
-..\application\vision.c: 14 warnings, 0 errors
-compiling gimbal_task.c...
-..\application\vision.h(142): warning:  #1295-D: Deprecated declaration vision_if_find_target - give arg types
-  bool_t vision_if_find_target();
-..\application\vision.h(146): warning:  #1-D: last line of file ends without a newline
-  #endif
-..\application\gimbal_task.c(223): warning:  #177-D: variable "shoot_can_set_current"  was declared but never referenced
-  static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
-..\application\gimbal_task.c: 3 warnings, 0 errors
+compiling chassis_behaviour.c...
 linking...
-Program Size: Code=113724 RO-data=14728 RW-data=1404 ZI-data=59244  
+Program Size: Code=113988 RO-data=14728 RW-data=1404 ZI-data=59244  
 FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 17 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -87,7 +49,7 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:04
+Build Time Elapsed:  00:00:05
 </pre>
 </body>
 </html>
