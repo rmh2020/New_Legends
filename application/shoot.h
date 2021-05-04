@@ -52,10 +52,13 @@
 //电机反馈码盘值范围
 #define HALF_ECD_RANGE              4096
 #define ECD_RANGE                   8191
-//电机rmp 变化成 旋转速度的比例
+//拨盘电机rmp 变化成 旋转速度的比例
 #define MOTOR_RPM_TO_SPEED          0.00290888208665721596153948461415f
 #define MOTOR_ECD_TO_ANGLE          0.000021305288720633905968306772076277f
 #define FULL_COUNT                  18
+
+
+
 //拨弹速度
 #define TRIGGER_SPEED               10.0f
 #define CONTINUE_TRIGGER_SPEED      15.0f
@@ -86,9 +89,13 @@
 #define TRIGGER_READY_PID_MAX_OUT   10000.0f
 #define TRIGGER_READY_PID_MAX_IOUT  200.0f
 
+//摩擦轮电机rmp 变化成 旋转速度的比例
+#define FRIC_RPM_TO_SPEED           0.000415809748903494517209f*5
+
+
 
 //摩擦轮电机PID
-#define FRIC_SPEED_PID_KP        2.0f
+#define FRIC_SPEED_PID_KP        2000.0f
 #define FRIC_SPEED_PID_KI        0.5f
 #define FRIC_SPEED_PID_KD        0.0f
 

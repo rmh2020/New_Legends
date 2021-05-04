@@ -221,8 +221,8 @@ void shoot_control_loop(void)
             shoot_control.given_current = 0;
         }
 
-        shoot_control.fric_motor[LEFT].speed_set = shoot_fric_grade[1];
-        shoot_control.fric_motor[RIGHT].speed_set = -shoot_fric_grade[1];
+        shoot_control.fric_motor[LEFT].speed_set = -shoot_fric_grade[1];
+        shoot_control.fric_motor[RIGHT].speed_set = shoot_fric_grade[1];
 
     }
 
@@ -350,8 +350,8 @@ static void shoot_feedback_update(void)
 {
 
     //更新摩擦轮电机速度
-    shoot_control.fric_motor[LEFT].speed = shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm;
-    shoot_control.fric_motor[RIGHT].speed = shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm;
+    shoot_control.fric_motor[LEFT].speed = shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm * FRIC_RPM_TO_SPEED;
+    shoot_control.fric_motor[RIGHT].speed = shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm * FRIC_RPM_TO_SPEED;
 
     static fp32 speed_fliter_1 = 0.0f;
     static fp32 speed_fliter_2 = 0.0f;

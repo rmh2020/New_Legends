@@ -22,16 +22,21 @@ Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
 E:\file\competition\RM\code\code_reconsitut\New_Legends\MDK-ARM\standard_robot.uvprojx
-Project File Date:  05/01/2021
+Project File Date:  05/04/2021
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-compiling servo_task.c...
+compiling shoot.c...
+..\application\shoot.c(273): warning:  #223-D: function "abs" declared implicitly
+      if(shoot_control.shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed) || abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed)))
+..\application\shoot.c(327): warning:  #223-D: function "get_shooter_heat0_cooling_limit_and_heat0" declared implicitly
+      get_shooter_heat0_cooling_limit_and_heat0(&shoot_control.heat_limit, &shoot_control.heat);
+..\application\shoot.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=113792 RO-data=14724 RW-data=1380 ZI-data=59236  
+Program Size: Code=113828 RO-data=14728 RW-data=1380 ZI-data=59236  
 FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 0 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -49,7 +54,7 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:04
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>
