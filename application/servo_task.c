@@ -43,6 +43,14 @@ uint16_t servo_pwm[4] = {SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_
 //弹仓按键计算 保证双击情况下打开弹仓
 uint8_t magazine_key_num = 0;
 
+const RC_ctrl_t *servo_rc;
+const RC_ctrl_t *last_servo_rc;
+
+#define    IF_KEY_PRESSED_MAGAZINE       ( (servo_rc->key.v & KEY_PRESSED_OFFSET_R)    != 0 )
+#define    LAST_IF_KEY_PRESSED_MAGAZINE       ( (last_servo_rc->key.v & KEY_PRESSED_OFFSET_R)    != 0 )
+#define    IF_KEY_SINGAL_PRESSED_MAGAZINE       ( IF_KEY_PRESSED_MAGAZINE && !LAST_IF_KEY_PRESSED_MAGAZINE )
+
+
 /**
   * @brief          舵机任务
   * @param[in]      pvParameters: NULL
@@ -50,26 +58,36 @@ uint8_t magazine_key_num = 0;
   */
 void servo_task(void const * argument)
 {
+    servo_rc = get_remote_control_point();
+    last_servo_rc = get_last_remote_control_point();
+
     while(1)
     {       
     
-        // if(IF_KEY_SINGAL_PRESSED_R)
-        //     magazine_key_num++;
+        if(IF_KEY_SINGAL_PRESSED_MAGAZINE)
+             magazine_key_num++;
 
         //按下R键 打开或弹仓
-        if(IF_KEY_SINGAL_PRESSED_R && shoot_control.magazine_status == FALSE)
-        {
-            //打开弹仓
+        if(shoot_control.magazine_status == FALSE)
+        {   
+            if(magazine_key_num == 2)
+            {
+                //打开弹仓
             servo_pwm[0] = servo_open_pwm[0];
             shoot_control.magazine_status = TRUE;
             magazine_key_num = 0;
+            }
         }
-        else if(IF_KEY_SINGAL_PRESSED_R && shoot_control.magazine_status == TRUE)
+        else if(shoot_control.magazine_status == TRUE)
         {
-            //关闭弹仓
+            if(magazine_key_num == 2)
+            {
+                //关闭弹仓
             servo_pwm[0] = servo_close_pwm[0];
             shoot_control.magazine_status = FALSE;
             magazine_key_num = 0;
+            }
+            
         }
 
         
@@ -105,7 +123,7 @@ void servo_task(void const * argument)
         }
 
        
-        osDelay(10);
+        osDelay(50);
     }
 }
 

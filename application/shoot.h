@@ -195,5 +195,6 @@ extern shoot_control_t shoot_control;          //射击数据
 //由于射击和云台使用同一个can的id故也射击任务在云台任务中执行
 extern void shoot_init(void);
 extern void shoot_control_loop(void);
+extern bool_t shoot_cmd_to_gimbal_stop(void);
 
 #endif

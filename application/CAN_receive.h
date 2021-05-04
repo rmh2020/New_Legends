@@ -24,6 +24,7 @@
 #include "struct_typedef.h"
 
 #define CHASSIS_CAN hcan2
+#define SUPER_CAP_CAN  hcan2
 #define GIMBAL_CAN hcan1
 #define SHOOT_CAN hcan1
 
@@ -48,6 +49,7 @@ typedef enum
     CAN_PIT_MOTOR_ID = 0x20A,
     CAN_GIMBAL_ALL_ID = 0x2FF,
   //超级电容接收ID
+    CAN_CAP_ALL_ID = 0X210,
     CAN_CAP_ID = 0x211,  
 
 } can_msg_id_e; 
@@ -103,6 +105,12 @@ extern void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int1
   */
 extern void CAN_cmd_shoot(int16_t left_fric, int16_t right_fric, int16_t trigger, int16_t rev);
 
+/**
+  * @brief          超级电容发送功率输出
+  * @param[in]      0x211 超级电容功率
+  * @retval         none
+  */
+extern void CAN_cmd_super_cap(int16_t temPower);
 
 /**
   * @brief          返回yaw 6020电机数据指针

@@ -18,10 +18,12 @@
 #define    VISION_DATA_ERROR      0          //视觉数据错误
 #define    VISION_DATA_CORRECT    1          //视觉数据错误
 
-#define    VISION_LEN_HEADER      3          //帧头长
+#define    VISION_LEN_HEADER      2          //帧头长
 #define    VISION_LEN_DATA        17         //数据段长度,可自定义
-#define    VISIOV_LEN_TAIL        2	         //帧尾CRC16
-#define    VISION_LEN_PACKED      22         //数据包长度
+#define    VISION_LEN_PACKED      20         //数据包长度
+
+
+
 
 #define    VISION_OFF         		  (0x00)   //关闭视觉
 #define    VISION_RED           	  (0x01)   //识别红色
@@ -34,8 +36,8 @@
 #define    VISION_BBUFF_STAND   	  (0x08)   //蓝 小符
 
 //起始字节,协议固定为0xA5
-#define    VISION_SOF              (0xA5)     //可更改？
-#define    VISION_WEI              (0xFF)     //帧尾
+#define    VISION_BEGIN              (0xA5)     //可更改
+#define    VISION_END              (0xFF)     //帧尾
 
 /*-------视觉分辨率预编译--------*/
 #define VISION_MID_YAW		444//640
@@ -68,7 +70,6 @@
 
 //可利用收和发的指令码进行比较,当收和发的指令码相同时,可判定为数据可用
 
-//帧头加CRC8校验,保证发送的指令是正确的
 
 //PC收发与STM32收发成镜像关系,以下结构体适用于STM32,PC需稍作修改
 
@@ -83,20 +84,18 @@ typedef enum
 typedef __packed struct    //3 Byte
 {
 	/* 头 */
-	uint8_t   SOF;			//帧头起始位,暂定0xA5
+	uint8_t   BEGIN;			//帧头起始位,暂定0xA5
 	uint8_t   CmdID;		//指令
-	uint8_t   CRC8;			//帧头CRC校验,保证发送的指令是正确的
 	
 }VisionSendHeader_t;
 
 
-//STM32接收,直接将串口接收到的数据拷贝进结构体 21帧
+//STM32接收,直接将串口接收到的数据拷贝进结构体 22帧
 typedef __packed struct       //17 Byte
 {
 	/* 头 */
-	uint8_t  SOF;			//帧头起始位,暂定0xA5
+	uint8_t  BEGIN;			//帧头起始位,暂定0xA5
 	uint8_t   CmdID; 		//指令
-	uint8_t   CRC8;			//帧头CRC校验,保证发送的指令是正确的
 	
 	/* 数据 */
 	float     pitch_angle;
@@ -109,46 +108,26 @@ typedef __packed struct       //17 Byte
 	uint8_t	  blank_b;			//预留
 	uint8_t	  auto_too_close;   //目标距离太近,视觉发1，否则发0
 	
+	uint8_t   END;
 	
-	/* 尾 */
-	uint16_t  CRC16;     //帧尾     
-	
+
 }VisionRecvData_t;
 
 //STM32发送,直接将打包好的数据一个字节一个字节地发送出去
 typedef struct
 {
-	/* 数据 */
-	float     pitch_angle;     //当前角度
-	float     yaw_angle;       //当前角度                                              (机械?陀螺仪?)�)???????????
-	float     distance;			   //距离
-	uint8_t   lock_sentry;	 	 //是否在抬头识别哨兵
-	uint8_t   base;				     //吊射
+	uint8_t BEGIN;
+
+	uint8_t CmdID;
 	
-	uint8_t   blank_a;		//预留
-	uint8_t	  blank_b;
-	uint8_t	  blank_c;	
+	uint8_t speed;  //速度
 	
-	/* 尾 */
-	uint16_t  CRC16;
-	
+	uint8_t END;
 }VisionSendData_t;
 
 
-//关于如何写入CRC校验值
-//我们可以直接利用官方给的CRC代码
 
-//注意,CRC8和CRC16所占字节不一样,8为一个字节,16为2个字节
 
-//写入    CRC8 调用    Append_CRC8_Check_Sum( param1, param2)
-//其中 param1代表写好了帧头数据的数组(帧头后的数据还没写没有关系),
-//     param2代表CRC8写入后数据长度,我们定义的是头的最后一位,也就是3
-
-//写入    CRC16 调用   Append_CRC16_Check_Sum( param3, param4)
-//其中 param3代表写好了   帧头 + 数据  的数组(跟上面是同一个数组)
-//     param4代表CRC16写入后数据长度,我们定义的整个数据长度是22,所以是22
-
-/*----------------------------------------------------------*/
 
 //命令码ID,用来判断接收的是什么数据
 

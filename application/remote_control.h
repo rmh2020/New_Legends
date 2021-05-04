@@ -161,6 +161,7 @@ extern RC_ctrl_t last_rc_ctrl;
 
 extern void remote_control_init(void);
 extern const RC_ctrl_t *get_remote_control_point(void);
+extern const RC_ctrl_t *get_last_remote_control_point(void);
 extern uint8_t RC_data_is_error(void);
 extern void slove_RC_lost(void);
 extern void slove_data_error(void);

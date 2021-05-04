@@ -370,11 +370,7 @@ void gimbal_behaviour_control_set(fp32 *add_yaw, fp32 *add_pitch, gimbal_control
 
 bool_t gimbal_cmd_to_chassis_stop(void)
 {
-    if (gimbal_behaviour == GIMBAL_INIT || gimbal_behaviour == GIMBAL_CALI || gimbal_behaviour == GIMBAL_MOTIONLESS || gimbal_behaviour == GIMBAL_ZERO_FORCE)
-    {
-        return 1;
-    }
-    else if(shoot_control.magazine_status == TRUE)   //当弹仓打开,底盘无法运动
+    if (gimbal_behaviour == GIMBAL_INIT || gimbal_behaviour == GIMBAL_CALI || gimbal_behaviour == GIMBAL_MOTIONLESS)
     {
         return 1;
     }
@@ -487,8 +483,12 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
     {
         gimbal_behaviour = GIMBAL_ZERO_FORCE;
     }
-    
-    
+
+
+    if(shoot_cmd_to_gimbal_stop())
+    {
+        gimbal_behaviour = GIMBAL_ZERO_FORCE;
+    }
 
     if( toe_is_error(DBUS_TOE))
     {

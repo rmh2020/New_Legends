@@ -53,7 +53,8 @@ static CAN_TxHeaderTypeDef  chassis_tx_message;
 static uint8_t              chassis_can_send_data[8];
 static CAN_TxHeaderTypeDef  shoot_tx_message;
 static uint8_t              shoot_can_send_data[8];
-        
+static CAN_TxHeaderTypeDef  super_cap_tx_message;
+static uint8_t              super_cap_can_send_data[8];      
 
 /**
   * @brief          hal库CAN回调函数,接收电机数据
@@ -202,6 +203,30 @@ void CAN_cmd_shoot(int16_t left_fric, int16_t right_fric, int16_t trigger, int16
 
 }
 
+/**
+  * @brief          超级电容发送功率输出
+  * @param[in]      0x211 超级电容功率
+  * @retval         none
+  */
+void CAN_cmd_super_cap(int16_t temPower)
+{	
+   uint32_t send_mail_box;
+    super_cap_tx_message.StdId = CAN_CAP_ALL_ID;
+    super_cap_tx_message.IDE = CAN_ID_STD;
+    super_cap_tx_message.RTR = CAN_RTR_DATA;
+    super_cap_tx_message.DLC = 0x08;
+    super_cap_can_send_data[0] = (temPower >> 8);
+    super_cap_can_send_data[1] = temPower;
+    super_cap_can_send_data[2] = 0;
+    super_cap_can_send_data[3] = 0;
+    super_cap_can_send_data[4] = 0;
+    super_cap_can_send_data[5] = 0;
+    super_cap_can_send_data[6] = 0;
+    super_cap_can_send_data[7] = 0;
+
+    HAL_CAN_AddTxMessage(&SUPER_CAP_CAN, &super_cap_tx_message, super_cap_can_send_data, &send_mail_box);
+
+}
 
 /**
   * @brief          返回yaw 6020电机数据指针

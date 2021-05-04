@@ -513,3 +513,20 @@ static void shoot_bullet_control(void)
     }
 }
 
+/**
+  * @brief          弹仓打开时,云台要停止运动
+  * @param[in]      none
+  * @retval         1: no move 0:normal
+  */
+
+bool_t shoot_cmd_to_gimbal_stop(void)
+{
+    if (shoot_control.magazine_status == TRUE)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
