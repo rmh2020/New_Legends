@@ -71,7 +71,7 @@ void cap_update_cap_target_power(int16_t power)
 }
 
 //主任务
-void Super_cap_task(void)
+void super_cap_task(void const *pvParameters)
 {
 
 	//等待陀螺仪任务更新陀螺仪数据

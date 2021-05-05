@@ -59,6 +59,7 @@
 "standard_tpye_c\ui_task.o"
 "standard_tpye_c\remote_control.o"
 "standard_tpye_c\software_reset_task.o"
+"standard_tpye_c\super_cap_task.o"
 "standard_tpye_c\oled.o"
 "standard_tpye_c\bmi088driver.o"
 "standard_tpye_c\bmi088middleware.o"

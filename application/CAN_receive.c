@@ -88,21 +88,21 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
         case CAN_PIT_MOTOR_ID:
         case CAN_SUPER_CAP_ID:
         {
-            // if(rx_header.StdId == CAN_SUPER_CAP_ID)  //³¬µç
-            // {                                  
-            //   cap_update_cap_inputvot((int16_t)((rx_data)[0] << 8 | (rx_data)[1]));            
-            //   cap_update_cap_capvot = ((int16_t)((rx_data)[2] << 8 | (rx_data)[3]));      
-            //   cap_update_cap_test_current =((int16_t)((rx_data)[4] << 8 | (rx_data)[5]));  
-            //   cap_update_cap_target_power = ((int16_t)((rx_data)[6] << 8 | (rx_data)[7]));       
-            // }
-            // else
-            // {
+            if(rx_header.StdId == CAN_SUPER_CAP_ID)  //³¬µç
+            {                                  
+              cap_update_cap_inputvot((float)((int16_t)(rx_data)[1] << 8 | (rx_data)[0]) / 100.0f) ;            
+              cap_update_cap_capvot((float)((int16_t)(rx_data)[3] << 8 | (rx_data)[2]) / 100.0f);      
+              cap_update_cap_test_current((float)((int16_t)(rx_data)[5] << 8 | (rx_data)[4]) / 100.0f) ;  
+              cap_update_cap_target_power((float)((int16_t)(rx_data)[7] << 8 | (rx_data)[6]) / 100.0f) ;       
+            }
+            else
+            {
               static uint8_t i = 0;
               //get motor id
               i = rx_header.StdId - CAN_3508_M1_ID;
               get_motor_measure(&motor_chassis[i], rx_data);
               detect_hook(CHASSIS_MOTOR1_TOE + i);
-            //}
+            }
               break;
         }
 

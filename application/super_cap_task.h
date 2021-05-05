@@ -18,7 +18,7 @@ void cap_update_cap_test_current(int16_t current );
 void cap_update_cap_target_power(int16_t power );
 
 void cap_init(void);
-void Super_cap_task(void);
+extern void super_cap_task(void const *pvParameters);
 
 
 #endif
