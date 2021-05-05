@@ -122,6 +122,7 @@ void chassis_task(void const *pvParameters)
     //wait a time 
     //空闲一段时间
     vTaskDelay(CHASSIS_TASK_INIT_TIME);
+
     //chassis init
     //底盘初始化
     chassis_init(&chassis_move);
@@ -134,6 +135,9 @@ void chassis_task(void const *pvParameters)
 
     while (1)
     {
+        
+
+
         //设置底盘控制模式
         chassis_set_mode(&chassis_move);
         //模式切换数据保存

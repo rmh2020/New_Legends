@@ -61,10 +61,7 @@ static CAN_TxHeaderTypeDef  super_cap_tx_message;
 static uint8_t              super_cap_can_send_data[8];      
 
 
-extern fp32 input_vot;
-extern fp32 supercap_vot;
-extern fp32 input_current;
-extern fp32 target_power;
+
 
 /**
   * @brief          hal库CAN回调函数,接收电机数据
@@ -93,10 +90,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
         {
             // if(rx_header.StdId == CAN_SUPER_CAP_ID)  //超电
             // {                                  
-            //   input_vot = (uint16_t)((rx_data)[0] << 8 | (rx_data)[1]);            
-            //   supercap_vot = (uint16_t)((rx_data)[2] << 8 | (rx_data)[3]);      
-            //   input_current = (uint16_t)((rx_data)[4] << 8 | (rx_data)[5]);  
-            //   target_power = (uint16_t)((rx_data)[6] << 8 | (rx_data)[7]);       
+            //   cap_update_cap_inputvot((int16_t)((rx_data)[0] << 8 | (rx_data)[1]));            
+            //   cap_update_cap_capvot = ((int16_t)((rx_data)[2] << 8 | (rx_data)[3]));      
+            //   cap_update_cap_test_current =((int16_t)((rx_data)[4] << 8 | (rx_data)[5]));  
+            //   cap_update_cap_target_power = ((int16_t)((rx_data)[6] << 8 | (rx_data)[7]));       
             // }
             // else
             // {

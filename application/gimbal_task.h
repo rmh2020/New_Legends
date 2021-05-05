@@ -125,10 +125,10 @@
 #define GIMBAL_INIT_PITCH_SPEED     0.004f
 #define GIMBAL_INIT_YAW_SPEED       0.002f  //0.005
 
-#define INIT_YAW_SET    -1.5f
+#define INIT_YAW_SET    1.6f
 #define INIT_PITCH_SET  0.0f
 
-#define CHASSIS_COORD_CHANGE 1.5f  //底盘坐标变换
+#define CHASSIS_COORD_CHANGE -1.6f  //底盘坐标变换
 
 
 //云台校准中值的时候，发送原始电流值，以及堵转时间，通过陀螺仪判断堵转

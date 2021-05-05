@@ -39,6 +39,8 @@
 #include "voltage_task.h"
 #include "servo_task.h"
 #include "ui_task.h"
+#include "super_cap_task.h"
+#include "software_reset_task.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,6 +58,9 @@ osThreadId usb_task_handle;
 osThreadId battery_voltage_handle;
 osThreadId servo_task_handle;
 osThreadId ui_task_handle;
+osThreadId super_cap_task_handle;
+osThreadId software_reset_task_handle;
+
 
 /* USER CODE END PTD */
 
@@ -189,6 +194,13 @@ void MX_FREERTOS_Init(void) {
     osThreadDef(UI, ui_task, osPriorityNormal, 0, 512);
     ui_task_handle = osThreadCreate(osThread(UI), NULL);
 
+    // osThreadDef(SIPER_CAP, super_cap_task, osPriorityNormal, 0, 128);
+    // super_cap_task = osThreadCreate(osThread(SIPER_CAP), NULL);
+
+    // osThreadDef(SOTFWARE_RESET, software_reset_task, osPriorityNormal, 0, 128);
+    // software_reset_task_handle = osThreadCreate(osThread(SOTFWARE_RESET), NULL);
+ 
+ 
   /* USER CODE END RTOS_THREADS */
 
 }
