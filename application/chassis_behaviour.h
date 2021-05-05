@@ -75,10 +75,13 @@ extern chassis_behaviour_e last_chassis_behaviour_mode;
 extern bool_t top_switch; 
 //45度角对敌动作开关
 extern bool_t pisa_switch;  
-
+extern uint16_t pisa_delay_time; 
 #define PISA_CLOSE 0
 #define PISA_LEFT 1
 #define PISA_RIGHT 2
+
+#define PISA_DELAY_TIME 500
+
 
 
 #define CHASSIS_OPEN_RC_SCALE 10 // in CHASSIS_OPEN mode, multiply the value. 在chassis_open 模型下，遥控器乘以该比例发送到can上

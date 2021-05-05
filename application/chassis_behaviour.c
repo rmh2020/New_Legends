@@ -147,8 +147,6 @@ bool_t top_switch = 0;
 fp32 pisa_angle = 0;    //保留45度对敌前的云台相对底盘角度
 bool_t pisa_switch = 0; 
 
-uint8_t key_pressed_num_q = 0;
-uint8_t key_pressed_num_e = 0;
 
 
 
@@ -338,9 +336,12 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
 
     //遥控器的通道值以及键盘按键 得出 一般情况下的速度设定值
     chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
+    
 
 
     /**************************扭腰控制输入*******************************/
+    //判断是否要摇摆  当键盘单击C            (或者装甲板受到伤害摇摆 这个暂时有问题)
+
     //摇摆角度是利用sin函数生成，swing_time 是sin函数的输入值
     static fp32 swing_time = 0.0f;
     
@@ -349,13 +350,12 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
     //在一个控制周期内，加上 add_time
     static fp32 const add_time = 2 * PI * 0.5f * configTICK_RATE_HZ / CHASSIS_CONTROL_TIME_MS;
 
-    //判断是否要摇摆  当键盘单击ctrl            (或者装甲板受到伤害摇摆 这个暂时有问题)
-    if ((IF_KEY_SINGAL_PRESSED_CTRL) && swing_switch == 0)
+    if ((IF_KEY_SINGAL_PRESSED_C) && swing_switch == 0)
     {   
         swing_switch = 1;
         swing_time = 0.0f;
     }
-    else if ((IF_KEY_SINGAL_PRESSED_CTRL) && swing_switch == 1)
+    else if ((IF_KEY_SINGAL_PRESSED_C) && swing_switch == 1)
     {
         swing_switch = 0;
     }
@@ -388,6 +388,7 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
 
    
     /**************************小陀螺控制输入********************************/
+    //单击F开启和关闭小陀螺
     if(IF_KEY_SINGAL_PRESSED_F && top_switch == 0 )  //开启小陀螺
     {
         top_switch = 1;
@@ -411,35 +412,27 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
 
 
     /****************************45度角对敌*********************************************/
-    //双击 q或者e,开启45度角对敌;重复操作取消45度角对敌
-    if(IF_KEY_SINGAL_PRESSED_Q)
-        key_pressed_num_q++;
-    if(IF_KEY_SINGAL_PRESSED_E)
-        key_pressed_num_e++;
+    //长按CTRL且单击Q ,开启左45度角对敌;重复操作取消45度角对敌
+    //长按CTRL且单击E ,开启右45度角对敌;重复操作取消45度角对敌
 
-    if(turn_switch_delay_time >= TURN_SWITCH_DELAY_TIME)
-    {
-        key_pressed_num_q = 0;
-        key_pressed_num_e = 0;
-    }
-
-
-    if(key_pressed_num_q == 2 && pisa_switch == 0 )  //开启左侧45度角对敌
+    if(IF_KEY_PRESSED_CTRL && IF_KEY_SINGAL_PRESSED_Q && pisa_switch == 0)//打开左侧45度对敌
     {
         pisa_switch = PISA_LEFT;
-        key_pressed_num_q = 0;
     }
-    else if(key_pressed_num_e == 2 && pisa_switch == 0 ) //开启右侧45度角对敌
-    {
-        pisa_switch = PISA_RIGHT;
-        key_pressed_num_e = 0;
-    }
-    else if((key_pressed_num_q == 2 || key_pressed_num_e == 2) && pisa_switch != 0) //关闭45度角对敌
+    else if(IF_KEY_PRESSED_CTRL && IF_KEY_SINGAL_PRESSED_Q && pisa_switch != 0)//关闭左侧45度对敌
     {
         pisa_switch = PISA_CLOSE;
-        key_pressed_num_q = 0;
-        key_pressed_num_e = 0;
     }
+
+    if(IF_KEY_PRESSED_CTRL && IF_KEY_SINGAL_PRESSED_E && pisa_switch == 0)//打开右侧45度对敌
+    {
+        pisa_switch = PISA_RIGHT;
+    }
+    else if(IF_KEY_PRESSED_CTRL && IF_KEY_SINGAL_PRESSED_E && pisa_switch != 0)//关闭右侧45度对敌
+    {
+        pisa_switch = PISA_CLOSE;
+    }
+
 
     *angle_set = swing_angle + top_angle;
 }

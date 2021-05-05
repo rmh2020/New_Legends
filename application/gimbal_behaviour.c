@@ -197,14 +197,7 @@ static void gimbal_init_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal
   */
 static void gimbal_cali_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
 
-/**
-  * @brief          when gimbal behaviour mode is GIMBAL_ABSOLUTE_ANGLE, the function is called
-  *                 and gimbal control mode is gyro mode. 
-  * @param[out]     yaw: yaw axia absolute angle increment, unit rad
-  * @param[out]     pitch: pitch axia absolute angle increment,unit rad
-  * @param[in]      gimbal_control_set: gimbal data
-  * @retval         none
-  */
+
 /**
   * @brief          云台陀螺仪控制，电机是陀螺仪角度控制，
   * @param[out]     yaw: yaw轴角度控制，为角度的增量 单位 rad
@@ -254,10 +247,15 @@ gimbal_behaviour_e last_gimbal_behaviour = GIMBAL_ZERO_FORCE;
 uint16_t turn_switch_delay_time = 0;  //防止两次按键被误识别为一次 主要是怕与45度角对敌产生冲突
 
 
-//自瞄开关
-bool_t auto_switch = 0;
-//云台转头开关
-uint8_t gimbal_turn_switch = 0; 
+//自瞄相关数据
+bool_t auto_switch = 0;  //自瞄开关
+
+
+//云台转头相关数据
+uint8_t gimbal_turn_switch = 0;         //云台转头开关
+
+
+
 
 /**
   * @brief          the function is called by gimbal_set_mode function in gimbal_task.c
@@ -657,49 +655,29 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
 
 
     {
-        //左转 后转 向后转开关 0表示无操作 1表示左转 2表示右转 3表示后转
-         
+        
         static fp32 gimbal_end_angle = 0.0f;
 
-        if(gimbal_turn_switch != 0 && turn_switch_delay_time<TURN_SWITCH_DELAY_TIME)
-            turn_switch_delay_time++;
 
-        //由于云台不稳暂时注释
-        if(turn_switch_delay_time == TURN_SWITCH_DELAY_TIME)
+        //仅单击Q 左转90度 E 右转90度V 后转180度    避免与ctrl+q混淆
+        if(IF_KEY_SINGAL_PRESSED_Q && ! IF_KEY_PRESSED_CTRL)
         {   
-            if(gimbal_turn_switch == 1)
-                gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle - PI/2);
-            else if(gimbal_turn_switch == 2)
-                gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI/2);
-            else if(gimbal_turn_switch == 3)
-                gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
-
-            turn_switch_delay_time++ ; 
+            gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle - PI/2);
+            gimbal_turn_switch = 1;
         }
-
-        // 单击Q云台左转90度, 单击E云台右转90度, 单击V云台向后转180度.
-        if (IF_KEY_SINGAL_PRESSED_Q)
-        {           
-            if (gimbal_turn_switch == 0)      
-                gimbal_turn_switch = 1;      
+        else if(IF_KEY_SINGAL_PRESSED_E && ! IF_KEY_PRESSED_CTRL)
+        {   
+            gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI/2);
+            gimbal_turn_switch = 1;
         }
-        else if (IF_KEY_SINGAL_PRESSED_E)
-        {
-            if (gimbal_turn_switch == 0)
-                gimbal_turn_switch = 2;
-        }
-        else if (IF_KEY_SINGAL_PRESSED_V)
-        {
-            if (gimbal_turn_switch == 0)
-                gimbal_turn_switch = 3;
-
-            
-        }
-        
-       
+        else if(IF_KEY_SINGAL_PRESSED_V && ! IF_KEY_PRESSED_CTRL)
+        {   
+            gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
+            gimbal_turn_switch = 1;
+        } 
 
 
-        if (gimbal_turn_switch > TURN_SWITCH_DELAY_TIME)
+        if (gimbal_turn_switch == 1)
         {
             //不断控制到掉头的目标值，正转，反装是随机
             if (rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle) > 0.0f)
@@ -712,9 +690,9 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
             }
         }
         //到达对应角度后停止
-        if (gimbal_turn_switch > TURN_SWITCH_DELAY_TIME && fabs(rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle)) < 0.01f)
+        if (gimbal_turn_switch == 1 && fabs(rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle)) < 0.01f)
         {
-            gimbal_turn_switch = 0;-
+            gimbal_turn_switch = 0;
             turn_switch_delay_time = 0;
         }
 
