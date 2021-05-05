@@ -417,7 +417,7 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
     if(IF_KEY_SINGAL_PRESSED_E)
         key_pressed_num_e++;
 
-    if(turn_flag_if_double_pressed >= 300)
+    if(turn_switch_delay_time >= TURN_SWITCH_DELAY_TIME)
     {
         key_pressed_num_q = 0;
         key_pressed_num_e = 0;

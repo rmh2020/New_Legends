@@ -53,6 +53,9 @@
 #include "struct_typedef.h"
 
 #include "gimbal_task.h"
+#define TURN_SWITCH_DELAY_TIME 300
+
+
 typedef enum
 {
   GIMBAL_ZERO_FORCE = 0,             //无力模式
@@ -65,6 +68,8 @@ typedef enum
 } gimbal_behaviour_e;
 
 
+
+
 //云台行为状态机
 extern gimbal_behaviour_e gimbal_behaviour;
 extern gimbal_behaviour_e last_gimbal_behaviour;
@@ -74,7 +79,7 @@ extern  bool_t auto_switch;
 //云台转头开关
 extern uint8_t gimbal_turn_switch;
 
-extern uint16_t turn_flag_if_double_pressed ;  //防止两次按键被误识别为一次 主要是怕与45度角对敌产生冲突
+extern uint16_t turn_switch_delay_time ;  //防止两次按键被误识别为一次 主要是怕与45度角对敌产生冲突
 
 /**
   * @brief          被gimbal_set_mode函数调用在gimbal_task.c,云台行为状态机以及电机状态机设置

@@ -27,11 +27,18 @@ Project File Date:  05/05/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-compiling CAN_receive.c...
+compiling gimbal_behaviour.c...
+..\application\vision.h(142): warning:  #1295-D: Deprecated declaration vision_if_find_target - give arg types
+  bool_t vision_if_find_target();
+..\application\vision.h(146): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\application\gimbal_behaviour.c(247): warning:  #177-D: function "gimbal_auto_control"  was declared but never referenced
+  static void gimbal_auto_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
+..\application\gimbal_behaviour.c: 3 warnings, 0 errors
 linking...
-Program Size: Code=114720 RO-data=14768 RW-data=1428 ZI-data=59244  
+Program Size: Code=114844 RO-data=14764 RW-data=1428 ZI-data=59244  
 FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 0 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 

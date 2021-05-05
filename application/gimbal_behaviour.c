@@ -251,7 +251,7 @@ gimbal_behaviour_e gimbal_behaviour = GIMBAL_ZERO_FORCE;
 gimbal_behaviour_e last_gimbal_behaviour = GIMBAL_ZERO_FORCE;
 
 
-uint16_t turn_flag_if_double_pressed = 0;  //防止两次按键被误识别为一次 主要是怕与45度角对敌产生冲突
+uint16_t turn_switch_delay_time = 0;  //防止两次按键被误识别为一次 主要是怕与45度角对敌产生冲突
 
 
 //自瞄开关
@@ -657,49 +657,49 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
 
 
     {
-         //由于云台不稳,暂时注释
         //左转 后转 向后转开关 0表示无操作 1表示左转 2表示右转 3表示后转
          
         static fp32 gimbal_end_angle = 0.0f;
 
-        if(gimbal_turn_switch != 0 && turn_flag_if_double_pressed<300)
-            turn_flag_if_double_pressed++;
+        if(gimbal_turn_switch != 0 && turn_switch_delay_time<TURN_SWITCH_DELAY_TIME)
+            turn_switch_delay_time++;
 
         //由于云台不稳暂时注释
-        // if(turn_flag_if_double_pressed >= 300)
-        // {   
-        //     if(gimbal_turn_switch == 1)
-        //         gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle - PI/2);
-        //     else if(gimbal_turn_switch == 2)
-        //         gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI/2);
-        //     else if(gimbal_turn_switch == 3)
-        //     gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
-        // }
+        if(turn_switch_delay_time == TURN_SWITCH_DELAY_TIME)
+        {   
+            if(gimbal_turn_switch == 1)
+                gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle - PI/2);
+            else if(gimbal_turn_switch == 2)
+                gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI/2);
+            else if(gimbal_turn_switch == 3)
+                gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
+
+            turn_switch_delay_time++ ; 
+        }
 
         // 单击Q云台左转90度, 单击E云台右转90度, 单击V云台向后转180度.
-        if (IF_KEY_SINGAL_PRESSED_Q && !IF_KEY_PRESSED_CTRL)
+        if (IF_KEY_SINGAL_PRESSED_Q)
         {           
             if (gimbal_turn_switch == 0)      
                 gimbal_turn_switch = 1;      
         }
-        else if (IF_KEY_SINGAL_PRESSED_E && !IF_KEY_PRESSED_CTRL)
+        else if (IF_KEY_SINGAL_PRESSED_E)
         {
             if (gimbal_turn_switch == 0)
                 gimbal_turn_switch = 2;
         }
-        else if (IF_KEY_SINGAL_PRESSED_V && !IF_KEY_PRESSED_CTRL)
+        else if (IF_KEY_SINGAL_PRESSED_V)
         {
             if (gimbal_turn_switch == 0)
-            {
-                gimbal_turn_switch = 1;
-                //保存掉头的目标值
-            }
+                gimbal_turn_switch = 3;
+
+            
         }
         
        
 
 
-        if (gimbal_turn_switch != 0)
+        if (gimbal_turn_switch > TURN_SWITCH_DELAY_TIME)
         {
             //不断控制到掉头的目标值，正转，反装是随机
             if (rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle) > 0.0f)
@@ -712,13 +712,11 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
             }
         }
         //到达对应角度后停止
-        if (gimbal_turn_switch != 0 && fabs(rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle)) < 0.01f)
+        if (gimbal_turn_switch > TURN_SWITCH_DELAY_TIME && fabs(rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle)) < 0.01f)
         {
-            gimbal_turn_switch = 0;
-            turn_flag_if_double_pressed = 0;
+            gimbal_turn_switch = 0;-
+            turn_switch_delay_time = 0;
         }
-
-
 
     }
 
