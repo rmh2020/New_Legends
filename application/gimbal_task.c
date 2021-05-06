@@ -547,7 +547,7 @@ static void gimbal_init(gimbal_control_t *init)
     vision_send_data(CmdID);
 
     //由于自动校准有问题,只能暂时手动校准
-    set_hand_operator_gimbal_hook(YAW_OFFSET, PITCH_OFFSET, MAX_YAW, MIN_YAW, MIN_PITCH, MAX_PITCH);
+    set_hand_operator_gimbal_hook(YAW_OFFSET, PITCH_OFFSET, MAX_YAW, MIN_YAW, MAX_PITCH, MIN_PITCH);
     
 
     
@@ -730,8 +730,7 @@ static void gimbal_set_control(gimbal_control_t *set_control)
 
     gimbal_behaviour_control_set(&add_yaw_angle, &add_pitch_angle, set_control);
 
-    //由于pitch轴加了同步带, 需要乘以减速比
-    //add_pitch_angle = add_pitch_angle / GGIMBAL_PITCH_REDUCTION_RATIO;
+
 
     //yaw电机模式控制
     if (set_control->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_RAW)

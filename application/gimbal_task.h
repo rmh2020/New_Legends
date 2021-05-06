@@ -32,21 +32,21 @@
 #include "pid.h"
 #include "remote_control.h"
 //pitch 速度环 PID参数以及 PID最大输出，积分输出
-#define PITCH_SPEED_PID_KP        1000.0f  //2900
+#define PITCH_SPEED_PID_KP        2000.0f  //2900
 #define PITCH_SPEED_PID_KI        0.0f
 #define PITCH_SPEED_PID_KD        0.0f
 #define PITCH_SPEED_PID_MAX_OUT   30000.0f
 #define PITCH_SPEED_PID_MAX_IOUT  10000.0f
 
 //yaw 速度环 PID参数以及 PID最大输出，积分输出
-#define YAW_SPEED_PID_KP        900.0f  //1800
+#define YAW_SPEED_PID_KP        2900.0f  //1800
 #define YAW_SPEED_PID_KI        0.0f   //20
 #define YAW_SPEED_PID_KD        0.0f
 #define YAW_SPEED_PID_MAX_OUT   30000.0f
 #define YAW_SPEED_PID_MAX_IOUT  5000.0f
 
 //pitch 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define PITCH_GYRO_ABSOLUTE_PID_KP 2.0f   //15
+#define PITCH_GYRO_ABSOLUTE_PID_KP 6.0f   //15
 #define PITCH_GYRO_ABSOLUTE_PID_KI 0.0f
 #define PITCH_GYRO_ABSOLUTE_PID_KD 0.0f
 
@@ -69,7 +69,7 @@
 #define PITCH_ENCODE_RELATIVE_PID_MAX_IOUT 0.0f
 
 //yaw 角度环 角度由编码器 PID参数以及 PID最大输出，积分输出
-#define YAW_ENCODE_RELATIVE_PID_KP        1.0f  //8
+#define YAW_ENCODE_RELATIVE_PID_KP        8.0f  //8
 #define YAW_ENCODE_RELATIVE_PID_KI        0.0f
 #define YAW_ENCODE_RELATIVE_PID_KD        0.0f
 #define YAW_ENCODE_RELATIVE_PID_MAX_OUT   10.0f
@@ -95,11 +95,13 @@
 #define RC_DEADBAND   10
 
 
-#define YAW_RC_SEN    -0.000005f  //0.000005f
-#define PITCH_RC_SEN  -0.000006f //0.005
+//云台 遥控器速度
+#define YAW_RC_SEN    -0.000005f  
+#define PITCH_RC_SEN  -0.000006f 
 
-#define YAW_MOUSE_SEN   0.00005f
-#define PITCH_MOUSE_SEN 0.00015f
+//云台 鼠标速度
+#define YAW_MOUSE_SEN   0.00003f
+#define PITCH_MOUSE_SEN -0.00010f
 
 #define YAW_ENCODE_SEN    0.01f
 #define PITCH_ENCODE_SEN  0.01f
@@ -161,7 +163,7 @@
 #define MAX_YAW         2*PI
 
 #define MIN_PITCH      -1.7f
-#define MAX_PITCH       3.0f
+#define MAX_PITCH       2.5f
 
 
 #define GIMBAL_ACCEL_YAW_NUM 0.002f
