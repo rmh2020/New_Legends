@@ -32,21 +32,21 @@
 #include "pid.h"
 #include "remote_control.h"
 //pitch 速度环 PID参数以及 PID最大输出，积分输出
-#define PITCH_SPEED_PID_KP        2900.0f
+#define PITCH_SPEED_PID_KP        1000.0f  //2900
 #define PITCH_SPEED_PID_KI        0.0f
 #define PITCH_SPEED_PID_KD        0.0f
 #define PITCH_SPEED_PID_MAX_OUT   30000.0f
 #define PITCH_SPEED_PID_MAX_IOUT  10000.0f
 
 //yaw 速度环 PID参数以及 PID最大输出，积分输出
-#define YAW_SPEED_PID_KP        1800.0f
+#define YAW_SPEED_PID_KP        900.0f  //1800
 #define YAW_SPEED_PID_KI        0.0f   //20
 #define YAW_SPEED_PID_KD        0.0f
 #define YAW_SPEED_PID_MAX_OUT   30000.0f
 #define YAW_SPEED_PID_MAX_IOUT  5000.0f
 
 //pitch 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define PITCH_GYRO_ABSOLUTE_PID_KP 5.0f   //15
+#define PITCH_GYRO_ABSOLUTE_PID_KP 2.0f   //15
 #define PITCH_GYRO_ABSOLUTE_PID_KI 0.0f
 #define PITCH_GYRO_ABSOLUTE_PID_KD 0.0f
 
@@ -125,10 +125,10 @@
 #define GIMBAL_INIT_PITCH_SPEED     0.004f
 #define GIMBAL_INIT_YAW_SPEED       0.002f  //0.005
 
-#define INIT_YAW_SET    1.6f
+#define INIT_YAW_SET    0.0f
 #define INIT_PITCH_SET  0.0f
 
-#define CHASSIS_COORD_CHANGE -1.6f  //底盘坐标变换
+#define CHASSIS_COORD_CHANGE 0.0f  //底盘坐标变换
 
 
 //云台校准中值的时候，发送原始电流值，以及堵转时间，通过陀螺仪判断堵转
@@ -152,19 +152,20 @@
 #ifndef MOTOR_ECD_TO_RAD
 #define MOTOR_ECD_TO_RAD 0.000766990394f //      2*  PI  /8192
 
+
 //限幅 需要自己手动校准  
-#define PI             3.1415926f
-#define MID_YAW         0
+#define YAW_OFFSET        1747  //编码器
+#define PITCH_OFFSET      1413  //编码器
+
 #define MIN_YAW         -2*PI
 #define MAX_YAW         2*PI
-#define MID_PITCH       0.0f
-#define MIN_PITCH      -2.1f
-#define MAX_PITCH       2.2f
+
+#define MIN_PITCH      -1.7f
+#define MAX_PITCH       3.0f
 
 
 #define GIMBAL_ACCEL_YAW_NUM 0.002f
 #define GIMBAL_ACCEL_PITCH_NUM 0.002f
-
 
 
 
@@ -301,4 +302,21 @@ extern bool_t cmd_cali_gimbal_hook(uint16_t *yaw_offset, uint16_t *pitch_offset,
   * @waring         这个函数使用到gimbal_control 静态变量导致函数不适用以上通用指针复用
   */
 extern void set_cali_gimbal_hook(const uint16_t yaw_offset, const uint16_t pitch_offset, const fp32 max_yaw, const fp32 min_yaw, const fp32 max_pitch, const fp32 min_pitch);
+
+
+/**
+  * @brief          手动设置云台编码器中值，最小最大机械相对角度
+  * @param[in]      yaw_offse:yaw 中值
+  * @param[in]      pitch_offset:pitch 中值
+  * @param[in]      max_yaw:max_yaw:yaw 最大相对角度
+  * @param[in]      min_yaw:yaw 最小相对角度
+  * @param[in]      max_yaw:pitch 最大相对角度
+  * @param[in]      min_yaw:pitch 最小相对角度
+  * @retval         返回空
+  * @waring         这个函数使用到gimbal_control 静态变量导致函数不适用以上通用指针复用
+  */
+extern void set_hand_operator_gimbal_hook(const uint16_t yaw_offset, const uint16_t pitch_offset, const fp32 max_yaw, const fp32 min_yaw, const fp32 max_pitch, const fp32 min_pitch);
+
+
+
 #endif

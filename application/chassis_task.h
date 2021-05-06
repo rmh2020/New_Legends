@@ -124,7 +124,7 @@
 
 //chassis motor speed PID
 //底盘电机速度环PID
-#define M3505_MOTOR_SPEED_PID_KP 15000.0f
+#define M3505_MOTOR_SPEED_PID_KP 7000.0f
 #define M3505_MOTOR_SPEED_PID_KI 10.0f
 #define M3505_MOTOR_SPEED_PID_KD 0.0f
 #define M3505_MOTOR_SPEED_PID_MAX_OUT MAX_MOTOR_CAN_CURRENT
@@ -132,7 +132,7 @@
 
 //chassis follow angle PID
 //底盘旋转跟随PID
-#define CHASSIS_FOLLOW_GIMBAL_PID_KP 6.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_KP 3.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_KD 0.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 6.0f
@@ -194,11 +194,7 @@ typedef struct
 
 //底盘运动数据
 extern chassis_move_t chassis_move;
-/**
-  * @brief          chassis task, osDelay CHASSIS_CONTROL_TIME_MS (2ms) 
-  * @param[in]      pvParameters: null
-  * @retval         none
-  */
+
 /**
   * @brief          底盘任务，间隔 CHASSIS_CONTROL_TIME_MS 2ms
   * @param[in]      pvParameters: 空
@@ -206,14 +202,7 @@ extern chassis_move_t chassis_move;
   */
 extern void chassis_task(void const *pvParameters);
 
-/**
-  * @brief          accroding to the channel value of remote control, calculate chassis vertical and horizontal speed set-point
-  *                 
-  * @param[out]     vx_set: vertical speed set-point
-  * @param[out]     vy_set: horizontal speed set-point
-  * @param[out]     chassis_move_rc_to_vector: "chassis_move" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          根据遥控器通道值，计算纵向和横移速度
   *                 
