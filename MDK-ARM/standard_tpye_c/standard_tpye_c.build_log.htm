@@ -27,25 +27,13 @@ Project File Date:  05/05/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-compiling freertos.c...
-..\application\software_reset_task.h(33): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Src/freertos.c(194): warning:  #144-D: a value of type "void (*)(void *)" cannot be used to initialize an entity of type "os_pthread"
-      
-sThreadDef(UI, ui_task, osPriorityNormal, 0, 512);
-../Src/freertos.c: 2 warnings, 0 errors
-compiling referee_control.c...
-..\application\referee_control.c(229): warning:  #1-D: last line of file ends without a newline
-  }
-..\application\referee_control.c: 1 warning, 0 errors
-compiling chassis_task.c...
+compiling chassis_behaviour.c...
 compiling shoot.c...
 ..\application\shoot.c(277): warning:  #223-D: function "abs" declared implicitly
       if(shoot_control.shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed) || abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed)))
 ..\application\shoot.c(536): warning:  #1-D: last line of file ends without a newline
   }
 ..\application\shoot.c: 2 warnings, 0 errors
-compiling chassis_behaviour.c...
 compiling main.c...
 ..\application\vision.h(142): warning:  #1295-D: Deprecated declaration vision_if_find_target - give arg types
   bool_t vision_if_find_target();
@@ -54,8 +42,20 @@ compiling main.c...
 ../Src/main.c(152): warning:  #223-D: function "vision_init" declared implicitly
       vision_init();
 ../Src/main.c: 3 warnings, 0 errors
+compiling freertos.c...
+..\application\software_reset_task.h(33): warning:  #1-D: last line of file ends without a newline
+  #endif
+../Src/freertos.c(194): warning:  #144-D: a value of type "void (*)(void *)" cannot be used to initialize an entity of type "os_pthread"
+      
+sThreadDef(UI, ui_task, osPriorityNormal, 0, 512);
+../Src/freertos.c: 2 warnings, 0 errors
+compiling chassis_task.c...
+compiling referee_control.c...
+..\application\referee_control.c(229): warning:  #1-D: last line of file ends without a newline
+  }
+..\application\referee_control.c: 1 warning, 0 errors
 linking...
-Program Size: Code=114764 RO-data=14764 RW-data=1428 ZI-data=59244  
+Program Size: Code=114748 RO-data=14764 RW-data=1428 ZI-data=59244  
 FromELF: creating hex file...
 "standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 8 Warning(s).
 
@@ -75,7 +75,7 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:04
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

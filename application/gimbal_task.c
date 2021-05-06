@@ -320,6 +320,28 @@ void set_cali_gimbal_hook(const uint16_t yaw_offset, const uint16_t pitch_offset
 
 
 
+/*
+  * @brief          手动设置云台编码器中值，最小最大机械相对角度
+  * @param[in]      yaw_offse:yaw 中值
+  * @param[in]      pitch_offset:pitch 中值
+  * @param[in]      max_yaw:max_yaw:yaw 最大相对角度
+  * @param[in]      min_yaw:yaw 最小相对角度
+  * @param[in]      max_yaw:pitch 最大相对角度
+  * @param[in]      min_yaw:pitch 最小相对角度
+  * @retval         返回空
+  * @waring         这个函数使用到gimbal_control 静态变量导致函数不适用以上通用指针复用
+  */
+void set_hand_operator_gimbal_hook(const uint16_t yaw_offset, const uint16_t pitch_offset, const fp32 max_yaw, const fp32 min_yaw, const fp32 max_pitch, const fp32 min_pitch)
+{
+    gimbal_control.gimbal_yaw_motor.offset_ecd = yaw_offset;
+    gimbal_control.gimbal_yaw_motor.max_relative_angle = max_yaw;
+    gimbal_control.gimbal_yaw_motor.min_relative_angle = min_yaw;
+
+    gimbal_control.gimbal_pitch_motor.offset_ecd = pitch_offset;
+    gimbal_control.gimbal_pitch_motor.max_relative_angle = max_pitch;
+    gimbal_control.gimbal_pitch_motor.min_relative_angle = min_pitch;
+}
+
 /**
   * @brief          云台校准计算，将校准记录的中值,最大 最小值返回
   * @param[out]     yaw 中值 指针
@@ -524,19 +546,11 @@ static void gimbal_init(gimbal_control_t *init)
 
     vision_send_data(CmdID);
 
+    //由于自动校准有问题,只能暂时手动校准
+    set_hand_operator_gimbal_hook(YAW_OFFSET, PITCH_OFFSET, MAX_YAW, MIN_YAW, MIN_PITCH, MAX_PITCH);
+    
 
-    //初始化限幅
-    init->gimbal_yaw_motor.max_relative_angle = MAX_YAW;
-    init->gimbal_yaw_motor.min_relative_angle = MIN_YAW;
-    init->gimbal_yaw_motor.mid_relative_angle = MID_YAW;
-    init->gimbal_pitch_motor.max_relative_angle = MAX_PITCH;
-    init->gimbal_pitch_motor.min_relative_angle = MIN_PITCH;
-    init->gimbal_pitch_motor.mid_relative_angle = MID_PITCH;
-
-    init->gimbal_yaw_motor.mid_absolute_angle = MID_YAW;
-    init->gimbal_pitch_motor.mid_absolute_angle = MID_PITCH;
-  
-  
+    
 
     static const fp32 Pitch_speed_pid[3] = {PITCH_SPEED_PID_KP, PITCH_SPEED_PID_KI, PITCH_SPEED_PID_KD};
     static const fp32 Yaw_speed_pid[3] = {YAW_SPEED_PID_KP, YAW_SPEED_PID_KI, YAW_SPEED_PID_KD};
@@ -715,6 +729,10 @@ static void gimbal_set_control(gimbal_control_t *set_control)
     fp32 add_pitch_angle = 0.0f;
 
     gimbal_behaviour_control_set(&add_yaw_angle, &add_pitch_angle, set_control);
+
+    //由于pitch轴加了同步带, 需要乘以减速比
+    //add_pitch_angle = add_pitch_angle / GGIMBAL_PITCH_REDUCTION_RATIO;
+
     //yaw电机模式控制
     if (set_control->gimbal_yaw_motor.gimbal_motor_mode == GIMBAL_MOTOR_RAW)
     {
@@ -862,10 +880,8 @@ static void gimbal_motor_absolute_angle_control(gimbal_motor_t *gimbal_motor)
         return;
     }
 
-
     //角度环，速度环串级pid调试
     gimbal_motor->motor_gyro_set = gimbal_PID_calc(&gimbal_motor->gimbal_motor_absolute_angle_pid, gimbal_motor->absolute_angle, gimbal_motor->absolute_angle_set, gimbal_motor->motor_gyro/100);
-    //gimbal_motor->motor_gyro_set = gimbal_PID_calc(&gimbal_motor->gimbal_motor_absolute_angle_pid, gimbal_motor->absolute_angle, gimbal_motor->absolute_angle_set, 0);
     gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_gyro_pid, gimbal_motor->motor_gyro, gimbal_motor->motor_gyro_set);
     //控制值赋值
     gimbal_motor->given_current = (int16_t)(gimbal_motor->current_set);
@@ -885,7 +901,6 @@ static void gimbal_motor_relative_angle_control(gimbal_motor_t *gimbal_motor)
 
     //角度环，速度环串级pid调试
     gimbal_motor->motor_gyro_set = gimbal_PID_calc(&gimbal_motor->gimbal_motor_relative_angle_pid, gimbal_motor->relative_angle, gimbal_motor->relative_angle_set, gimbal_motor->motor_gyro/100);
-    //gimbal_motor->motor_gyro_set = gimbal_PID_calc(&gimbal_motor->gimbal_motor_relative_angle_pid, gimbal_motor->relative_angle, gimbal_motor->relative_angle_set, 0);
     gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_gyro_pid, gimbal_motor->motor_gyro, gimbal_motor->motor_gyro_set);
     //控制值赋值
     gimbal_motor->given_current = (int16_t)(gimbal_motor->current_set);
