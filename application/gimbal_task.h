@@ -34,7 +34,7 @@
 //pitch 速度环 PID参数以及 PID最大输出，积分输出
 #define PITCH_SPEED_PID_KP        2000.0f  //2900
 #define PITCH_SPEED_PID_KI        0.0f
-#define PITCH_SPEED_PID_KD        0.0f
+#define PITCH_SPEED_PID_KD        0.4f
 #define PITCH_SPEED_PID_MAX_OUT   30000.0f
 #define PITCH_SPEED_PID_MAX_IOUT  10000.0f
 
@@ -46,23 +46,22 @@
 #define YAW_SPEED_PID_MAX_IOUT  5000.0f
 
 //pitch 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define PITCH_GYRO_ABSOLUTE_PID_KP 6.0f   //15
+#define PITCH_GYRO_ABSOLUTE_PID_KP 15.0f   //15
 #define PITCH_GYRO_ABSOLUTE_PID_KI 0.0f
-#define PITCH_GYRO_ABSOLUTE_PID_KD 0.0f
-
-#define PITCH_GYRO_ABSOLUTE_PID_MAX_OUT 10.0f
+#define PITCH_GYRO_ABSOLUTE_PID_KD 0.1f
+#define PITCH_GYRO_ABSOLUTE_PID_MAX_OUT 6.0f
 #define PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT 0.0f
 
 //yaw 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
 #define YAW_GYRO_ABSOLUTE_PID_KP        10.0f  //26
 #define YAW_GYRO_ABSOLUTE_PID_KI        0.0f
 #define YAW_GYRO_ABSOLUTE_PID_KD        0.0f
-#define YAW_GYRO_ABSOLUTE_PID_MAX_OUT   10.0f
+#define YAW_GYRO_ABSOLUTE_PID_MAX_OUT   4.0f
 #define YAW_GYRO_ABSOLUTE_PID_MAX_IOUT  0.0f
 
 //pitch 角度环 角度由编码器 PID参数以及 PID最大输出，积分输出
 #define PITCH_ENCODE_RELATIVE_PID_KP 15.0f  //15
-#define PITCH_ENCODE_RELATIVE_PID_KI 0.00f
+#define PITCH_ENCODE_RELATIVE_PID_KI 0.0f
 #define PITCH_ENCODE_RELATIVE_PID_KD 0.0f
 
 #define PITCH_ENCODE_RELATIVE_PID_MAX_OUT 10.0f
@@ -97,11 +96,11 @@
 
 //云台 遥控器速度
 #define YAW_RC_SEN    -0.000005f  
-#define PITCH_RC_SEN  -0.000006f 
+#define PITCH_RC_SEN  0.000006f 
 
 //云台 鼠标速度
 #define YAW_MOUSE_SEN   0.00003f
-#define PITCH_MOUSE_SEN -0.00010f
+#define PITCH_MOUSE_SEN -0.00005f
 
 #define YAW_ENCODE_SEN    0.01f
 #define PITCH_ENCODE_SEN  0.01f
@@ -162,9 +161,15 @@
 #define MIN_YAW         -2*PI
 #define MAX_YAW         2*PI
 
-#define MIN_PITCH      -1.7f
+#define MIN_PITCH      -1.5f
 #define MAX_PITCH       2.5f
 
+
+#define MIN_ABSOULATE_YAW     -PI
+#define MAX_ABSOULATE_YAW     PI
+
+#define MIN_ABSOULATE_PITCH      -0.3f
+#define MAX_ABSOULATE_PITCH       0.5f
 
 #define GIMBAL_ACCEL_YAW_NUM 0.002f
 #define GIMBAL_ACCEL_PITCH_NUM 0.002f
@@ -212,7 +217,9 @@ typedef struct
     fp32 max_relative_angle; //rad
     fp32 min_relative_angle; //rad
     fp32 mid_relative_angle; //rad
-
+ 
+    fp32 max_absolute_angle; //rad
+    fp32 min_absolute_angle; //rad
     fp32 mid_absolute_angle; //rad
 
     fp32 relative_angle;     //rad

@@ -316,6 +316,7 @@ void set_cali_gimbal_hook(const uint16_t yaw_offset, const uint16_t pitch_offset
     gimbal_control.gimbal_pitch_motor.offset_ecd = pitch_offset;
     gimbal_control.gimbal_pitch_motor.max_relative_angle = max_pitch;
     gimbal_control.gimbal_pitch_motor.min_relative_angle = min_pitch;
+
 }
 
 
@@ -549,8 +550,12 @@ static void gimbal_init(gimbal_control_t *init)
     //由于自动校准有问题,只能暂时手动校准
     set_hand_operator_gimbal_hook(YAW_OFFSET, PITCH_OFFSET, MAX_YAW, MIN_YAW, MAX_PITCH, MIN_PITCH);
     
+    //设置陀螺仪对应限位
+    init->gimbal_pitch_motor.max_absolute_angle = MAX_ABSOULATE_PITCH;
+    init->gimbal_pitch_motor.min_absolute_angle = MIN_ABSOULATE_PITCH;
 
-    
+    init->gimbal_yaw_motor.max_absolute_angle = MAX_ABSOULATE_YAW;
+    init->gimbal_yaw_motor.min_absolute_angle = MIN_ABSOULATE_YAW;
 
     static const fp32 Pitch_speed_pid[3] = {PITCH_SPEED_PID_KP, PITCH_SPEED_PID_KI, PITCH_SPEED_PID_KD};
     static const fp32 Yaw_speed_pid[3] = {YAW_SPEED_PID_KP, YAW_SPEED_PID_KI, YAW_SPEED_PID_KD};
@@ -801,6 +806,18 @@ static void gimbal_absolute_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add)
     }
     angle_set = gimbal_motor->absolute_angle_set;
     gimbal_motor->absolute_angle_set = rad_format(angle_set + add);
+
+    //是否超过最大 最小值
+    if (gimbal_motor->absolute_angle_set > gimbal_motor->max_absolute_angle)
+    {
+        gimbal_motor->absolute_angle_set = gimbal_motor->max_absolute_angle;
+    }
+    else if (gimbal_motor->absolute_angle_set < gimbal_motor->min_absolute_angle)
+    {
+        gimbal_motor->absolute_angle_set = gimbal_motor->min_absolute_angle;
+    }
+
+
 }
 
 /**

@@ -694,6 +694,11 @@
               <FileType>1</FileType>
               <FilePath>..\application\remote_control.c</FilePath>
             </File>
+            <File>
+              <FileName>super_cap_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\super_cap_task.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
