@@ -263,18 +263,18 @@ static void shoot_set_mode(void)
 
 
     //处于中档， 可以使用键盘开启摩擦轮
-    if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && IF_KEY_SINGAL_PRESSED_G && shoot_control.fric_status == FALSE && shoot_control.shoot_mode == SHOOT_STOP)
+    if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && IF_KEY_SINGAL_PRESSED_G  && shoot_control.shoot_mode == SHOOT_STOP)
     { 
         shoot_control.shoot_mode = SHOOT_READY_FRIC; 
     }
     //处于中档， 可以使用键盘关闭摩擦轮
-    else if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && IF_KEY_SINGAL_PRESSED_G && shoot_control.fric_status == TRUE && shoot_control.shoot_mode != SHOOT_STOP)
+    else if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && IF_KEY_SINGAL_PRESSED_G  && shoot_control.shoot_mode != SHOOT_STOP)
     {
         shoot_control.shoot_mode = SHOOT_STOP;      
     }
 
     //摩擦轮速度达到一定值,才可开启拨盘  为了便于测试,这里至少需要一个摩擦轮电机达到拨盘启动要求就可以开启拨盘
-    if(shoot_control.shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed) || abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed)))
+    if(shoot_control.shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed) || abs(shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[RIGHT].require_speed)))
     {
         shoot_control.fric_status = TRUE;     
         shoot_control.shoot_mode = SHOOT_READY_BULLET;

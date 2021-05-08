@@ -24,9 +24,9 @@
 #include "struct_typedef.h"
 
 #define CHASSIS_CAN hcan2
-#define SUPER_CAP_CAN  hcan2
 #define GIMBAL_CAN hcan1
 #define SHOOT_CAN hcan1
+#define SUPER_CAP_CAN hcan2
 
 
 
@@ -49,9 +49,8 @@ typedef enum
     CAN_PIT_MOTOR_ID = 0x20A,
     CAN_GIMBAL_ALL_ID = 0x2FF,
   //超级电容接收ID
-    CAN_SUPER_CAP_ALL_ID = 0X210,
     CAN_SUPER_CAP_ID = 0x211,  
-
+    CAN_SUPER_CAP_ALL_ID = 0x210,
 } can_msg_id_e; 
 
 //rm motor data

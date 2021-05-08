@@ -24,6 +24,11 @@
 #include "user_lib.h"
 
 
+#define TRIGGER_CCW 1 //拨盘顺时针
+#define TRIGGER_CW -1 //拨盘逆时针
+
+
+#define SHOOT_TRIGGER_DIRECTION TRIGGER_CW
 
 //射击发射开关通道数据
 #define SHOOT_RC_MODE_CHANNEL       1
@@ -52,17 +57,19 @@
 //电机反馈码盘值范围
 #define HALF_ECD_RANGE              4096
 #define ECD_RANGE                   8191
+
+
 //拨盘电机rmp 变化成 旋转速度的比例
-#define MOTOR_RPM_TO_SPEED          0.00290888208665721596153948461415f
-#define MOTOR_ECD_TO_ANGLE          0.000021305288720633905968306772076277f
+#define MOTOR_RPM_TO_SPEED          0.00290888208665721596153948461415f //* SHOOT_TRIGGER_DIRECTION
+#define MOTOR_ECD_TO_ANGLE          0.000021305288720633905968306772076277f * SHOOT_TRIGGER_DIRECTION
 #define FULL_COUNT                  18
 
 
 
 //拨弹速度
-#define TRIGGER_SPEED               10.0f
-#define CONTINUE_TRIGGER_SPEED      15.0f
-#define READY_TRIGGER_SPEED         5.0f
+#define TRIGGER_SPEED               10.0f * SHOOT_TRIGGER_DIRECTION   //10
+#define CONTINUE_TRIGGER_SPEED      15.0f * SHOOT_TRIGGER_DIRECTION  //15
+#define READY_TRIGGER_SPEED         5.0f * SHOOT_TRIGGER_DIRECTION //5
 
 #define KEY_OFF_JUGUE_TIME          500
 #define SWITCH_TRIGGER_ON           0
@@ -79,9 +86,9 @@
 
 
 //拨弹轮电机PID
-#define TRIGGER_ANGLE_PID_KP        80.0f  //800
-#define TRIGGER_ANGLE_PID_KI        0.01f  //0.5
-#define TRIGGER_ANGLE_PID_KD        0.0f
+#define TRIGGER_ANGLE_PID_KP        800.0f  //800
+#define TRIGGER_ANGLE_PID_KI        0.0f  //0.5
+#define TRIGGER_ANGLE_PID_KD        5.0f
 
 #define TRIGGER_BULLET_PID_MAX_OUT  10000.0f
 #define TRIGGER_BULLET_PID_MAX_IOUT 200.0f
@@ -95,9 +102,9 @@
 
 
 //摩擦轮电机PID
-#define FRIC_SPEED_PID_KP        2000.0f
+#define FRIC_SPEED_PID_KP        1000.0f
 #define FRIC_SPEED_PID_KI        0.5f
-#define FRIC_SPEED_PID_KD        0.0f
+#define FRIC_SPEED_PID_KD        1.0f
 
 #define FRIC_PID_MAX_OUT  8000.0f
 #define FRIC_PID_MAX_IOUT 200.0f
@@ -108,7 +115,7 @@
 
 #define SHOOT_HEAT_REMAIN_VALUE     80
 //拨盘格数
-#define TRIGGER_GRID_NUM 12     
+#define TRIGGER_GRID_NUM 8     
 #define TRIGGER_ONCE PI/TRIGGER_GRID_NUM
 
 

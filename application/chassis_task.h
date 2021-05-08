@@ -100,11 +100,11 @@
 #define CHASSIS_MOTOR_RPM_TO_VECTOR_SEN M3508_MOTOR_RPM_TO_VECTOR
 
 //单个底盘电机最大速度
-#define MAX_WHEEL_SPEED 1.5f   //4
+#define MAX_WHEEL_SPEED 4.0f   //4
 //底盘运动过程最大前进速度
-#define NORMAL_MAX_CHASSIS_SPEED_X 1.5f  //2.0
+#define NORMAL_MAX_CHASSIS_SPEED_X 2.5f  //2.0
 //底盘运动过程最大平移速度
-#define NORMAL_MAX_CHASSIS_SPEED_Y 1.25f  //1.5
+#define NORMAL_MAX_CHASSIS_SPEED_Y 1.5f  //1.5
 
 #define CHASSIS_WZ_SET_SCALE 0.1f
 
@@ -118,26 +118,26 @@
 //原地旋转小陀螺下Z轴转速
 #define TOP_WZ_ANGLE_STAND 1.5f 
 //移动状态下小陀螺转速
-#define TOP_WZ_ANGLE_MOVE 0.8f
+#define TOP_WZ_ANGLE_MOVE 0.2f
 
 
 
 
-// //chassis motor speed PID
-// //底盘电机速度环PID
-// #define M3505_MOTOR_SPEED_PID_KP 5000.0f
-// #define M3505_MOTOR_SPEED_PID_KI 2.0f
-// #define M3505_MOTOR_SPEED_PID_KD 0.0f
-// #define M3505_MOTOR_SPEED_PID_MAX_OUT  6000.0f
-// #define M3505_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
+//chassis motor speed PID
+//底盘电机速度环PID
+#define M3505_MOTOR_SPEED_PID_KP 6000.0f
+#define M3505_MOTOR_SPEED_PID_KI 0.0f
+#define M3505_MOTOR_SPEED_PID_KD 2.0f
+#define M3505_MOTOR_SPEED_PID_MAX_OUT  6000.0f
+#define M3505_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
 
-// //chassis follow angle PID
-// //底盘旋转跟随PID
-// #define CHASSIS_FOLLOW_GIMBAL_PID_KP 20.0f
-// #define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.0f
-// #define CHASSIS_FOLLOW_GIMBAL_PID_KD 0.5f
-// #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 6.0f
-// #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.2f
+//chassis follow angle PID
+//底盘旋转跟随PID
+#define CHASSIS_FOLLOW_GIMBAL_PID_KP 15.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_KD 2.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 6.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.0f
 
 // //老步兵PID
 // //chassis motor speed PID
@@ -159,22 +159,22 @@
 
 
 
-//ZKJ
-//chassis motor speed PID
-//底盘电机速度环PID
-#define M3505_MOTOR_SPEED_PID_KP 5000.0f
-#define M3505_MOTOR_SPEED_PID_KI 4.0f
-#define M3505_MOTOR_SPEED_PID_KD 1.0f
-#define M3505_MOTOR_SPEED_PID_MAX_OUT  6000.0f
-#define M3505_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
+// //ZKJ
+// //chassis motor speed PID
+// //底盘电机速度环PID
+// #define M3505_MOTOR_SPEED_PID_KP 5000.0f
+// #define M3505_MOTOR_SPEED_PID_KI 4.0f
+// #define M3505_MOTOR_SPEED_PID_KD 1.0f
+// #define M3505_MOTOR_SPEED_PID_MAX_OUT  6000.0f
+// #define M3505_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
 
-//chassis follow angle PID
-//底盘旋转跟随PID
-#define CHASSIS_FOLLOW_GIMBAL_PID_KP 10.0f
-#define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.0f
-#define CHASSIS_FOLLOW_GIMBAL_PID_KD 0.5f
-#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 10.0f
-#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.2f
+// //chassis follow angle PID
+// //底盘旋转跟随PID
+// #define CHASSIS_FOLLOW_GIMBAL_PID_KP 10.0f
+// #define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.0f
+// #define CHASSIS_FOLLOW_GIMBAL_PID_KD 0.5f
+// #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 10.0f
+// #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.2f
 
 typedef enum
 {
