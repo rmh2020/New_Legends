@@ -136,7 +136,7 @@ chassis_behaviour_e last_chassis_behaviour_mode = CHASSIS_NO_MOVE;
 
 //扭腰控制数据
 fp32 swing_angle = 0.0f;
-uint8_t swing_switch = 0;   //0为关闭 1为开始扭腰 2为一个扭腰周期结束
+uint8_t swing_switch = 0;  
 uint8_t key_pressed_num_ctrl = 0;
 
 //小陀螺控制数据

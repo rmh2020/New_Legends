@@ -63,54 +63,24 @@ void servo_task(void const * argument)
 
     while(1)
     {       
-    
-        // if(IF_KEY_SINGAL_PRESSED_MAGAZINE)
-        //      magazine_key_num++;
-
-        // //按下R键 打开或弹仓
-        // if(shoot_control.magazine_status == FALSE)
-        // {   
-        //     if(magazine_key_num == 2)
-        //     {
-        //         //打开弹仓
-        //     servo_pwm[0] = servo_open_pwm[0];
-        //     shoot_control.magazine_status = TRUE;
-        //     magazine_key_num = 0;
-        //     }
-        // }
-        // else if(shoot_control.magazine_status == TRUE)
-        // {
-        //     if(magazine_key_num == 2)
-        //     {
-        //         //关闭弹仓
-        //     servo_pwm[0] = servo_close_pwm[0];
-        //     shoot_control.magazine_status = FALSE;
-        //     magazine_key_num = 0;
-        //     }
-            
-        // }
-
+        if(IF_KEY_SINGAL_PRESSED_R)
+            magazine_key_num++;
   
 
         //按下R键 打开或弹仓
-        if(shoot_control.magazine_status == FALSE)
+        if(magazine_key_num >= 2 && shoot_control.magazine_status == FALSE)
         {   
-            if(IF_KEY_SINGAL_PRESSED_R)
-            {
             //打开弹仓
             servo_pwm[0] = servo_open_pwm[0];
             shoot_control.magazine_status = TRUE;
-            }
+            magazine_key_num = 0;
         }
-        else if(shoot_control.magazine_status == TRUE)
+        else if(magazine_key_num >= 2 && shoot_control.magazine_status == TRUE)
         {
-            if(IF_KEY_SINGAL_PRESSED_R)
-            {
             //关闭弹仓
             servo_pwm[0] = servo_close_pwm[0];
-            shoot_control.magazine_status = FALSE;
-            }
-            
+            shoot_control.magazine_status = FALSE; 
+            magazine_key_num = 0;   
         }
 
         
@@ -146,7 +116,7 @@ void servo_task(void const * argument)
         }
 
        
-        osDelay(50);
+        osDelay(1);
     }
 }
 
