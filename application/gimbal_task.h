@@ -326,6 +326,13 @@ extern void set_cali_gimbal_hook(const uint16_t yaw_offset, const uint16_t pitch
   */
 extern void set_hand_operator_gimbal_hook(const uint16_t yaw_offset, const uint16_t pitch_offset, const fp32 max_yaw, const fp32 min_yaw, const fp32 max_pitch, const fp32 min_pitch);
 
+/**
+  * @brief          通过按键,进行重启
+  * @param[in]    
+  * @retval         返回空
+  * @waring         
+  */
+extern void software_reset();
 
 
 #endif

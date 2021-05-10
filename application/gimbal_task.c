@@ -218,11 +218,11 @@ gimbal_control_t gimbal_control;
 
 
 
-//motor current 
 //发送的电机电流
 static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
 
-
+//软件重启按键延时
+uint16_t software_reset_key_delay_time = 0;
 /**
   * @brief          云台任务，间隔 GIMBAL_CONTROL_TIME 1ms
   * @param[in]      pvParameters: 空
@@ -246,10 +246,11 @@ void gimbal_task(void const *pvParameters)
 
     while (1)
     {
-        //按下Z 软件复位
-        if(IF_KEY_SINGAL_PRESSED_Z)
-            NVIC_SystemReset();
+        // //按下Z 软件复位
+        // if(IF_KEY_SINGAL_PRESSED_Z)
+        //     NVIC_SystemReset();
 
+        software_reset();                                    //软件复位
         gimbal_set_mode(&gimbal_control);                    //设置云台控制模式
         gimbal_mode_change_control_transit(&gimbal_control); //控制模式切换 控制数据过渡
         gimbal_feedback_update(&gimbal_control);             //云台数据反馈
@@ -1023,4 +1024,25 @@ static void gimbal_PID_clear(gimbal_PID_t *gimbal_pid_clear)
     }
     gimbal_pid_clear->err = gimbal_pid_clear->set = gimbal_pid_clear->get = 0.0f;
     gimbal_pid_clear->out = gimbal_pid_clear->Pout = gimbal_pid_clear->Iout = gimbal_pid_clear->Dout = 0.0f;
+}
+
+/**
+  * @brief          通过按键,进行重启
+  * @param[in]    
+  * @retval         返回空
+  * @waring         
+  */
+void software_reset()
+{
+    //软件复位,让单片机重启  同时按下Z X CTRL 一秒
+    if(IF_KEY_PRESSED_Z && IF_KEY_PRESSED_X && IF_KEY_PRESSED_CTRL)
+    {   
+       software_reset_key_delay_time++;
+    }
+
+    if(software_reset_key_delay_time >= 2000)
+    { 
+        NVIC_SystemReset();
+        software_reset_key_delay_time = 0;
+    }
 }
