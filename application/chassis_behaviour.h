@@ -76,9 +76,8 @@ extern bool_t top_switch;
 //45度角对敌动作开关
 extern bool_t pisa_switch;  
 extern uint16_t pisa_delay_time; 
-#define PISA_CLOSE 0
-#define PISA_LEFT 1
-#define PISA_RIGHT 2
+
+
 
 #define PISA_DELAY_TIME 500
 

@@ -135,8 +135,8 @@ extern RC_ctrl_t last_rc_ctrl;
         记录上一次值
         检测键盘按键状态 
         若对应按键被按下，则逻辑表达式的值为1，否则为0 */
-#define LAST_KEY_PRESSED (last_last_rc_ctrl.key.v)
-#define    LAST_IF_KEY_PRESSED_W     ( (last_last_rc_ctrl.key.v & KEY_PRESSED_W)    != 0 )
+#define LAST_KEY_PRESSED (last_rc_ctrl.key.v)
+#define    LAST_IF_KEY_PRESSED_W       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_W)    != 0 )
 #define    LAST_IF_KEY_PRESSED_S       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_S)    != 0 )
 #define    LAST_IF_KEY_PRESSED_A       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_A)    != 0 )
 #define    LAST_IF_KEY_PRESSED_D       ( (last_rc_ctrl.key.v & KEY_PRESSED_OFFSET_D)    != 0 )

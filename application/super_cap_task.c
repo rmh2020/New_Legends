@@ -48,7 +48,9 @@ fp32 supercap_vot;
 fp32 input_current;
 fp32 target_power;
 
-extern ext_game_robot_state_t robot_state; //0x0201     比赛机器人状态
+extern ext_game_robot_state_t game_state; //0x0201     比赛机器人状态
+uint8_t cap_change = FALSE; //超电电压过低标识符
+
 
 void cap_update_cap_inputvot(int16_t inputvot)
 {
@@ -80,77 +82,87 @@ void super_cap_task(void const *pvParameters)
 	for (;;)
 	{
 
-		if (supercap_vot <= 15) //电容电压不要低于12V，这可能会造成C620低压保护
-		{
-			CAN_cmd_super_cap(13000);
-		}
-		else if (robot_state.chassis_power_limit <= 40) //当前底盘最大功率限制<40  目标功率为39w
-		{
-			CAN_cmd_super_cap(3900);
-		}
-		else if (robot_state.chassis_power_limit > 40 && robot_state.chassis_power_limit <= 50) //当前底盘最大功率限制40-50w  目标功率为49w
-		{
-			CAN_cmd_super_cap(4900);
-		}
-		else if (robot_state.chassis_power_limit > 50 && robot_state.chassis_power_limit <= 60) //当前底盘最大功率限制50-60w  目标功率为59w
-		{
-			CAN_cmd_super_cap(5900);
-		}
-		else if (robot_state.chassis_power_limit > 60 && robot_state.chassis_power_limit <= 70) //当前底盘最大功率限制60-70w  目标功率为79w
-		{
-			CAN_cmd_super_cap(6900);
-		}
-		else if (robot_state.chassis_power_limit > 70 && robot_state.chassis_power_limit <= 80) //当前底盘最大功率限制70-80w  目标功率为79w
-		{
-			CAN_cmd_super_cap(7900);
-		}
-		else if (robot_state.chassis_power_limit > 80 && robot_state.chassis_power_limit <= 100) //当前底盘最大功率限制80-100w  目标功率为99w
-		{
-			CAN_cmd_super_cap(9900);
-		}
-		else if (robot_state.chassis_power_limit > 100 && robot_state.chassis_power_limit < 120) //当前底盘最大功率限制100-120w  目标功率为119w
-		{
-			CAN_cmd_super_cap(11900);
-		}
-		else if (robot_state.chassis_power_limit >= 120) //当前底盘最大功率限制>120w  目标功率为130w
-		{
-			CAN_cmd_super_cap(13000);
-		}
+					if( supercap_vot <= 14 || cap_change == TRUE) //电容电压不要低于12V，这可能会造成C620低压保护,电机直接断电
+					{
+						 if(supercap_vot >= 20)
+						{
+								if (game_state.chassis_power_limit <= 40 )//当前底盘最大功率限制<40  目标功率为39w
+								{
+									 CAN_cmd_super_cap(3900);
+								}
+								else if(game_state.chassis_power_limit > 40 && game_state.chassis_power_limit <= 50)//当前底盘最大功率限制40-50w  目标功率为49w
+								{
+									 CAN_cmd_super_cap(4900);
+								}	
+								else if(game_state.chassis_power_limit > 50 && game_state.chassis_power_limit <= 60)//当前底盘最大功率限制50-60w  目标功率为59w
+								{
+									CAN_cmd_super_cap(5900);
+								}
+								else if(game_state.chassis_power_limit > 60 && game_state.chassis_power_limit <= 70)//当前底盘最大功率限制60-70w  目标功率为79w
+								{
+									CAN_cmd_super_cap(6900);
+								}
+								else if(game_state.chassis_power_limit > 70 && game_state.chassis_power_limit <= 80)//当前底盘最大功率限制70-80w  目标功率为79w
+								{
+									CAN_cmd_super_cap(7900);
+								}
+								else if(game_state.chassis_power_limit > 80 && game_state.chassis_power_limit <= 100)//当前底盘最大功率限制80-100w  目标功率为99w
+								{
+									CAN_cmd_super_cap(9900);
+								}
+								else if(game_state.chassis_power_limit > 100 && game_state.chassis_power_limit < 120)//当前底盘最大功率限制100-120w  目标功率为119w
+								{
+									CAN_cmd_super_cap(11900);
+								}
+								cap_change = FALSE;
+							}
+						else
+						{
+							cap_change = TRUE;
+							CAN_cmd_super_cap(13000);
+						}
+					}
+					else
+					{
+						if (game_state.chassis_power_limit <= 40 )//当前底盘最大功率限制<40  目标功率为39w
+						{
+							 CAN_cmd_super_cap(3900);
+						}
+						else if(game_state.chassis_power_limit > 40 && game_state.chassis_power_limit <= 50)//当前底盘最大功率限制40-50w  目标功率为49w
+						{
+							 CAN_cmd_super_cap(4900);
+						}	
+						else if(game_state.chassis_power_limit > 50 && game_state.chassis_power_limit <= 60)//当前底盘最大功率限制50-60w  目标功率为59w
+						{
+							CAN_cmd_super_cap(5900);
+						}
+						else if(game_state.chassis_power_limit > 60 && game_state.chassis_power_limit <= 70)//当前底盘最大功率限制60-70w  目标功率为79w
+						{
+							CAN_cmd_super_cap(6900);
+						}
+						else if(game_state.chassis_power_limit > 70 && game_state.chassis_power_limit <= 80)//当前底盘最大功率限制70-80w  目标功率为79w
+						{
+							CAN_cmd_super_cap(7900);
+						}
+						else if(game_state.chassis_power_limit > 80 && game_state.chassis_power_limit <= 100)//当前底盘最大功率限制80-100w  目标功率为99w
+						{
+							CAN_cmd_super_cap(9900);
+						}
+						else if(game_state.chassis_power_limit > 100 && game_state.chassis_power_limit < 120)//当前底盘最大功率限制100-120w  目标功率为119w
+						{
+							CAN_cmd_super_cap(11900);
+						}
+					}
+				}
 
 		vTaskDelay(SUPER_CONTROL_TIME);
-	}
 }
+
+
 
 void cap_init()
 {
 	CAN_cmd_super_cap(13000);
 }
 
-/*********************************************************************************************/ //仅用于测试
 
-//void Cap_RC_Ctrl()
-//{
-//		if (rc_ctrl.rc.s[0] == RC_SW_UP)//s1拨到上,CAN发送数据，将超电控制功率设置到38W
-//	 {
-//		 CAN1_Cap_Send(3800);
-//     GPIO_SetBits(GPIOG, GPIO_Pin_1);
-//		 GPIO_ResetBits(GPIOG, GPIO_Pin_4);
-//		 GPIO_ResetBits(GPIOG, GPIO_Pin_7);
-//	 }
-//
-//	 if(rc_ctrl.rc.s[0] == RC_SW_MID)//s1拨到中间,CAN发送数据，将超电控制功率设置到80W
-//	 {
-//		 CAN1_Cap_Send(8000);
-//		 GPIO_ResetBits(GPIOG, GPIO_Pin_1);
-//		 GPIO_SetBits(GPIOG, GPIO_Pin_4);
-//		 GPIO_ResetBits(GPIOG, GPIO_Pin_7);
-
-//	 }
-//   if(rc_ctrl.rc.s[0] == RC_SW_DOWN)//s1到下,CAN发送数据，将超电控制功率设置到100W
-//	 {
-//     CAN1_Cap_Send(10000);
-//		 GPIO_ResetBits(GPIOG, GPIO_Pin_1);
-//		 GPIO_ResetBits(GPIOG, GPIO_Pin_4);
-//		 GPIO_SetBits(GPIOG, GPIO_Pin_7);
-//	 }
-//}

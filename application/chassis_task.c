@@ -427,13 +427,11 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
         //设置控制相对云台角度
         chassis_move_control->chassis_relative_angle_set = rad_format(angle_set);
 
-        //计算旋转PID角速度 如果是小陀螺,固定转速
+        //计算旋转PID角速度 如果是小陀螺,固定转速 如果是45度角对敌,选择固定角度
         if(top_switch == 1)
             chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, 0, chassis_move_control->chassis_relative_angle_set);
-        else if(pisa_switch == PISA_LEFT)
+        else if(pisa_switch == TRUE)
              chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, chassis_move_control->chassis_relative_angle-PI/4, chassis_move_control->chassis_relative_angle_set);
-        else if(pisa_switch == PISA_RIGHT)
-             chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, chassis_move_control->chassis_relative_angle+PI/4, chassis_move_control->chassis_relative_angle_set);
         else
             chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, chassis_move_control->chassis_relative_angle, chassis_move_control->chassis_relative_angle_set);
 
@@ -486,19 +484,17 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
   */
 static void chassis_vector_to_mecanum_wheel_speed(const fp32 vx_set, const fp32 vy_set, const fp32 wz_set, fp32 wheel_speed[4])
 {
+    // //旋转的时候， 由于云台靠前，所以是前面两轮 0 ，1 旋转的速度变慢， 后面两轮 2,3 旋转的速度变快
+    // wheel_speed[0] = -vx_set - vy_set + (CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
+    // wheel_speed[1] = vx_set - vy_set + (CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
+    // wheel_speed[2] = vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
+    // wheel_speed[3] = -vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
+
     //旋转的时候， 由于云台靠前，所以是前面两轮 0 ，1 旋转的速度变慢， 后面两轮 2,3 旋转的速度变快
     wheel_speed[0] = -vx_set - vy_set + (CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
     wheel_speed[1] = vx_set - vy_set + (CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
-    wheel_speed[2] = vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
-    wheel_speed[3] = -vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE - 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
-
-
-    // //旋转的时候， 由于云台靠前，所以是前面两轮 0 ，1 旋转的速度变慢， 后面两轮 2,3 旋转的速度变快
-    // wheel_speed[0] = -vx_set - vy_set + (CHASSIS_WZ_SET_SCALE- 0.5f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
-    // wheel_speed[1] = vx_set - vy_set + (CHASSIS_WZ_SET_SCALE- 0.5f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
-    // wheel_speed[2] = vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE- 0.5f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
-    // wheel_speed[3] = -vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE- 0.5f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
-
+    wheel_speed[2] = vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE + 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
+    wheel_speed[3] = -vx_set + vy_set + (-CHASSIS_WZ_SET_SCALE + 1.0f) * MOTOR_DISTANCE_TO_CENTER * wz_set;
 
 }
 

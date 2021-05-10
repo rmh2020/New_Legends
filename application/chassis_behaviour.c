@@ -136,7 +136,7 @@ chassis_behaviour_e last_chassis_behaviour_mode = CHASSIS_NO_MOVE;
 
 //扭腰控制数据
 fp32 swing_angle = 0.0f;
-bool_t swing_switch = 0;
+uint8_t swing_switch = 0;   //0为关闭 1为开始扭腰 2为一个扭腰周期结束
 uint8_t key_pressed_num_ctrl = 0;
 
 //小陀螺控制数据
@@ -190,8 +190,6 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
         chassis_behaviour_mode = CHASSIS_NO_MOVE;
     }
     
-
-   
 
     //添加自己的逻辑判断进入新模式
 
@@ -350,12 +348,13 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
     //在一个控制周期内，加上 add_time
     static fp32 const add_time = 2 * PI * 0.5f * configTICK_RATE_HZ / CHASSIS_CONTROL_TIME_MS;
 
-    if ((IF_KEY_SINGAL_PRESSED_C) && swing_switch == 0)
+    //开启扭腰
+    if (IF_KEY_SINGAL_PRESSED_C && swing_switch == 0)
     {   
         swing_switch = 1;
         swing_time = 0.0f;
     }
-    else if ((IF_KEY_SINGAL_PRESSED_C) && swing_switch == 1)
+    else if (IF_KEY_SINGAL_PRESSED_C && swing_switch == 1) //关闭扭腰
     {
         swing_switch = 0;
     }
@@ -421,27 +420,15 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
 
 
     /****************************45度角对敌*********************************************/
-    //长按CTRL且单击Q ,开启左45度角对敌;重复操作取消45度角对敌
-    //长按CTRL且单击E ,开启右45度角对敌;重复操作取消45度角对敌
-
-    if(IF_KEY_PRESSED_CTRL && IF_KEY_SINGAL_PRESSED_Q && pisa_switch == 0)//打开左侧45度对敌
+    //单击C,开启45度角对敌;重复操作取消45度角对敌
+    if(IF_KEY_SINGAL_PRESSED_C && pisa_switch == 0)//打开45度对敌
     {
-        pisa_switch = PISA_LEFT;
+        pisa_switch = TRUE;
     }
-    else if(IF_KEY_PRESSED_CTRL && IF_KEY_SINGAL_PRESSED_Q && pisa_switch != 0)//关闭左侧45度对敌
+    else if(IF_KEY_SINGAL_PRESSED_C && pisa_switch != 0)//关闭45度对敌
     {
-        pisa_switch = PISA_CLOSE;
+        pisa_switch = FALSE;
     }
-
-    if(IF_KEY_PRESSED_CTRL && IF_KEY_SINGAL_PRESSED_E && pisa_switch == 0)//打开右侧45度对敌
-    {
-        pisa_switch = PISA_RIGHT;
-    }
-    else if(IF_KEY_PRESSED_CTRL && IF_KEY_SINGAL_PRESSED_E && pisa_switch != 0)//关闭右侧45度对敌
-    {
-        pisa_switch = PISA_CLOSE;
-    }
-
 
     *angle_set = swing_angle + top_angle;
 }

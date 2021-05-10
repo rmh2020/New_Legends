@@ -171,7 +171,6 @@ void chassis_power_control(chassis_move_t *chassis_power_control)
     uint8_t fric_speed_grade;
 
 
-
     if(toe_is_error(REFEREE_TOE))
     {
         grigger_speed_grade = 0;
@@ -218,12 +217,10 @@ void chassis_power_control(chassis_move_t *chassis_power_control)
 
     }
 
-
     //对摩擦轮电机输入控制值
     shoot_heat0_speed_and_cooling_control->fric_motor[LEFT].speed_set = shoot_fric_grade[fric_speed_grade];
     shoot_heat0_speed_and_cooling_control->fric_motor[RIGHT].speed_set = shoot_fric_grade[fric_speed_grade];
     //对拨盘电机输入控制值
     shoot_heat0_speed_and_cooling_control->speed_set = shoot_grigger_grade[grigger_speed_grade];
-
 
 }
