@@ -86,8 +86,8 @@
 
 
 //拨弹轮电机PID
-#define TRIGGER_ANGLE_PID_KP        800.0f  //800
-#define TRIGGER_ANGLE_PID_KI        0.0f  //0.5
+#define TRIGGER_ANGLE_PID_KP        1000.0f  //800
+#define TRIGGER_ANGLE_PID_KI        2.0f  //0.5
 #define TRIGGER_ANGLE_PID_KD        5.0f
 
 #define TRIGGER_BULLET_PID_MAX_OUT  10000.0f
@@ -123,6 +123,11 @@
 #define RIGHT 1
 
 
+//摩擦轮按键控制
+#define    IF_KEY_PRESSED_G_FRIC                  ( (shoot_control.shoot_rc->key.v & KEY_PRESSED_OFFSET_G)    != 0 )
+#define    LAST_IF_KEY_PRESSED_G_FRIC             ( (shoot_control.last_shoot_rc->key.v & KEY_PRESSED_OFFSET_G)    != 0 )
+#define    IF_KEY_SINGAL_PRESSED_G_FRIC           ( IF_KEY_PRESSED_G_FRIC && !LAST_IF_KEY_PRESSED_G_FRIC )
+
 
 typedef enum
 {
@@ -153,7 +158,8 @@ typedef struct
 {
     shoot_mode_e shoot_mode;
     const RC_ctrl_t *shoot_rc;
-    
+    const RC_ctrl_t *last_shoot_rc;
+
     //拨弹电机数据
     const motor_measure_t *trigger_motor_measure;
     pid_type_def trigger_motor_pid;

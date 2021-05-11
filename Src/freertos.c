@@ -173,14 +173,11 @@ void MX_FREERTOS_Init(void) {
     osThreadDef(led, led_RGB_flow_task, osPriorityNormal, 0, 256);
     led_RGB_flow_handle = osThreadCreate(osThread(led), NULL);
 
-
     osThreadDef(OLED, oled_task, osPriorityLow, 0, 256);
     oled_handle = osThreadCreate(osThread(OLED), NULL);
 
-
     osThreadDef(REFEREE, referee_usart_task, osPriorityNormal, 0, 128);
     referee_usart_task_handle = osThreadCreate(osThread(REFEREE), NULL);
-
 
     osThreadDef(USBTask, usb_task, osPriorityNormal, 0, 128);
     usb_task_handle = osThreadCreate(osThread(USBTask), NULL);
@@ -188,7 +185,7 @@ void MX_FREERTOS_Init(void) {
     osThreadDef(BATTERY_VOLTAGE, battery_voltage_task, osPriorityNormal, 0, 128);
     battery_voltage_handle = osThreadCreate(osThread(BATTERY_VOLTAGE), NULL);
 
-    osThreadDef(SERVO, servo_task, osPriorityNormal, 0, 128);
+    osThreadDef(SERVO, servo_task, osPriorityHigh, 0, 256);
     servo_task_handle = osThreadCreate(osThread(SERVO), NULL);
 
     osThreadDef(UI, ui_task, osPriorityNormal, 0, 512);

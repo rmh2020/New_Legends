@@ -99,6 +99,8 @@ void shoot_init(void)
     shoot_control.shoot_mode = SHOOT_STOP;
     //遥控器指针
     shoot_control.shoot_rc = get_remote_control_point();
+    shoot_control.last_shoot_rc = get_last_remote_control_point();
+
     //电机指针 拨弹 摩擦轮
     shoot_control.trigger_motor_measure = get_trigger_motor_measure_point();
     shoot_control.fric_motor[LEFT].fric_motor_measure = get_fric_motor_measure_point(LEFT);
@@ -170,7 +172,7 @@ void shoot_control_loop(void)
         {
             //设置拨弹轮的拨动速度,并开启堵转反转处理
             shoot_control.trigger_speed_set = shoot_grigger_grade[1] * SHOOT_TRIGGER_DIRECTION;
-            trigger_motor_turn_back();
+           
         }
         else
         {
@@ -191,11 +193,10 @@ void shoot_control_loop(void)
         shoot_control.trigger_motor_pid.max_iout = TRIGGER_BULLET_PID_MAX_IOUT;
         shoot_bullet_control();
     }
-    else if (shoot_control.shoot_mode == shoot_grigger_grade[2] * SHOOT_TRIGGER_DIRECTION)
+    else if (shoot_control.shoot_mode ==   SHOOT_CONTINUE_BULLET)
     {
         //设置拨弹轮的拨动速度,并开启堵转反转处理
-        shoot_control.trigger_speed_set = CONTINUE_TRIGGER_SPEED;
-        trigger_motor_turn_back();
+        shoot_control.trigger_speed_set =  shoot_grigger_grade[2] * SHOOT_TRIGGER_DIRECTION;
     }
     else if(shoot_control.shoot_mode == SHOOT_DONE)
     {
@@ -206,36 +207,40 @@ void shoot_control_loop(void)
     {
         shoot_laser_off();
         shoot_control.given_current = 0;
-        shoot_control.fric_motor[LEFT].speed_set = 0.0f;
-        shoot_control.fric_motor[RIGHT].speed_set = 0.0f;
+        shoot_control.fric_motor[LEFT].give_current = 0.0f;
+        shoot_control.fric_motor[RIGHT].give_current = 0.0f;
         shoot_control.fric_status = FALSE;
 
     }
     else
     {
-        //17mm发射机构射速和热量控制,还未测试完
-        //shoot_id1_17mm_speed_and_cooling_control(&shoot_control);
-
         shoot_laser_on(); //激光开启
+        //设置摩擦轮转速
+        shoot_control.fric_motor[LEFT].speed_set = -shoot_fric_grade[1];
+        shoot_control.fric_motor[RIGHT].speed_set = shoot_fric_grade[1];
+
+         //在摩擦轮正常运转时 控制17mm发射机构射速和热量控制,还未测试完
+        if(shoot_control.shoot_mode == SHOOT_CONTINUE_BULLET)
+            shoot_id1_17mm_speed_and_cooling_control(&shoot_control);
+        if(shoot_control.shoot_mode == SHOOT_READY_BULLET || shoot_control.shoot_mode == SHOOT_CONTINUE_BULLET)
+            trigger_motor_turn_back();  //将设置的拨盘旋转角度,转化为速度,且防止卡弹
+
         //计算拨弹轮电机PID
         PID_calc(&shoot_control.trigger_motor_pid, shoot_control.speed, shoot_control.speed_set);
-        shoot_control.given_current = (int16_t)(shoot_control.trigger_motor_pid.out);
+        //计算摩擦轮电机PID
+        PID_calc(&shoot_control.fric_speed_pid[LEFT], shoot_control.fric_motor[LEFT].speed, shoot_control.fric_motor[LEFT].speed_set);
+        PID_calc(&shoot_control.fric_speed_pid[RIGHT], shoot_control.fric_motor[RIGHT].speed, shoot_control.fric_motor[RIGHT].speed_set);    
+        
+        //确保摩擦轮未达到最低转速不会转动拨盘
         if(shoot_control.shoot_mode < SHOOT_READY_BULLET)
         {
             shoot_control.given_current = 0;
         }
 
-        
-
-        //计算摩擦轮的PID
-        shoot_control.fric_motor[LEFT].speed_set = -shoot_fric_grade[1];
-        shoot_control.fric_motor[RIGHT].speed_set = shoot_fric_grade[1];
-        PID_calc(&shoot_control.fric_speed_pid[LEFT], shoot_control.fric_motor[LEFT].speed, shoot_control.fric_motor[LEFT].speed_set);
-        PID_calc(&shoot_control.fric_speed_pid[RIGHT], shoot_control.fric_motor[RIGHT].speed, shoot_control.fric_motor[RIGHT].speed_set);    
-
+        //设置发送电流
+        shoot_control.given_current = (int16_t)(shoot_control.trigger_motor_pid.out);
         shoot_control.fric_motor[LEFT].give_current = shoot_control.fric_speed_pid[LEFT].out;
         shoot_control.fric_motor[RIGHT].give_current = shoot_control.fric_speed_pid[RIGHT].out;
-
 
     }
     
@@ -265,13 +270,25 @@ static void shoot_set_mode(void)
 
 
 
-    //处于中档， 可以使用键盘开启摩擦轮
-    if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && IF_KEY_SINGAL_PRESSED_G  && shoot_control.shoot_mode == SHOOT_STOP)
+    // //处于中档， 可以使用键盘开启摩擦轮
+    // if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && IF_KEY_SINGAL_PRESSED_G  && shoot_control.shoot_mode == SHOOT_STOP)
+    // { 
+    //     shoot_control.shoot_mode = SHOOT_READY_FRIC; 
+    // }
+    // //处于中档， 可以使用键盘关闭摩擦轮
+    // else if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && IF_KEY_SINGAL_PRESSED_G  && shoot_control.shoot_mode != SHOOT_STOP)
+    // {
+    //     shoot_control.shoot_mode = SHOOT_STOP;      
+    // }
+
+
+  //处于中档， 可以使用键盘开启摩擦轮
+    if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && IF_KEY_SINGAL_PRESSED_G_FRIC  && shoot_control.shoot_mode == SHOOT_STOP)
     { 
         shoot_control.shoot_mode = SHOOT_READY_FRIC; 
     }
     //处于中档， 可以使用键盘关闭摩擦轮
-    else if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && IF_KEY_SINGAL_PRESSED_G  && shoot_control.shoot_mode != SHOOT_STOP)
+    else if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && IF_KEY_SINGAL_PRESSED_G_FRIC && shoot_control.shoot_mode != SHOOT_STOP)
     {
         shoot_control.shoot_mode = SHOOT_STOP;      
     }

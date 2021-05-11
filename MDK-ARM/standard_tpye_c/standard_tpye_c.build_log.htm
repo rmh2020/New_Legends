@@ -27,57 +27,23 @@ Project File Date:  05/07/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-compiling servo_task.c...
-..\application\gimbal_task.h(335): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+compiling freertos.c...
+..\application\gimbal_task.h(336): warning:  #1295-D: Deprecated declaration software_reset - give arg types
   extern void software_reset();
-..\application\servo_task.c: 1 warning, 0 errors
-compiling referee_control.c...
-..\application\gimbal_task.h(335): warning:  #1295-D: Deprecated declaration software_reset - give arg types
-  extern void software_reset();
-..\application\referee_control.c(227): warning:  #1-D: last line of file ends without a newline
-  }
-..\application\referee_control.c: 2 warnings, 0 errors
-compiling gimbal_behaviour.c...
-..\application\gimbal_task.h(335): warning:  #1295-D: Deprecated declaration software_reset - give arg types
-  extern void software_reset();
-..\application\vision.h(142): warning:  #1295-D: Deprecated declaration vision_if_find_target - give arg types
-  bool_t vision_if_find_target();
-..\application\vision.h(146): warning:  #1-D: last line of file ends without a newline
+..\application\software_reset_task.h(33): warning:  #1-D: last line of file ends without a newline
   #endif
-..\application\gimbal_behaviour.c(240): warning:  #177-D: function "gimbal_auto_control"  was declared but never referenced
-  static void gimbal_auto_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
-..\application\gimbal_behaviour.c: 4 warnings, 0 errors
-compiling shoot.c...
-..\application\gimbal_task.h(335): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+../Src/freertos.c(191): warning:  #144-D: a value of type "void (*)(void *)" cannot be used to initialize an entity of type "os_pthread"
+      
+sThreadDef(UI, ui_task, osPriorityNormal, 0, 512);
+../Src/freertos.c: 3 warnings, 0 errors
+compiling chassis_behaviour.c...
+..\application\gimbal_task.h(336): warning:  #1295-D: Deprecated declaration software_reset - give arg types
   extern void software_reset();
-..\application\shoot.c(280): warning:  #223-D: function "abs" declared implicitly
-      if(shoot_control.shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed) || abs(shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[RIGHT].require_speed)))
-..\application\shoot.c(520): warning:  #1-D: last line of file ends without a newline
-  }
-..\application\shoot.c: 3 warnings, 0 errors
-compiling chassis_task.c...
-..\application\gimbal_task.h(335): warning:  #1295-D: Deprecated declaration software_reset - give arg types
-  extern void software_reset();
-..\application\chassis_task.c(520): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-          chassis_move_control_loop->max_wheel_speed = 1.5 * 
-AX_WHEEL_SPEED;
-..\application\chassis_task.c: 2 warnings, 0 errors
-compiling gimbal_task.c...
-..\application\gimbal_task.h(335): warning:  #1295-D: Deprecated declaration software_reset - give arg types
-  extern void software_reset();
-..\application\vision.h(142): warning:  #1295-D: Deprecated declaration vision_if_find_target - give arg types
-  bool_t vision_if_find_target();
-..\application\vision.h(146): warning:  #1-D: last line of file ends without a newline
-  #endif
-..\application\gimbal_task.c(1048): warning:  #1-D: last line of file ends without a newline
-  }
-..\application\gimbal_task.c(222): warning:  #177-D: variable "shoot_can_set_current"  was declared but never referenced
-  static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
-..\application\gimbal_task.c: 5 warnings, 0 errors
+..\application\chassis_behaviour.c: 1 warning, 0 errors
 linking...
-Program Size: Code=115080 RO-data=14768 RW-data=1432 ZI-data=59264  
+Program Size: Code=115488 RO-data=14768 RW-data=1440 ZI-data=59272  
 FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 17 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 4 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -95,7 +61,7 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:07
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>
