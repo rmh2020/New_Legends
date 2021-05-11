@@ -218,7 +218,7 @@ typedef struct
   fp32 chassis_relative_angle_set;  //the set relative angle.设置相对云台控制角度
   fp32 chassis_yaw_set; 
               
-
+  fp32 max_wheel_speed; //单个电机最大旋转速度
   fp32 vx_max_speed;  //max forward speed, unit m/s.前进方向最大速度 单位m/s
   fp32 vx_min_speed;  //max backward speed, unit m/s.后退方向最大速度 单位m/s
   fp32 vy_max_speed;  //max letf speed, unit m/s.左方向最大速度 单位m/s
