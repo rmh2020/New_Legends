@@ -169,7 +169,7 @@ void shoot_control_loop(void)
         if(shoot_control.key == SWITCH_TRIGGER_OFF)
         {
             //设置拨弹轮的拨动速度,并开启堵转反转处理
-            shoot_control.trigger_speed_set = shoot_grigger_grade[1] * SHOOT_TRIGGER_DIRECTION;
+            shoot_control.trigger_speed_set = READY_TRIGGER_SPEED;
             trigger_motor_turn_back();
         }
         else
@@ -191,7 +191,7 @@ void shoot_control_loop(void)
         shoot_control.trigger_motor_pid.max_iout = TRIGGER_BULLET_PID_MAX_IOUT;
         shoot_bullet_control();
     }
-    else if (shoot_control.shoot_mode == shoot_grigger_grade[2] * SHOOT_TRIGGER_DIRECTION)
+    else if (shoot_control.shoot_mode == SHOOT_CONTINUE_BULLET)
     {
         //设置拨弹轮的拨动速度,并开启堵转反转处理
         shoot_control.trigger_speed_set = CONTINUE_TRIGGER_SPEED;
@@ -214,7 +214,7 @@ void shoot_control_loop(void)
     else
     {
         //17mm发射机构射速和热量控制,还未测试完
-        //shoot_id1_17mm_speed_and_cooling_control(&shoot_control);
+        //shoot_heat0_speed_and_cooling_control(&shoot_control);
 
         shoot_laser_on(); //激光开启
         //计算拨弹轮电机PID
@@ -225,22 +225,19 @@ void shoot_control_loop(void)
             shoot_control.given_current = 0;
         }
 
-        
-
-        //计算摩擦轮的PID
         shoot_control.fric_motor[LEFT].speed_set = -shoot_fric_grade[1];
         shoot_control.fric_motor[RIGHT].speed_set = shoot_fric_grade[1];
-        PID_calc(&shoot_control.fric_speed_pid[LEFT], shoot_control.fric_motor[LEFT].speed, shoot_control.fric_motor[LEFT].speed_set);
-        PID_calc(&shoot_control.fric_speed_pid[RIGHT], shoot_control.fric_motor[RIGHT].speed, shoot_control.fric_motor[RIGHT].speed_set);    
-
-        shoot_control.fric_motor[LEFT].give_current = shoot_control.fric_speed_pid[LEFT].out;
-        shoot_control.fric_motor[RIGHT].give_current = shoot_control.fric_speed_pid[RIGHT].out;
-
 
     }
-    
+
+     //计算摩擦轮的PID
+    PID_calc(&shoot_control.fric_speed_pid[LEFT], shoot_control.fric_motor[LEFT].speed, shoot_control.fric_motor[LEFT].speed_set);
+    PID_calc(&shoot_control.fric_speed_pid[RIGHT], shoot_control.fric_motor[RIGHT].speed, shoot_control.fric_motor[RIGHT].speed_set);    
    
-    
+    shoot_control.fric_motor[LEFT].give_current = shoot_control.fric_speed_pid[LEFT].out;
+    shoot_control.fric_motor[RIGHT].give_current = shoot_control.fric_speed_pid[RIGHT].out;
+
+
     
 }
 
@@ -360,7 +357,6 @@ static void shoot_feedback_update(void)
     shoot_control.fric_motor[LEFT].speed = shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm * FRIC_RPM_TO_SPEED;
     shoot_control.fric_motor[RIGHT].speed = shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm * FRIC_RPM_TO_SPEED;
 
-
     static fp32 speed_fliter_1 = 0.0f;
     static fp32 speed_fliter_2 = 0.0f;
     static fp32 speed_fliter_3 = 0.0f;
@@ -441,6 +437,26 @@ static void shoot_feedback_update(void)
         shoot_control.rc_s_time = 0;
     }
 
+    // //鼠标右键按下加速摩擦轮，使得左键低速射击， 右键高速射击 单击右键改为自瞄
+    // static uint16_t up_time = 0;
+    // if (shoot_control.press_r)
+    // {
+    //     up_time = UP_ADD_TIME;
+    // }
+
+    // if (up_time > 0)
+    // {
+    //     shoot_control.fric_motor[LEFT].max_speed = shoot_fric_grade[1];
+    //     shoot_control.fric_motor[RIGHT].max_speed = shoot_fric_grade[1];
+    //     up_time--;
+    // }
+    // else
+    // {
+    //     shoot_control.fric_motor[LEFT].max_speed = shoot_fric_grade[1]/2;
+    //     shoot_control.fric_motor[RIGHT].max_speed = shoot_fric_grade[1]/2;
+    // }
+
+
 }
 
 static void trigger_motor_turn_back(void)
@@ -491,7 +507,7 @@ static void shoot_bullet_control(void)
     if (rad_format(shoot_control.set_angle - shoot_control.angle) > 0.05f)
     {
         //没到达一直设置旋转速度
-        shoot_control.trigger_speed_set = shoot_grigger_grade[1] * SHOOT_TRIGGER_DIRECTION;
+        shoot_control.trigger_speed_set = TRIGGER_SPEED;
         trigger_motor_turn_back();
     }
     else

@@ -229,8 +229,6 @@ static void chassis_init(chassis_move_t *chassis_move_init)
 
     //max and min speed
     //最大 最小速度
-    chassis_move_init->max_wheel_speed = MAX_WHEEL_SPEED;
-
     chassis_move_init->vx_max_speed = NORMAL_MAX_CHASSIS_SPEED_X;
     chassis_move_init->vx_min_speed = -NORMAL_MAX_CHASSIS_SPEED_X;
 
@@ -514,17 +512,6 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
     fp32 wheel_speed[4] = {0.0f, 0.0f, 0.0f, 0.0f};
     uint8_t i = 0;
 
-    //按下shift,提高速度,触发超级电容
-    if(IF_KEY_PRESSED_SHIFT)
-    {
-        chassis_move_control_loop->max_wheel_speed = 1.5 * MAX_WHEEL_SPEED;
-    }
-    else
-    {
-        chassis_move_control_loop->max_wheel_speed = MAX_WHEEL_SPEED;
-    }
-
-
     //麦轮运动分解
     chassis_vector_to_mecanum_wheel_speed(chassis_move_control_loop->vx_set,
                                           chassis_move_control_loop->vy_set, chassis_move_control_loop->wz_set, wheel_speed);
@@ -551,9 +538,9 @@ static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
         }
     }
 
-    if (max_vector > chassis_move_control_loop->max_wheel_speed)
+    if (max_vector > MAX_WHEEL_SPEED)
     {
-        vector_rate = chassis_move_control_loop->max_wheel_speed / max_vector;
+        vector_rate = MAX_WHEEL_SPEED / max_vector;
         for (i = 0; i < 4; i++)
         {
             chassis_move_control_loop->motor_chassis[i].speed_set *= vector_rate;
