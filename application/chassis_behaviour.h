@@ -70,6 +70,8 @@ typedef enum
 extern chassis_behaviour_e chassis_behaviour_mode ;
 extern chassis_behaviour_e last_chassis_behaviour_mode;
 
+//扭腰动作开关
+extern bool_t swing_switch;  
 
 //小陀螺动作开关
 extern bool_t top_switch; 
@@ -79,10 +81,12 @@ extern uint16_t pisa_delay_time;
 
 
 
+#define SWING_KEY ((chassis_move.chassis_RC->key.v  & KEY_PRESSED_OFFSET_C) && !(chassis_move.chassis_last_key_v & KEY_PRESSED_OFFSET_C))
+#define PISA_KEY ((chassis_move.chassis_RC->key.v  & KEY_PRESSED_OFFSET_X) && !(chassis_move.chassis_last_key_v & KEY_PRESSED_OFFSET_X))
+#define TOP_KEY ((chassis_move.chassis_RC->key.v  & KEY_PRESSED_OFFSET_F) && !(chassis_move.chassis_last_key_v & KEY_PRESSED_OFFSET_F))
+
+
 #define PISA_DELAY_TIME 500
-
-
-
 #define CHASSIS_OPEN_RC_SCALE 10 // in CHASSIS_OPEN mode, multiply the value. 在chassis_open 模型下，遥控器乘以该比例发送到can上
 
 

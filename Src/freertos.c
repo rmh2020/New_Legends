@@ -41,6 +41,7 @@
 #include "ui_task.h"
 #include "super_cap_task.h"
 #include "software_reset_task.h"
+#include "shoot_task.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -60,6 +61,8 @@ osThreadId servo_task_handle;
 osThreadId ui_task_handle;
 osThreadId super_cap_task_handle;
 osThreadId software_reset_task_handle;
+osThreadId shoot_task_handle;
+
 
 
 /* USER CODE END PTD */
@@ -166,6 +169,9 @@ void MX_FREERTOS_Init(void) {
 
     osThreadDef(gimbalTask, gimbal_task, osPriorityHigh, 0, 512);
     gimbalTaskHandle = osThreadCreate(osThread(gimbalTask), NULL);
+
+    osThreadDef(ShootTask, shoot_task, osPriorityHigh, 0, 512);
+    shoot_task_handle = osThreadCreate(osThread(ShootTask), NULL);
 
     osThreadDef(imuTask, INS_task, osPriorityRealtime, 0, 1024);
     imuTaskHandle = osThreadCreate(osThread(imuTask), NULL);

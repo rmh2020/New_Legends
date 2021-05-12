@@ -164,8 +164,7 @@ void chassis_task(void const *pvParameters)
                                 chassis_move.motor_chassis[2].give_current, chassis_move.motor_chassis[3].give_current);
             }
         }
-        //保留上一次遥控器数据
-        last_rc_ctrl = rc_ctrl;
+        
         //系统延时
         vTaskDelay(CHASSIS_CONTROL_TIME_MS);
 
@@ -236,6 +235,9 @@ static void chassis_init(chassis_move_t *chassis_move_init)
 
     chassis_move_init->vy_max_speed = NORMAL_MAX_CHASSIS_SPEED_Y;
     chassis_move_init->vy_min_speed = -NORMAL_MAX_CHASSIS_SPEED_Y;
+
+    //记录上一次键盘值
+    chassis_move_init->chassis_last_key_v = 0;
 
     //update data
     //更新一下数据
@@ -430,7 +432,7 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
         chassis_move_control->chassis_relative_angle_set = rad_format(angle_set);
 
         //计算旋转PID角速度 如果是小陀螺,固定转速 如果是45度角对敌,选择固定角度
-        if(top_switch == 1)
+        if(top_switch == TRUE)
             chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, 0, chassis_move_control->chassis_relative_angle_set);
         else if(pisa_switch == TRUE)
              chassis_move_control->wz_set = -PID_calc(&chassis_move_control->chassis_angle_pid, chassis_move_control->chassis_relative_angle-PI/4, chassis_move_control->chassis_relative_angle_set);

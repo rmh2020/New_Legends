@@ -138,6 +138,8 @@
 #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 6.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.0f
 
+
+
 // //老步兵PID
 // //chassis motor speed PID
 // //底盘电机速度环PID
@@ -175,6 +177,10 @@
 // #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 10.0f
 // #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.2f
 
+
+
+
+
 typedef enum
 {
   CHASSIS_VECTOR_FOLLOW_GIMBAL_YAW,   //chassis will follow yaw gimbal motor relative angle.底盘会跟随云台相对角度
@@ -196,6 +202,8 @@ typedef struct
 typedef struct
 {
   const RC_ctrl_t *chassis_RC;               //底盘使用的遥控器指针, the point to remote control
+  uint16_t chassis_last_key_v;               //记录上一次键盘值
+ 
   const gimbal_motor_t *chassis_yaw_motor;   //will use the relative angle of yaw gimbal motor to calculate the euler angle.底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角.
   const gimbal_motor_t *chassis_pitch_motor; //will use the relative angle of pitch gimbal motor to calculate the euler angle.底盘使用到pitch云台电机的相对角度来计算底盘的欧拉角
   const fp32 *chassis_INS_angle;             //the point to the euler angle of gyro sensor.获取陀螺仪解算出的欧拉角指针

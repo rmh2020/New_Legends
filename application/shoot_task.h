@@ -15,14 +15,17 @@
   ****************************(C) COPYRIGHT 2019 DJI****************************
   */
 
-#ifndef SHOOT_H
-#define SHOOT_H
+#ifndef SHOOT_TASK_H
+#define SHOOT_TASK_H
 #include "struct_typedef.h"
 
 #include "CAN_receive.h"
 #include "gimbal_task.h"
 #include "user_lib.h"
 
+//任务初始化 空闲一段时间
+#define SHOOT_TASK_INIT_TIME 201 
+#define SHOOT_CONTROL_TIME 1
 
 #define TRIGGER_CCW 1 //拨盘顺时针
 #define TRIGGER_CW -1 //拨盘逆时针
@@ -34,7 +37,7 @@
 #define SHOOT_RC_MODE_CHANNEL       1
 //云台模式使用的开关通道
 
-#define SHOOT_CONTROL_TIME          GIMBAL_CONTROL_TIME
+
 
 //开启摩擦轮的斜坡
 #define SHOOT_FRIC_ADD_VALUE    0.1f
@@ -123,11 +126,6 @@
 #define RIGHT 1
 
 
-//摩擦轮按键控制
-#define    IF_KEY_PRESSED_G_FRIC                  ( (shoot_control.shoot_rc->key.v & KEY_PRESSED_OFFSET_G)    != 0 )
-#define    LAST_IF_KEY_PRESSED_G_FRIC             ( (shoot_control.last_shoot_rc->key.v & KEY_PRESSED_OFFSET_G)    != 0 )
-#define    IF_KEY_SINGAL_PRESSED_G_FRIC           ( IF_KEY_PRESSED_G_FRIC && !LAST_IF_KEY_PRESSED_G_FRIC )
-
 
 typedef enum
 {
@@ -158,7 +156,7 @@ typedef struct
 {
     shoot_mode_e shoot_mode;
     const RC_ctrl_t *shoot_rc;
-    const RC_ctrl_t *last_shoot_rc;
+    uint16_t shoot_last_key_v;;
 
     //拨弹电机数据
     const motor_measure_t *trigger_motor_measure;
@@ -175,12 +173,12 @@ typedef struct
     fric_motor_t fric_motor[2]; 
     pid_type_def fric_speed_pid[2];
 
-    //摩擦轮电机 弹仓舵机
+    //摩擦轮电机 弹仓舵机 限位开关 状态
     bool_t fric_status;
     bool_t magazine_status;
     bool_t limit_switch_status;
   
-
+    //鼠标状态
     bool_t press_l;
     bool_t press_r;
     bool_t last_press_l;
@@ -193,21 +191,24 @@ typedef struct
     uint16_t reverse_time;
     bool_t move_flag;
 
-    bool_t key;
+    //微动开关
+    bool_t key;              
     uint8_t key_time;
 
-    uint16_t heat_limit;
-    uint16_t heat;
+ 
 } shoot_control_t;
 
 
 extern shoot_control_t shoot_control;          //射击数据
 
+//摩擦轮按键控制
+#define KEY_FRIC (shoot_control.shoot_rc->key.v  & KEY_PRESSED_OFFSET_G) && !(shoot_control.shoot_last_key_v & KEY_PRESSED_OFFSET_G) 
 
 
 //由于射击和云台使用同一个can的id故也射击任务在云台任务中执行
+extern void shoot_task(void const *pvParameters);;
 extern void shoot_init(void);
-extern void shoot_control_loop(void);
+extern void shoot_set_control(void);
 extern bool_t shoot_cmd_to_gimbal_stop(void);
 
 #endif

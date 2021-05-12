@@ -350,12 +350,12 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
     static fp32 const add_time = 2 * PI * 0.5f * configTICK_RATE_HZ / CHASSIS_CONTROL_TIME_MS;
 
     //开启扭腰
-    if (IF_KEY_SINGAL_PRESSED_C && swing_switch == 0)
+    if (SWING_KEY && swing_switch == 0)
     {   
         swing_switch = 1;
         swing_time = 0.0f;
     }
-    else if (IF_KEY_SINGAL_PRESSED_C && swing_switch == 1) //关闭扭腰
+    else if (SWING_KEY && swing_switch == 1) //关闭扭腰
     {
         swing_switch = 0;
     }
@@ -389,11 +389,11 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
    
     /**************************小陀螺控制输入********************************/
     //单击F开启和关闭小陀螺
-    if(IF_KEY_SINGAL_PRESSED_F && top_switch == 0 )  //开启小陀螺
+    if(TOP_KEY && top_switch == 0 )  //开启小陀螺
     {
         top_switch = 1;
     }
-    else if(IF_KEY_SINGAL_PRESSED_F && top_switch == 1 ) //关闭小陀螺
+    else if(TOP_KEY && top_switch == 1 ) //关闭小陀螺
     {
         top_switch = 0;
     }
@@ -419,17 +419,21 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
         top_angle = 0;
 
 
-
     /****************************45度角对敌*********************************************/
     //单击C,开启45度角对敌;重复操作取消45度角对敌
-    if(IF_KEY_SINGAL_PRESSED_C && pisa_switch == 0)//打开45度对敌
+    if(PISA_KEY && pisa_switch == 0)//打开45度对敌
     {
         pisa_switch = TRUE;
     }
-    else if(IF_KEY_SINGAL_PRESSED_C && pisa_switch != 0)//关闭45度对敌
+    else if(PISA_KEY && pisa_switch != 0)//关闭45度对敌
     {
         pisa_switch = FALSE;
     }
+
+
+    //更新上一次键盘值
+    chassis_move_rc_to_vector->chassis_last_key_v = chassis_move_rc_to_vector->chassis_RC->key.v;
+    
 
     *angle_set = swing_angle + top_angle;
 }

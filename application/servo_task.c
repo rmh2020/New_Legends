@@ -20,7 +20,7 @@
 #include "cmsis_os.h"
 #include "bsp_servo_pwm.h"
 #include "remote_control.h"
-#include "shoot.h"
+#include "shoot_task.h"
 
 
 
@@ -33,6 +33,13 @@
 #define SERVO_MAGAZINE_KEY KEY_PRESSED_OFFSET_R
 
 
+const RC_ctrl_t *servo_rc;
+uint16_t servo_last_key_v = 0;;
+//舵机按键
+#define KEY_SENVO (servo_rc->key.v  & KEY_PRESSED_OFFSET_R) && !(servo_last_key_v & KEY_PRESSED_OFFSET_R) 
+
+
+
 //0号舵机为弹仓舵机 1号舵机为限位舵机
 //舵机运动初始位置
 const uint16_t servo_open_pwm[4] = {SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM};
@@ -43,12 +50,6 @@ uint16_t servo_pwm[4] = {SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_PWM, SERVO_MIN_
 //弹仓按键计算 保证双击情况下打开弹仓
 uint8_t magazine_key_num = 0;
 
-const RC_ctrl_t *servo_rc;
-const RC_ctrl_t *last_servo_rc;
-
-#define    IF_KEY_PRESSED_MAGAZINE       ( (servo_rc->key.v & KEY_PRESSED_OFFSET_R)    != 0 )
-#define    LAST_IF_KEY_PRESSED_MAGAZINE       ( (last_servo_rc->key.v & KEY_PRESSED_OFFSET_R)    != 0 )
-#define    IF_KEY_SINGAL_PRESSED_MAGAZINE       ( IF_KEY_PRESSED_MAGAZINE && !LAST_IF_KEY_PRESSED_MAGAZINE )
 
 
 /**
@@ -59,14 +60,12 @@ const RC_ctrl_t *last_servo_rc;
 void servo_task(void const * argument)
 {
     servo_rc = get_remote_control_point();
-    last_servo_rc = get_last_remote_control_point();
 
     while(1)
     {       
-        if(IF_KEY_SINGAL_PRESSED_R)
+        if(KEY_SENVO)
             magazine_key_num++;
   
-
         //按下R键 打开或弹仓
         if(magazine_key_num >= 2 && shoot_control.magazine_status == FALSE)
         {   
@@ -115,7 +114,6 @@ void servo_task(void const * argument)
             servo_pwm_set(servo_pwm[i], i);
         }
 
-       
         osDelay(1);
     }
 }

@@ -167,10 +167,6 @@ fp32 bullet_speed;
  void shoot_id1_17mm_speed_and_cooling_control(shoot_control_t *shoot_heat0_speed_and_cooling_control)
 {
 
-   
-
-
-	
     if(toe_is_error(REFEREE_TOE))
     {
         grigger_speed_grade = 1;

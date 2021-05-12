@@ -38,7 +38,7 @@
 #include "remote_control.h"
 #include "gimbal_behaviour.h"
 #include "INS_task.h"
-#include "shoot.h"
+#include "shoot_task.h"
 #include "pid.h"
 #include "vision.h"
 #include "referee.h"
@@ -235,8 +235,7 @@ void gimbal_task(void const *pvParameters)
     vTaskDelay(GIMBAL_TASK_INIT_TIME);
     //云台初始化
     gimbal_init(&gimbal_control);
-    //射击初始化
-    shoot_init();
+
     //判断电机是否都上线
     while (toe_is_error(YAW_GIMBAL_MOTOR_TOE) || toe_is_error(PITCH_GIMBAL_MOTOR_TOE))
     {
@@ -246,17 +245,13 @@ void gimbal_task(void const *pvParameters)
 
     while (1)
     {
-        // //按下Z 软件复位
-        // if(IF_KEY_SINGAL_PRESSED_Z)
-        //     NVIC_SystemReset();
-
         software_reset();                                    //软件复位
         gimbal_set_mode(&gimbal_control);                    //设置云台控制模式
         gimbal_mode_change_control_transit(&gimbal_control); //控制模式切换 控制数据过渡
         gimbal_feedback_update(&gimbal_control);             //云台数据反馈
         gimbal_set_control(&gimbal_control);                 //设置云台控制量
         gimbal_control_loop(&gimbal_control);                //云台控制PID计算
-        shoot_control_loop();        //射击任务控制循环
+        
 #if YAW_TURN
         yaw_can_set_current = -gimbal_control.gimbal_yaw_motor.given_current;
 #else
@@ -279,7 +274,6 @@ void gimbal_task(void const *pvParameters)
             else
             {
                 CAN_cmd_gimbal(yaw_can_set_current, pitch_can_set_current, 0, 0);
-                CAN_cmd_shoot(shoot_control.fric_motor[LEFT].give_current, shoot_control.fric_motor[RIGHT].give_current, shoot_control.given_current, 0);
             }
         }
 
@@ -287,6 +281,8 @@ void gimbal_task(void const *pvParameters)
         J_scope_gimbal_test();
 #endif
 
+
+        //last_rc_ctrl = rc_ctrl;
         vTaskDelay(GIMBAL_CONTROL_TIME);
 
 #if INCLUDE_uxTaskGetStackHighWaterMark

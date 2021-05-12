@@ -34,7 +34,7 @@ standard_tpye_c\chassis_task.o: D:\EnglishPath\MDK5\ARM\ARMCC\Bin\..\include\mat
 standard_tpye_c\chassis_task.o: ..\application\detect_task.h
 standard_tpye_c\chassis_task.o: ..\application\INS_task.h
 standard_tpye_c\chassis_task.o: ..\application\referee_control.h
-standard_tpye_c\chassis_task.o: ..\application\shoot.h
+standard_tpye_c\chassis_task.o: ..\application\shoot_task.h
 standard_tpye_c\chassis_task.o: ../Inc/main.h
 standard_tpye_c\chassis_task.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 standard_tpye_c\chassis_task.o: ../Inc/stm32f4xx_hal_conf.h

@@ -58,7 +58,7 @@ static void sbus_to_rc(volatile const uint8_t *sbus_buf, RC_ctrl_t *rc_ctrl);
 RC_ctrl_t rc_ctrl; 
 RC_ctrl_t last_rc_ctrl;
 
-bool_t if_get_first_data = 0;
+uint16_t rc_ctrl_updata = 0;
 
 //接收原始数据，为18个字节，给了36个字节长度，防止DMA传输越界
 static uint8_t sbus_rx_buf[2][SBUS_RX_BUF_NUM];
@@ -267,10 +267,16 @@ static void sbus_to_rc(volatile const uint8_t *sbus_buf, RC_ctrl_t *rc_ctrl)
         return;
     }
 
-    // if (if_get_first_data != 0)
-    //     last_rc_ctrl = *rc_ctrl;             //当遥控器有输入时保留上一次数据
+    // if (rc_ctrl_updata >= 50)
+    // {
+    //     if(rc_ctrl_updata==50)
+    //         last_rc_ctrl = *rc_ctrl;             //当遥控器有输入时保留上一次数据
+    //     rc_ctrl_updata++;
+    //     if(rc_ctrl_updata >= 100)
+    //      rc_ctrl_updata = 0;
+    // }
     // else
-    //     if_get_first_data = 1;
+    //     rc_ctrl_updata ++;
       
     rc_ctrl->rc.ch[0] = (sbus_buf[0] | (sbus_buf[1] << 8)) & 0x07ff;        //!< Channel 0
     rc_ctrl->rc.ch[1] = ((sbus_buf[1] >> 3) | (sbus_buf[2] << 5)) & 0x07ff; //!< Channel 1

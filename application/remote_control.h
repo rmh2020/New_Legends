@@ -131,6 +131,11 @@ extern RC_ctrl_t last_rc_ctrl;
 #define    IF_KEY_PRESSED_CTRL    ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_CTRL) != 0 )
 #define    IF_KEY_PRESSED_SHIFT   ( (rc_ctrl.key.v & KEY_PRESSED_OFFSET_SHIFT) != 0 )
 
+/*
+由于各任务线程的时间不同,所以更新的遥控器指针也不同,暂时还没有想到解决这个问题的方法,所以全局的last_rc_ctrl暂时不用
+,代替的方案是每个需要遥控器指令的任务自带一个遥控器指针,随自身任务更新周期更新.
+*/
+
 /* 
         记录上一次值
         检测键盘按键状态 

@@ -57,7 +57,7 @@
 #include "bsp_buzzer.h"
 #include "detect_task.h"
 #include "vision.h"
-#include "shoot.h"
+#include "shoot_task.h"
 #include "remote_control.h"
 
 #include "user_lib.h"
@@ -655,7 +655,7 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
 
 
     {
-        
+        //云台旋转固定角度
         static fp32 gimbal_end_angle = 0.0f;
 
 
@@ -698,11 +698,8 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
 
     }
 
-
     }
 
-
-    
 }
 
 
