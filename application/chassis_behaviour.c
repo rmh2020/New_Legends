@@ -221,8 +221,6 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
         chassis_move_mode->chassis_mode = CHASSIS_VECTOR_RAW;
     }
    
-
-
 }
 
 
@@ -336,9 +334,7 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
     //遥控器的通道值以及键盘按键 得出 一般情况下的速度设定值
     chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
     
-
-
-    /**************************扭腰控制输入*******************************/
+    /**************************扭腰和自动闪避控制输入*******************************/
     //判断是否要摇摆  当键盘单击C            (或者装甲板受到伤害摇摆 这个暂时有问题)
 
     //摇摆角度是利用sin函数生成，swing_time 是sin函数的输入值
@@ -349,16 +345,38 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
     //在一个控制周期内，加上 add_time
     static fp32 const add_time = 2 * PI * 0.5f * configTICK_RATE_HZ / CHASSIS_CONTROL_TIME_MS;
 
+    //闪避摇摆时间
+    static uint16_t miss_swing_time = 700; 
+    //0表示未开始闪避 1表示正在闪避 2表示闪避已结束
+    static uint8_t miss_flag = MISS_CLOSE;  
+
+    //开始自动闪避,扭腰倒计时开始        
+    if(if_hit() == TRUE)
+    {
+        miss_flag = MISS_BEGIN;  
+        miss_swing_time--;
+    }
+    //结束并退出扭腰
+    if(miss_swing_time == 0)
+    {
+        miss_flag = MISS_OVER;
+        miss_swing_time = 700;
+    }
+
     //开启扭腰
-    if (SWING_KEY && swing_switch == 0)
+    if ((SWING_KEY || miss_flag == MISS_BEGIN)&& swing_switch == FALSE)
     {   
-        swing_switch = 1;
+        swing_switch = TRUE;
         swing_time = 0.0f;
     }
-    else if (SWING_KEY && swing_switch == 1) //关闭扭腰
+    else if ((SWING_KEY || miss_flag == MISS_OVER)  && swing_switch == TRUE) //关闭扭腰
     {
+        miss_flag = MISS_CLOSE;
         swing_switch = 0;
     }
+
+    
+    
 
     //判断键盘输入是不是在控制底盘运动，底盘在运动减小摇摆角度
     if (chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_FRONT_KEY || chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_BACK_KEY ||
@@ -419,7 +437,7 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
         top_angle = 0;
 
 
-    /****************************45度角对敌*********************************************/
+    /****************************45度角对敌控制输入*********************************************/
     //单击C,开启45度角对敌;重复操作取消45度角对敌
     if(PISA_KEY && pisa_switch == 0)//打开45度对敌
     {
@@ -430,11 +448,9 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
         pisa_switch = FALSE;
     }
 
-
     //更新上一次键盘值
     chassis_move_rc_to_vector->chassis_last_key_v = chassis_move_rc_to_vector->chassis_RC->key.v;
     
-
     *angle_set = swing_angle + top_angle;
 }
 

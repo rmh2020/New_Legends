@@ -80,6 +80,10 @@ extern bool_t pisa_switch;
 extern uint16_t pisa_delay_time; 
 
 
+#define MISS_CLOSE 0
+#define MISS_BEGIN 1
+#define MISS_OVER  2
+
 
 #define SWING_KEY ((chassis_move.chassis_RC->key.v  & KEY_PRESSED_OFFSET_C) && !(chassis_move.chassis_last_key_v & KEY_PRESSED_OFFSET_C))
 #define PISA_KEY ((chassis_move.chassis_RC->key.v  & KEY_PRESSED_OFFSET_X) && !(chassis_move.chassis_last_key_v & KEY_PRESSED_OFFSET_X))
@@ -88,8 +92,6 @@ extern uint16_t pisa_delay_time;
 
 #define PISA_DELAY_TIME 500
 #define CHASSIS_OPEN_RC_SCALE 10 // in CHASSIS_OPEN mode, multiply the value. 在chassis_open 模型下，遥控器乘以该比例发送到can上
-
-
 
 
 

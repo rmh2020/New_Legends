@@ -623,8 +623,6 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
     if (yaw == NULL || pitch == NULL || gimbal_control_set == NULL)
     {
         return;
-
-        
     }
 
     //单击右键 打开自瞄 再次单击 关闭自瞄
@@ -652,7 +650,6 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
 
         *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
         *pitch = pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN;
-
 
     {
         //云台旋转固定角度
