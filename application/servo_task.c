@@ -66,7 +66,7 @@ void servo_task(void const * argument)
         if(KEY_SENVO)
             magazine_key_num++;
   
-        //按下R键 打开或弹仓
+        //双击R键 打开或弹仓
         if(magazine_key_num >= 2 && shoot_control.magazine_status == FALSE)
         {   
             //打开弹仓

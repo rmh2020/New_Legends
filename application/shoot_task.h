@@ -105,9 +105,9 @@
 
 
 //摩擦轮电机PID
-#define FRIC_SPEED_PID_KP        1000.0f
+#define FRIC_SPEED_PID_KP        1800.0f
 #define FRIC_SPEED_PID_KI        0.5f
-#define FRIC_SPEED_PID_KD        1.0f
+#define FRIC_SPEED_PID_KD        2.0f
 
 #define FRIC_PID_MAX_OUT  8000.0f
 #define FRIC_PID_MAX_IOUT 200.0f
@@ -119,7 +119,7 @@
 #define SHOOT_HEAT_REMAIN_VALUE     80
 //拨盘格数
 #define TRIGGER_GRID_NUM 8     
-#define TRIGGER_ONCE PI/TRIGGER_GRID_NUM
+#define TRIGGER_ONCE 2*PI/TRIGGER_GRID_NUM
 
 
 #define LEFT 0

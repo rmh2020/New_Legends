@@ -908,6 +908,15 @@ Section Cross References
     remote_control.o(i.sbus_to_usart1) refers to remote_control.o(.data) for i
     remote_control.o(i.slove_RC_lost) refers to bsp_rc.o(i.RC_restart) for RC_restart
     remote_control.o(i.slove_data_error) refers to bsp_rc.o(i.RC_restart) for RC_restart
+    super_cap_task.o(i.cap_init) refers to can_receive.o(i.CAN_cmd_super_cap) for CAN_cmd_super_cap
+    super_cap_task.o(i.cap_update_cap_capvot) refers to super_cap_task.o(.data) for supercap_vot
+    super_cap_task.o(i.cap_update_cap_inputvot) refers to super_cap_task.o(.data) for input_vot
+    super_cap_task.o(i.cap_update_cap_target_power) refers to super_cap_task.o(.data) for target_power
+    super_cap_task.o(i.cap_update_cap_test_current) refers to super_cap_task.o(.data) for input_current
+    super_cap_task.o(i.super_cap_task) refers to tasks.o(i.vTaskDelay) for vTaskDelay
+    super_cap_task.o(i.super_cap_task) refers to can_receive.o(i.CAN_cmd_super_cap) for CAN_cmd_super_cap
+    super_cap_task.o(i.super_cap_task) refers to super_cap_task.o(.data) for supercap_vot
+    super_cap_task.o(i.super_cap_task) refers to referee.o(.data) for game_state
     shoot_task.o(i.shoot_bullet_control) refers to user_lib.o(i.loop_fp32_constrain) for loop_fp32_constrain
     shoot_task.o(i.shoot_bullet_control) refers to shoot_task.o(i.trigger_motor_turn_back) for trigger_motor_turn_back
     shoot_task.o(i.shoot_bullet_control) refers to shoot_task.o(.bss) for shoot_control
@@ -949,15 +958,6 @@ Section Cross References
     shoot_task.o(i.trigger_motor_turn_back) refers to fabs.o(i.__hardfp_fabs) for __hardfp_fabs
     shoot_task.o(i.trigger_motor_turn_back) refers to dleqf.o(x$fpl$dleqf) for __aeabi_cdcmple
     shoot_task.o(i.trigger_motor_turn_back) refers to shoot_task.o(.bss) for shoot_control
-    super_cap_task.o(i.cap_init) refers to can_receive.o(i.CAN_cmd_super_cap) for CAN_cmd_super_cap
-    super_cap_task.o(i.cap_update_cap_capvot) refers to super_cap_task.o(.data) for supercap_vot
-    super_cap_task.o(i.cap_update_cap_inputvot) refers to super_cap_task.o(.data) for input_vot
-    super_cap_task.o(i.cap_update_cap_target_power) refers to super_cap_task.o(.data) for target_power
-    super_cap_task.o(i.cap_update_cap_test_current) refers to super_cap_task.o(.data) for input_current
-    super_cap_task.o(i.super_cap_task) refers to tasks.o(i.vTaskDelay) for vTaskDelay
-    super_cap_task.o(i.super_cap_task) refers to can_receive.o(i.CAN_cmd_super_cap) for CAN_cmd_super_cap
-    super_cap_task.o(i.super_cap_task) refers to super_cap_task.o(.data) for supercap_vot
-    super_cap_task.o(i.super_cap_task) refers to referee.o(.data) for game_state
     oled.o(i.OLED_LOGO) refers to rt_memcpy_v6.o(.text) for __aeabi_memcpy
     oled.o(i.OLED_LOGO) refers to oled.o(i.OLED_refresh_gram) for OLED_refresh_gram
     oled.o(i.OLED_LOGO) refers to oled.o(.constdata) for RM_LOGO_BMP_TRANS
@@ -3502,13 +3502,13 @@ Removing Unused input sections from the image.
     Removing remote_control.o(i.RC_data_is_error), (152 bytes).
     Removing remote_control.o(i.slove_RC_lost), (10 bytes).
     Removing remote_control.o(i.slove_data_error), (10 bytes).
-    Removing shoot_task.o(.rev16_text), (4 bytes).
-    Removing shoot_task.o(.revsh_text), (4 bytes).
-    Removing shoot_task.o(.rrx_text), (6 bytes).
     Removing super_cap_task.o(.rev16_text), (4 bytes).
     Removing super_cap_task.o(.revsh_text), (4 bytes).
     Removing super_cap_task.o(.rrx_text), (6 bytes).
     Removing super_cap_task.o(i.cap_init), (12 bytes).
+    Removing shoot_task.o(.rev16_text), (4 bytes).
+    Removing shoot_task.o(.revsh_text), (4 bytes).
+    Removing shoot_task.o(.rrx_text), (6 bytes).
     Removing oled.o(.rev16_text), (4 bytes).
     Removing oled.o(.revsh_text), (4 bytes).
     Removing oled.o(.rrx_text), (6 bytes).
@@ -4625,8 +4625,8 @@ Image Symbol Table
     ../clib/armsys.c                         0x00000000   Number         0  _get_argv.o ABSOLUTE
     ../clib/bigflt.c                         0x00000000   Number         0  bigflt0.o ABSOLUTE
     ../clib/btod.s                           0x00000000   Number         0  btod.o ABSOLUTE
-    ../clib/fenv.c                           0x00000000   Number         0  _rserrno.o ABSOLUTE
     ../clib/fenv.c                           0x00000000   Number         0  _fptrap.o ABSOLUTE
+    ../clib/fenv.c                           0x00000000   Number         0  _rserrno.o ABSOLUTE
     ../clib/heap1.c                          0x00000000   Number         0  h1_extend_mt.o ABSOLUTE
     ../clib/heap1.c                          0x00000000   Number         0  h1_init.o ABSOLUTE
     ../clib/heap1.c                          0x00000000   Number         0  h1_extend.o ABSOLUTE
@@ -4641,22 +4641,22 @@ Image Symbol Table
     ../clib/heap2.c                          0x00000000   Number         0  heap2.o ABSOLUTE
     ../clib/heap2.c                          0x00000000   Number         0  heap2mt.o ABSOLUTE
     ../clib/heapalloc.c                      0x00000000   Number         0  malloc.o ABSOLUTE
+    ../clib/heapalloc.c                      0x00000000   Number         0  maybetermalloc1.o ABSOLUTE
+    ../clib/heapalloc.c                      0x00000000   Number         0  maybetermalloc1.o ABSOLUTE
     ../clib/heapalloc.c                      0x00000000   Number         0  term_alloc.o ABSOLUTE
-    ../clib/heapalloc.c                      0x00000000   Number         0  maybetermalloc1.o ABSOLUTE
-    ../clib/heapalloc.c                      0x00000000   Number         0  maybetermalloc1.o ABSOLUTE
-    ../clib/heapalloc.c                      0x00000000   Number         0  maybetermalloc2.o ABSOLUTE
     ../clib/heapalloc.c                      0x00000000   Number         0  hrguard.o ABSOLUTE
+    ../clib/heapalloc.c                      0x00000000   Number         0  maybetermalloc2.o ABSOLUTE
     ../clib/heapalloc.c                      0x00000000   Number         0  free.o ABSOLUTE
     ../clib/heapalloc.c                      0x00000000   Number         0  hguard.o ABSOLUTE
     ../clib/heapalloc.c                      0x00000000   Number         0  init_alloc.o ABSOLUTE
     ../clib/heapalloc.c                      0x00000000   Number         0  maybetermalloc2.o ABSOLUTE
     ../clib/heapalloc.c                      0x00000000   Number         0  heapstubs.o ABSOLUTE
-    ../clib/heapaux.c                        0x00000000   Number         0  heapauxa.o ABSOLUTE
     ../clib/heapaux.c                        0x00000000   Number         0  heapauxi.o ABSOLUTE
+    ../clib/heapaux.c                        0x00000000   Number         0  heapauxa.o ABSOLUTE
     ../clib/libinit.s                        0x00000000   Number         0  libinit2.o ABSOLUTE
     ../clib/libinit.s                        0x00000000   Number         0  libinit.o ABSOLUTE
-    ../clib/libinit.s                        0x00000000   Number         0  libshutdown.o ABSOLUTE
     ../clib/libinit.s                        0x00000000   Number         0  libshutdown2.o ABSOLUTE
+    ../clib/libinit.s                        0x00000000   Number         0  libshutdown.o ABSOLUTE
     ../clib/locale.c                         0x00000000   Number         0  _wcrtomb.o ABSOLUTE
     ../clib/locale.s                         0x00000000   Number         0  lc_ctype_c.o ABSOLUTE
     ../clib/locale.s                         0x00000000   Number         0  lc_numeric_c.o ABSOLUTE
@@ -4664,11 +4664,11 @@ Image Symbol Table
     ../clib/longlong.s                       0x00000000   Number         0  lludivv7m.o ABSOLUTE
     ../clib/memcpset.s                       0x00000000   Number         0  rt_memcpy_w.o ABSOLUTE
     ../clib/memcpset.s                       0x00000000   Number         0  memset.o ABSOLUTE
-    ../clib/memcpset.s                       0x00000000   Number         0  rt_memcpy_v6.o ABSOLUTE
     ../clib/memcpset.s                       0x00000000   Number         0  aeabi_memset.o ABSOLUTE
+    ../clib/memcpset.s                       0x00000000   Number         0  rt_memclr.o ABSOLUTE
     ../clib/memcpset.s                       0x00000000   Number         0  rt_memclr_w.o ABSOLUTE
     ../clib/memcpset.s                       0x00000000   Number         0  strcmpv7m.o ABSOLUTE
-    ../clib/memcpset.s                       0x00000000   Number         0  rt_memclr.o ABSOLUTE
+    ../clib/memcpset.s                       0x00000000   Number         0  rt_memcpy_v6.o ABSOLUTE
     ../clib/misc.s                           0x00000000   Number         0  printf_stubs.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_wctomb.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_truncate.o ABSOLUTE
@@ -4676,35 +4676,35 @@ Image Symbol Table
     ../clib/printf.c                         0x00000000   Number         0  _printf_char_common.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_charcount.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_dec.o ABSOLUTE
-    ../clib/printf.c                         0x00000000   Number         0  _printf_intcommon.o ABSOLUTE
+    ../clib/printf.c                         0x00000000   Number         0  _printf_str.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_pad.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  __printf.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_fp_infnan.o ABSOLUTE
-    ../clib/printf.c                         0x00000000   Number         0  _printf_str.o ABSOLUTE
+    ../clib/printf.c                         0x00000000   Number         0  _printf_fp_dec.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  vsprintf.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  __printf_ss_wp.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_fp_hex.o ABSOLUTE
-    ../clib/printf.c                         0x00000000   Number         0  _printf_hex_int.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  __printf_flags_wp.o ABSOLUTE
+    ../clib/printf.c                         0x00000000   Number         0  __printf_wp.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  __printf_nopercent.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_char.o ABSOLUTE
-    ../clib/printf.c                         0x00000000   Number         0  __printf_wp.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  __printf_flags_ss.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  __printf_ss.o ABSOLUTE
-    ../clib/printf.c                         0x00000000   Number         0  _printf_wchar.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  __printf_flags.o ABSOLUTE
+    ../clib/printf.c                         0x00000000   Number         0  _printf_wchar.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_hex_int_ll_ptr.o ABSOLUTE
-    ../clib/printf.c                         0x00000000   Number         0  __printf_flags_ss_wp.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_hex_ll_ptr.o ABSOLUTE
+    ../clib/printf.c                         0x00000000   Number         0  __printf_flags_ss_wp.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_hex_int_ptr.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_hex_ptr.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_hex_int_ll.o ABSOLUTE
+    ../clib/printf.c                         0x00000000   Number         0  _printf_hex_int.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_hex_ll.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_oct_int_ll.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_oct_int.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_oct_ll.o ABSOLUTE
     ../clib/printf.c                         0x00000000   Number         0  _printf_longlong_dec.o ABSOLUTE
-    ../clib/printf.c                         0x00000000   Number         0  _printf_fp_dec.o ABSOLUTE
+    ../clib/printf.c                         0x00000000   Number         0  _printf_intcommon.o ABSOLUTE
     ../clib/printf_percent.s                 0x00000000   Number         0  _printf_n.o ABSOLUTE
     ../clib/printf_percent.s                 0x00000000   Number         0  _printf_ll.o ABSOLUTE
     ../clib/printf_percent.s                 0x00000000   Number         0  _printf_llu.o ABSOLUTE
@@ -5089,8 +5089,8 @@ Image Symbol Table
     .text                                    0x080017e4   Section        0  _wcrtomb.o(.text)
     .text                                    0x08001824   Section        0  defsig_rtmem_outer.o(.text)
     .text                                    0x08001832   Section        2  use_no_semi.o(.text)
-    .text                                    0x08001834   Section       74  sys_stackheap_outer.o(.text)
     .text                                    0x08001834   Section        0  indicate_semi.o(.text)
+    .text                                    0x08001834   Section       74  sys_stackheap_outer.o(.text)
     .text                                    0x08001880   Section       16  rt_ctype_table.o(.text)
     .text                                    0x08001890   Section        8  rt_locale_intlibspace.o(.text)
     .text                                    0x08001898   Section        0  _printf_fp_infnan.o(.text)
@@ -6195,12 +6195,12 @@ Image Symbol Table
     .data                                    0x20000398   Section        5  remote_control.o(.data)
     this_time_rx_len                         0x2000039a   Data           2  remote_control.o(.data)
     i                                        0x2000039c   Data           1  remote_control.o(.data)
-    .data                                    0x200003a0   Section       13  shoot_task.o(.data)
-    speed_fliter_1                           0x200003a0   Data           4  shoot_task.o(.data)
-    speed_fliter_2                           0x200003a4   Data           4  shoot_task.o(.data)
-    speed_fliter_3                           0x200003a8   Data           4  shoot_task.o(.data)
-    last_s                                   0x200003ac   Data           1  shoot_task.o(.data)
-    .data                                    0x200003b0   Section       17  super_cap_task.o(.data)
+    .data                                    0x200003a0   Section       17  super_cap_task.o(.data)
+    .data                                    0x200003b4   Section       13  shoot_task.o(.data)
+    speed_fliter_1                           0x200003b4   Data           4  shoot_task.o(.data)
+    speed_fliter_2                           0x200003b8   Data           4  shoot_task.o(.data)
+    speed_fliter_3                           0x200003bc   Data           4  shoot_task.o(.data)
+    last_s                                   0x200003c0   Data           1  shoot_task.o(.data)
     .data                                    0x200003c4   Section        8  oled.o(.data)
     time                                     0x200003c4   Data           2  oled.o(.data)
     cmd_data                                 0x200003c6   Data           2  oled.o(.data)
@@ -7331,11 +7331,11 @@ Image Symbol Table
     auto_arr                                 0x20000385   Data           4  ui_task.o(.data)
     mag_arr                                  0x20000389   Data           7  ui_task.o(.data)
     rc_ctrl_updata                           0x20000398   Data           2  remote_control.o(.data)
-    input_vot                                0x200003b0   Data           4  super_cap_task.o(.data)
-    supercap_vot                             0x200003b4   Data           4  super_cap_task.o(.data)
-    input_current                            0x200003b8   Data           4  super_cap_task.o(.data)
-    target_power                             0x200003bc   Data           4  super_cap_task.o(.data)
-    cap_change                               0x200003c0   Data           1  super_cap_task.o(.data)
+    input_vot                                0x200003a0   Data           4  super_cap_task.o(.data)
+    supercap_vot                             0x200003a4   Data           4  super_cap_task.o(.data)
+    input_current                            0x200003a8   Data           4  super_cap_task.o(.data)
+    target_power                             0x200003ac   Data           4  super_cap_task.o(.data)
+    cap_change                               0x200003b0   Data           1  super_cap_task.o(.data)
     BMI088_ACCEL_SEN                         0x200003cc   Data           4  bmi088driver.o(.data)
     BMI088_GYRO_SEN                          0x200003d0   Data           4  bmi088driver.o(.data)
     CRC16_INIT                               0x200003f8   Data           2  crc8_crc16.o(.data)
@@ -8068,10 +8068,10 @@ Memory Map of the image
     0x08012da4   0x000000b8   Code   RO         2239    i.cali_param_init   calibrate_task.o
     0x08012e5c   0x00000148   Code   RO         2240    i.calibrate_task    calibrate_task.o
     0x08012fa4   0x0000005c   Code   RO         1691    i.can_filter_init   bsp_can.o
-    0x08013000   0x00000014   Code   RO         3813    i.cap_update_cap_capvot  super_cap_task.o
-    0x08013014   0x00000014   Code   RO         3814    i.cap_update_cap_inputvot  super_cap_task.o
-    0x08013028   0x00000014   Code   RO         3815    i.cap_update_cap_target_power  super_cap_task.o
-    0x0801303c   0x00000014   Code   RO         3816    i.cap_update_cap_test_current  super_cap_task.o
+    0x08013000   0x00000014   Code   RO         3743    i.cap_update_cap_capvot  super_cap_task.o
+    0x08013014   0x00000014   Code   RO         3744    i.cap_update_cap_inputvot  super_cap_task.o
+    0x08013028   0x00000014   Code   RO         3745    i.cap_update_cap_target_power  super_cap_task.o
+    0x0801303c   0x00000014   Code   RO         3746    i.cap_update_cap_test_current  super_cap_task.o
     0x08013050   0x000000a0   Code   RO         2459    i.chassis_behaviour_control_set  chassis_behaviour.o
     0x080130f0   0x000000a8   Code   RO         2460    i.chassis_behaviour_mode_set  chassis_behaviour.o
     0x08013198   0x000001ec   Code   RO         2554    i.chassis_control_loop  chassis_task.o
@@ -8244,22 +8244,22 @@ Memory Map of the image
     0x08017b44   0x00000134   Code   RO         3424    i.servo_task        servo_task.o
     0x08017c78   0x00000020   Code   RO         2790    i.set_cali_gimbal_hook  gimbal_task.o
     0x08017c98   0x00000020   Code   RO         2791    i.set_hand_operator_gimbal_hook  gimbal_task.o
-    0x08017cb8   0x000000b4   Code   RO         3742    i.shoot_bullet_control  shoot_task.o
-    0x08017d6c   0x00000014   Code   RO         3743    i.shoot_cmd_to_gimbal_stop  shoot_task.o
-    0x08017d80   0x00000214   Code   RO         3744    i.shoot_feedback_update  shoot_task.o
+    0x08017cb8   0x000000b4   Code   RO         3800    i.shoot_bullet_control  shoot_task.o
+    0x08017d6c   0x00000014   Code   RO         3801    i.shoot_cmd_to_gimbal_stop  shoot_task.o
+    0x08017d80   0x00000214   Code   RO         3802    i.shoot_feedback_update  shoot_task.o
     0x08017f94   0x0000014c   Code   RO         3078    i.shoot_id1_17mm_speed_and_cooling_control  referee_control.o
-    0x080180e0   0x00000138   Code   RO         3745    i.shoot_init        shoot_task.o
-    0x08018218   0x000001f4   Code   RO         3746    i.shoot_set_control  shoot_task.o
-    0x0801840c   0x00000240   Code   RO         3747    i.shoot_set_mode    shoot_task.o
-    0x0801864c   0x00000038   Code   RO         3748    i.shoot_task        shoot_task.o
+    0x080180e0   0x00000138   Code   RO         3803    i.shoot_init        shoot_task.o
+    0x08018218   0x000001f4   Code   RO         3804    i.shoot_set_control  shoot_task.o
+    0x0801840c   0x00000240   Code   RO         3805    i.shoot_set_mode    shoot_task.o
+    0x0801864c   0x00000038   Code   RO         3806    i.shoot_task        shoot_task.o
     0x08018684   0x00000010   Code   RO        12119    i.sin               m_wm.l(sin.o)
     0x08018694   0x00000080   Code   RO         2792    i.software_reset    gimbal_task.o
     0x08018714   0x0000003e   Code   RO        12143    i.sqrtf             m_wm.l(sqrtf_full.o)
     0x08018752   0x00000002   PAD
-    0x08018754   0x000001b8   Code   RO         3817    i.super_cap_task    super_cap_task.o
+    0x08018754   0x000001b8   Code   RO         3747    i.super_cap_task    super_cap_task.o
     0x0801890c   0x0000008c   Code   RO         3272    i.test_task         test_task.o
     0x08018998   0x00000018   Code   RO         2640    i.toe_is_error      detect_task.o
-    0x080189b0   0x000000cc   Code   RO         3749    i.trigger_motor_turn_back  shoot_task.o
+    0x080189b0   0x000000cc   Code   RO         3807    i.trigger_motor_turn_back  shoot_task.o
     0x08018a7c   0x00000628   Code   RO         3623    i.ui_task           ui_task.o
     0x080190a4   0x00000074   Code   RO        10318    i.ulTaskNotifyTake  tasks.o
     0x08019118   0x0000007a   Code   RO        11723    i.update_w          AHRS.lib(ahrs.o)
@@ -8368,7 +8368,7 @@ Memory Map of the image
     0x0801d8bc   0x0000000e   Data   RO         3309    .constdata          usb_task.o
     0x0801d8ca   0x00000010   Data   RO         3425    .constdata          servo_task.o
     0x0801d8da   0x00000302   Data   RO         3538    .constdata          rm_cilent_ui.o
-    0x0801dbdc   0x00000024   Data   RO         3751    .constdata          shoot_task.o
+    0x0801dbdc   0x00000024   Data   RO         3809    .constdata          shoot_task.o
     0x0801dc00   0x0000115c   Data   RO         3887    .constdata          oled.o
     0x0801ed5c   0x00000012   Data   RO         4013    .constdata          bmi088driver.o
     0x0801ed6e   0x0000000c   Data   RO         4204    .constdata          ist8310driver.o
@@ -8436,9 +8436,9 @@ Memory Map of the image
     0x20000370   0x00000028   Data   RW         3625    .data               ui_task.o
     0x20000398   0x00000005   Data   RW         3669    .data               remote_control.o
     0x2000039d   0x00000003   PAD
-    0x200003a0   0x0000000d   Data   RW         3752    .data               shoot_task.o
-    0x200003ad   0x00000003   PAD
-    0x200003b0   0x00000011   Data   RW         3818    .data               super_cap_task.o
+    0x200003a0   0x00000011   Data   RW         3748    .data               super_cap_task.o
+    0x200003b1   0x00000003   PAD
+    0x200003b4   0x0000000d   Data   RW         3810    .data               shoot_task.o
     0x200003c1   0x00000003   PAD
     0x200003c4   0x00000008   Data   RW         3888    .data               oled.o
     0x200003cc   0x0000002c   Data   RW         4014    .data               bmi088driver.o
@@ -8484,7 +8484,7 @@ Memory Map of the image
     0x200042a9   0x000001c2   Zero   RW         3624    .bss                ui_task.o
     0x2000446b   0x00000088   Zero   RW         3668    .bss                remote_control.o
     0x200044f3   0x00000001   PAD
-    0x200044f4   0x00000158   Zero   RW         3750    .bss                shoot_task.o
+    0x200044f4   0x00000158   Zero   RW         3808    .bss                shoot_task.o
     0x2000464c   0x00000417   Zero   RW         3886    .bss                oled.o
     0x20004a63   0x00000001   PAD
     0x20004a64   0x00000020   Zero   RW         5712    .bss                stm32f4xx_hal_flash.o
@@ -8526,7 +8526,7 @@ Image component sizes
        488         44          0          4         80       2474   can.o
        880        118          0         33        196      10435   can_receive.o
       1464        114          0         39          0      16734   chassis_behaviour.o
-      2506        148         32          4        564      14416   chassis_task.o
+      2506        148         32          4        564      14420   chassis_task.o
        142          0          0          0          0      22159   cmsis_os.o
         84         18          0          8          0       1523   crc.o
        198         16        770          2          0       3841   crc8_crc16.o
@@ -8559,7 +8559,7 @@ Image component sizes
         84         18          0          0         16       1523   rng.o
         76         16          0          0         32       1475   rtc.o
        308         30         16         15          0       1955   servo_task.o
-      2380        172         36         13        344       9465   shoot_task.o
+      2380        172         36         13        344       9469   shoot_task.o
        604         54          0          0        368       2640   spi.o
         64         26        392          0      16384        864   startup_stm32f407xx.o
        212         36          0          9          0       4689   stm32f4xx_hal.o
@@ -8607,7 +8607,7 @@ Image component sizes
        336         72          0          8          0       2129   voltage_task.o
 
     ----------------------------------------------------------------------
-     94546       5538      11896       1424      59172    2148959   Object Totals
+     94546       5538      11896       1424      59172    2148967   Object Totals
          0          0         32          0          0          0   (incl. Generated)
        104          0          6         28          6          0   (incl. Padding)
 
@@ -8782,8 +8782,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-    115664       6800      14804       1440      59272    2123553   Grand Totals
-    115664       6800      14804        456      59272    2123553   ELF Image Totals (compressed)
+    115664       6800      14804       1440      59272    2123561   Grand Totals
+    115664       6800      14804        456      59272    2123561   ELF Image Totals (compressed)
     115664       6800      14804        456          0          0   ROM Totals
 
 ==============================================================================
