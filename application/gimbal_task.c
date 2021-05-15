@@ -273,7 +273,7 @@ void gimbal_task(void const *pvParameters)
             }
             else
             {
-                CAN_cmd_gimbal(yaw_can_set_current, pitch_can_set_current, 0, 0);
+               // CAN_cmd_gimbal(yaw_can_set_current, pitch_can_set_current, 0, 0);
             }
         }
 
@@ -952,8 +952,6 @@ static void J_scope_gimbal_test(void)
     yaw_speed_set_int_1000 = (int32_t)(gimbal_control.gimbal_yaw_motor.motor_gyro_set * 1000);
     yaw_relative_angle_1000 = (int32_t)(gimbal_control.gimbal_yaw_motor.relative_angle * 1000);
     yaw_relative_set_1000 = (int32_t)(gimbal_control.gimbal_yaw_motor.relative_angle_set * 1000);
-
-
 
     pitch_ins_int_1000 = (int32_t)(gimbal_control.gimbal_pitch_motor.absolute_angle * 1000);
     pitch_ins_set_1000 = (int32_t)(gimbal_control.gimbal_pitch_motor.absolute_angle_set * 1000);

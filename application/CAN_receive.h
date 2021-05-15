@@ -42,7 +42,7 @@ typedef enum
   //发射电机接收ID
     CAN_LEFT_FRIC_MOTOR_ID = 0x205,
     CAN_RIGHT_FRIC_MOTOR_ID = 0x206,
-    CAN_TRIGGER_MOTOR_ID = 0x207,d
+    CAN_TRIGGER_MOTOR_ID = 0x207,
     CAN_SHOOT_ALL_ID = 0x1FF,
   //云台电机接收ID
     CAN_YAW_MOTOR_ID = 0x209,

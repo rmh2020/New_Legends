@@ -26,14 +26,11 @@
 #include "user_lib.h"
 #include "referee.h"
 
-
 #include "CAN_receive.h"
 #include "gimbal_behaviour.h"
 #include "detect_task.h"
 #include "pid.h"
 #include "referee_control.h"
-
-
 
 #define shoot_fric1_on(pwm) fric1_on((pwm)) //摩擦轮1pwm宏定义
 #define shoot_fric2_on(pwm) fric2_on((pwm)) //摩擦轮2pwm宏定义

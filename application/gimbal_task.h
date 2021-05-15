@@ -166,7 +166,7 @@
 
 
 #define MIN_ABSOULATE_YAW     -PI
-#define MAX_ABSOULATE_YAW     PI
+#define MAX_ABSOULATE_YAW     PI    
 
 #define MIN_ABSOULATE_PITCH      -0.3f
 #define MAX_ABSOULATE_PITCH       0.35f
