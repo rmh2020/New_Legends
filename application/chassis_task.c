@@ -135,9 +135,6 @@ void chassis_task(void const *pvParameters)
 
     while (1)
     {
-        
-
-
         //设置底盘控制模式
         chassis_set_mode(&chassis_move);
         //模式切换数据保存
@@ -160,8 +157,8 @@ void chassis_task(void const *pvParameters)
             else
             {
                 //发送控制电流
-                CAN_cmd_chassis(chassis_move.motor_chassis[0].give_current, chassis_move.motor_chassis[1].give_current,
-                                chassis_move.motor_chassis[2].give_current, chassis_move.motor_chassis[3].give_current);
+                //CAN_cmd_chassis(chassis_move.motor_chassis[0].give_current, chassis_move.motor_chassis[1].give_current,
+                //                chassis_move.motor_chassis[2].give_current, chassis_move.motor_chassis[3].give_current);
             }
         }
         

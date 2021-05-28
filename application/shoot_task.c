@@ -306,12 +306,12 @@ void shoot_set_control(void)
     {
         shoot_laser_on(); //激光开启
         //设置摩擦轮转速
-        shoot_control.fric_motor[LEFT].speed_set = -shoot_fric_grade[1];
-        shoot_control.fric_motor[RIGHT].speed_set = shoot_fric_grade[1];
+        shoot_control.fric_motor[LEFT].speed_set = -shoot_fric_grade[2];
+        shoot_control.fric_motor[RIGHT].speed_set = shoot_fric_grade[2];
 
-        //连发模式 控制17mm发射机构射速和热量控制
-        if(shoot_control.shoot_mode == SHOOT_CONTINUE_BULLET)
-            shoot_id1_17mm_speed_and_cooling_control(&shoot_control);
+//        //连发模式 控制17mm发射机构射速和热量控制
+//        if(shoot_control.shoot_mode == SHOOT_CONTINUE_BULLET)
+//            shoot_id1_17mm_speed_and_cooling_control(&shoot_control);
 
 
         if(shoot_control.shoot_mode == SHOOT_READY_BULLET || shoot_control.shoot_mode == SHOOT_CONTINUE_BULLET)
