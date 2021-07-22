@@ -59,7 +59,7 @@ void vision_read_data(uint8_t *ReadFormUart)
 	//判断帧头数据是否为0xA5
 	if(ReadFormUart[0] == VISION_BEGIN)
 	{
-		//判断帧头数据是否为0xff
+		//判断帧头数据是否为0xff  
 		if(ReadFormUart[17] == VISION_END)
 		{
 

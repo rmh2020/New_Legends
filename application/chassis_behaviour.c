@@ -170,8 +170,8 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     //遥控器设置模式
     if (switch_is_up(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {    
-       chassis_behaviour_mode = CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW;    
-       //chassis_behaviour_mode =CHASSIS_NO_FOLLOW_YAW  
+       //chassis_behaviour_mode = CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW;    
+       chassis_behaviour_mode =CHASSIS_NO_FOLLOW_YAW ;
     }
     else if (switch_is_mid(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
@@ -416,15 +416,15 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
         top_switch = 0;
     }
 
-    //遥控器拨至上 打开小陀螺
-    if(switch_is_up(chassis_move.chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]) && top_switch == 0)
-    {
-        top_switch = 1;
-    }
-    else if(switch_is_up(chassis_move.chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]) && top_switch == 1)
-    {
-        top_switch = 0;
-    }
+    // //遥控器拨至上 打开小陀螺
+    // if(switch_is_up(chassis_move.chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]) && top_switch == 0)
+    // {
+    //     top_switch = 1;
+    // }
+    // else if(switch_is_up(chassis_move.chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]) && top_switch == 1)
+    // {
+    //     top_switch = 0;
+    // }
     
     if(top_switch == 1)
     {

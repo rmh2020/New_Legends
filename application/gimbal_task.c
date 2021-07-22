@@ -98,7 +98,7 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update);
 /**
   * @brief          云台模式改变，有些参数需要改变，例如控制yaw角度设定值应该变成当前yaw角度
   * @param[out]     mode_change:"gimbal_control"变量指针.
-  * @retval         none
+  * @r.etval         none
   */
 static void gimbal_mode_change_control_transit(gimbal_control_t *mode_change);
 
@@ -212,7 +212,6 @@ static void J_scope_gimbal_test(void);
 #endif
 
 
-//gimbal control data
 //云台控制所有相关数据
 gimbal_control_t gimbal_control;
 
@@ -273,14 +272,14 @@ void gimbal_task(void const *pvParameters)
             }
             else
             {
-               // CAN_cmd_gimbal(yaw_can_set_current, pitch_can_set_current, 0, 0);
+                //CAN_cmd_gimbal(0, 0, 0, 0);  //pitch轴有问题,未修复
+               CAN_cmd_gimbal(yaw_can_set_current, pitch_can_set_current, 0, 0);
             }
         }
 
 #if GIMBAL_TEST_MODE
         J_scope_gimbal_test();
 #endif
-
 
         //last_rc_ctrl = rc_ctrl;
         vTaskDelay(GIMBAL_CONTROL_TIME);
@@ -623,8 +622,8 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update)
     {
         return;
     }
-    //云台数据更新
-    feedback_update->gimbal_pitch_motor.absolute_angle = *(feedback_update->gimbal_INT_angle_point + INS_PITCH_ADDRESS_OFFSET);
+    //云台数据更新 这里由于陀螺仪安装在云台前侧,所以pitch绝对坐标添加了负号
+    feedback_update->gimbal_pitch_motor.absolute_angle = -*(feedback_update->gimbal_INT_angle_point + INS_PITCH_ADDRESS_OFFSET);
 
 #if PITCH_TURN
     feedback_update->gimbal_pitch_motor.relative_angle = -motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.gimbal_motor_measure->ecd,
@@ -637,6 +636,8 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update)
 
     feedback_update->gimbal_pitch_motor.motor_gyro = *(feedback_update->gimbal_INT_gyro_point + INS_GYRO_Y_ADDRESS_OFFSET);
 
+
+
     feedback_update->gimbal_yaw_motor.absolute_angle = *(feedback_update->gimbal_INT_angle_point + INS_YAW_ADDRESS_OFFSET);
 
 #if YAW_TURN
@@ -647,6 +648,7 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update)
     feedback_update->gimbal_yaw_motor.relative_angle = motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.gimbal_motor_measure->ecd,
                                                                                         feedback_update->gimbal_yaw_motor.offset_ecd);
 #endif
+
     feedback_update->gimbal_yaw_motor.motor_gyro = arm_cos_f32(feedback_update->gimbal_pitch_motor.relative_angle) * (*(feedback_update->gimbal_INT_gyro_point + INS_GYRO_Z_ADDRESS_OFFSET))
                                                         - arm_sin_f32(feedback_update->gimbal_pitch_motor.relative_angle) * (*(feedback_update->gimbal_INT_gyro_point + INS_GYRO_X_ADDRESS_OFFSET));
 }
@@ -895,6 +897,7 @@ static void gimbal_motor_absolute_angle_control(gimbal_motor_t *gimbal_motor)
         return;
     }
 
+    gimbal_motor->motor_gyro = gimbal_motor->motor_gyro/100;
     //角度环，速度环串级pid调试
     gimbal_motor->motor_gyro_set = gimbal_PID_calc(&gimbal_motor->gimbal_motor_absolute_angle_pid, gimbal_motor->absolute_angle, gimbal_motor->absolute_angle_set, gimbal_motor->motor_gyro/100);
     gimbal_motor->current_set = PID_calc(&gimbal_motor->gimbal_motor_gyro_pid, gimbal_motor->motor_gyro, gimbal_motor->motor_gyro_set);
