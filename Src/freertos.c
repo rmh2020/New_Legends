@@ -39,7 +39,6 @@
 #include "voltage_task.h"
 #include "servo_task.h"
 #include "ui_task.h"
-#include "super_cap_task.h"
 #include "software_reset_task.h"
 #include "shoot_task.h"
 /* USER CODE END Includes */

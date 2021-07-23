@@ -263,12 +263,11 @@ void gimbal_task(void const *pvParameters)
         pitch_can_set_current = gimbal_control.gimbal_pitch_motor.given_current;
 #endif
 
-        if (!(toe_is_error(YAW_GIMBAL_MOTOR_TOE) && toe_is_error(PITCH_GIMBAL_MOTOR_TOE) && toe_is_error(TRIGGER_MOTOR_TOE)))
+        if (!(toe_is_error(YAW_GIMBAL_MOTOR_TOE) && toe_is_error(PITCH_GIMBAL_MOTOR_TOE)))
         {
             if (toe_is_error(DBUS_TOE))
             {
                 CAN_cmd_gimbal(0, 0, 0, 0);
-                CAN_cmd_shoot(0, 0, 0, 0);
             }
             else
             {

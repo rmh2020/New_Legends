@@ -54,14 +54,9 @@ typedef enum
 {
   CHASSIS_ZERO_FORCE,                   //chassis will be like no power,底盘无力, 跟没上电那样
   CHASSIS_NO_MOVE,                      //chassis will be stop,底盘保持不动
-  CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW,   //chassis will follow gimbal, usually in infantry,正常步兵底盘跟随云台
-  CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW,  //chassis will follow chassis yaw angle, usually in engineer,
-                                        //because chassis does have gyro sensor, its yaw angle is calculed by gyro in gimbal and gimbal motor angle,
-                                        //if you have a gyro sensor in chassis, please updata yaw, pitch, roll angle in "chassis_feedback_update"  function
-                                        //工程底盘角度控制底盘，由于底盘未有陀螺仪，故而角度是减去云台角度而得到，
-                                        //如果有底盘陀螺仪请更新底盘的yaw，pitch，roll角度 在chassis_feedback_update函数中
-  CHASSIS_NO_FOLLOW_YAW,                //chassis does not follow angle, angle is open-loop,but wheels have closed-loop speed
-                                        //底盘不跟随角度，角度是开环的，但轮子是有速度环
+  CHASSIS_RC,                            //遥控器控制
+  CHASSIS_AUTO,                          //自动模式
+
   CHASSIS_OPEN,                          //the value of remote control will mulitiply a value, get current value that will be sent to can bus
                                         // 遥控器的值乘以比例成电流值 直接发送到can总线上
 } chassis_behaviour_e;
@@ -70,31 +65,7 @@ typedef enum
 extern chassis_behaviour_e chassis_behaviour_mode ;
 extern chassis_behaviour_e last_chassis_behaviour_mode;
 
-//扭腰动作开关
-extern bool_t swing_switch;  
-
-//小陀螺动作开关
-extern bool_t top_switch; 
-//45度角对敌动作开关
-extern bool_t pisa_switch;  
-extern uint16_t pisa_delay_time; 
-
-
-#define MISS_CLOSE 0
-#define MISS_BEGIN 1
-#define MISS_OVER  2
-
-
-#define SWING_KEY ((chassis_move.chassis_RC->key.v  & KEY_PRESSED_OFFSET_C) && !(chassis_move.chassis_last_key_v & KEY_PRESSED_OFFSET_C))
-#define PISA_KEY ((chassis_move.chassis_RC->key.v  & KEY_PRESSED_OFFSET_X) && !(chassis_move.chassis_last_key_v & KEY_PRESSED_OFFSET_X))
-#define TOP_KEY ((chassis_move.chassis_RC->key.v  & KEY_PRESSED_OFFSET_F) && !(chassis_move.chassis_last_key_v & KEY_PRESSED_OFFSET_F))
-
-
-#define PISA_DELAY_TIME 500
 #define CHASSIS_OPEN_RC_SCALE 10 // in CHASSIS_OPEN mode, multiply the value. 在chassis_open 模型下，遥控器乘以该比例发送到can上
-
-
-
 
 /**
   * @brief          通过逻辑判断，赋值"chassis_behaviour_mode"成哪种模式
@@ -113,6 +84,6 @@ extern void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode);
   * @retval         none
   */
 
-extern void chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, chassis_move_t *chassis_move_rc_to_vector);
+extern void chassis_behaviour_control_set(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector);
 
 #endif

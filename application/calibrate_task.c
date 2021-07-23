@@ -416,9 +416,6 @@ static void RC_cmd_to_calibrate(void)
         rc_cmd_time = 0;
         //send CAN reset ID cmd to M3508
         //发送CAN重设ID命令到3508
-        CAN_cmd_chassis_reset_ID();
-        CAN_cmd_chassis_reset_ID();
-        CAN_cmd_chassis_reset_ID();
         cali_buzzer_off();
     }
 

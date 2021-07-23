@@ -71,10 +71,7 @@ static void trigger_motor_turn_back(void);
   */
 static void shoot_bullet_control(void);
 
-
-
 shoot_control_t shoot_control;          //射击数据
-
 
 /**
   * @brief          射击任务，初始化PID，遥控器指针，电机指针
@@ -94,11 +91,22 @@ void shoot_task(void const *pvParameters)
         shoot_feedback_update(); //更新数据
         shoot_set_control();        //射击任务控制循环
 
-        //CAN发送
-        //CAN_cmd_shoot(shoot_control.fric_motor[LEFT].give_current, shoot_control.fric_motor[RIGHT].give_current, shoot_control.given_current, 0);
 
+        //确保至少一个电机在线， 这样CAN控制包可以被接收到
+        if (!((toe_is_error(TRIGGER_MOTOR_TOE) && toe_is_error(SHOOT_LEFT_FRIC_MOTOR_TOE) && toe_is_error(SHOOT_RIGHT_FRIC_MOTOR_TOE)&& toe_is_error(CHASSIS_MOTOR_TOE))))
+        {
+            //当遥控器掉线的时候，发送给电机零电流.
+            if (toe_is_error(DBUS_TOE))
+            {
+                CAN_cmd_chassis_shoot(0, 0, 0, 0);
+            }
+            else
+            {
+                //发送控制电流
+                CAN_cmd_chassis_shoot(shoot_control.given_current, shoot_control.fric_motor[LEFT].give_current, shoot_control.fric_motor[RIGHT].give_current, chassis_move.motor_chassis.give_current);
+            }
+        }
 
-        //last_rc_ctrl = rc_ctrl;
         vTaskDelay(SHOOT_CONTROL_TIME);
     }
 }

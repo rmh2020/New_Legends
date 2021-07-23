@@ -156,7 +156,7 @@ typedef struct
 {
     shoot_mode_e shoot_mode;
     const RC_ctrl_t *shoot_rc;
-    uint16_t shoot_last_key_v;;
+    uint16_t shoot_last_key_v;
 
     //拨弹电机数据
     const motor_measure_t *trigger_motor_measure;

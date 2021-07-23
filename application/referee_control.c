@@ -137,19 +137,14 @@ void chassis_power_control(chassis_move_t *chassis_power_control)
     
     total_current = 0.0f;
     //计算原本电机电流设定
-    for(uint8_t i = 0; i < 4; i++)
-    {
-        total_current += fabs(chassis_power_control->motor_speed_pid[i].out);
-    }
+    total_current += fabs(chassis_power_control->motor_speed_pid.out);
+   
     
 
     if(total_current > total_current_limit)
     {
         fp32 current_scale = total_current_limit / total_current;
-        chassis_power_control->motor_speed_pid[0].out*=current_scale;
-        chassis_power_control->motor_speed_pid[1].out*=current_scale;
-        chassis_power_control->motor_speed_pid[2].out*=current_scale;
-        chassis_power_control->motor_speed_pid[3].out*=current_scale;
+        chassis_power_control->motor_speed_pid.out*=current_scale;
     }
 }
 

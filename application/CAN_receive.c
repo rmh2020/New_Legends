@@ -27,7 +27,6 @@
 
 
 #include "detect_task.h"
-#include "super_cap_task.h"
 
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
@@ -45,20 +44,18 @@ extern CAN_HandleTypeDef hcan2;
 
 /*
 电机数据, 
-0:底盘电机1 3508电机,  1:底盘电机2 3508电机,2:底盘电机3 3508电机,3:底盘电机4 3508电机;
-4:左摩擦轮电机 3508电机, 5右摩擦轮电机 3508电机, 6拨弹电机 2006电机, 7无电机 暂时保留
-8:yaw云台电机 6020电机; 9:pitch云台电机 6020电机;
+0:底盘电机1 3508电机,  ;
+1拨弹电机 2006电机 2:左摩擦轮电机 3508电机, 3右摩擦轮电机 3508电机,
+4:yaw云台电机 6020电机; 5:pitch云台电机 6020电机;
 */
-static motor_measure_t motor_chassis[10];
+static motor_measure_t motor_chassis[6];
 
 static CAN_TxHeaderTypeDef  gimbal_tx_message;
 static uint8_t              gimbal_can_send_data[8];
-static CAN_TxHeaderTypeDef  chassis_tx_message;
-static uint8_t              chassis_can_send_data[8];
-static CAN_TxHeaderTypeDef  shoot_tx_message;
-static uint8_t              shoot_can_send_data[8];
-static CAN_TxHeaderTypeDef  super_cap_tx_message;
-static uint8_t              super_cap_can_send_data[8];      
+static CAN_TxHeaderTypeDef  chassis_shoot_tx_message;
+static uint8_t              chassis_shoot_can_send_data[8]; 
+static CAN_TxHeaderTypeDef  board_communicat_tx_message;
+static uint8_t              board_communicat_can_send_data[8];
 
 
 
@@ -77,31 +74,27 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
     switch (rx_header.StdId)
     {
-        case CAN_3508_M1_ID:
-        case CAN_3508_M2_ID:
-        case CAN_3508_M3_ID:
-        case CAN_3508_M4_ID:
         case CAN_LEFT_FRIC_MOTOR_ID:
         case CAN_RIGHT_FRIC_MOTOR_ID:
         case CAN_TRIGGER_MOTOR_ID:
+         case CAN_CHASSIS_MOTOR_ID:
         case CAN_YAW_MOTOR_ID:
         case CAN_PIT_MOTOR_ID:
-        case CAN_SUPER_CAP_ID:
+        case CAN_BORAD1_COMMUNICAT_ID:
         {
-            if(rx_header.StdId == CAN_SUPER_CAP_ID)  //超电
+            if(rx_header.StdId == CAN_BORAD1_COMMUNICAT_ID)  //板间通信
             {                                  
-              cap_update_cap_inputvot((float)((int16_t)(rx_data)[1] << 8 | (rx_data)[0]) / 100.0f) ;            
-              cap_update_cap_capvot((float)((int16_t)(rx_data)[3] << 8 | (rx_data)[2]) / 100.0f);      
-              cap_update_cap_test_current((float)((int16_t)(rx_data)[5] << 8 | (rx_data)[4]) / 100.0f) ;  
-              cap_update_cap_target_power((float)((int16_t)(rx_data)[7] << 8 | (rx_data)[6]) / 100.0f) ;       
+            
+              detect_hook(BORAD_COMMUNICAT_TOE);
+
             }
             else
             {
               static uint8_t i = 0;
               //get motor id
-              i = rx_header.StdId - CAN_3508_M1_ID;
+              i = rx_header.StdId - CAN_LEFT_FRIC_MOTOR_ID;
               get_motor_measure(&motor_chassis[i], rx_data);
-              detect_hook(CHASSIS_MOTOR1_TOE + i);
+              detect_hook(CHASSIS_MOTOR_TOE + i);
             }
               break;
         }
@@ -143,110 +136,63 @@ void CAN_cmd_gimbal(int16_t yaw, int16_t pitch, int16_t rev1, int16_t rev2)
 }
 
 
-/**
-  * @brief          发送ID为0x700的CAN包,它会设置3508电机进入快速设置ID
-  * @param[in]      none
-  * @retval         none
-  */
-void CAN_cmd_chassis_reset_ID(void)
-{
-    uint32_t send_mail_box;
-    chassis_tx_message.StdId = 0x700;
-    chassis_tx_message.IDE = CAN_ID_STD;
-    chassis_tx_message.RTR = CAN_RTR_DATA;
-    chassis_tx_message.DLC = 0x08;
-    chassis_can_send_data[0] = 0;
-    chassis_can_send_data[1] = 0;
-    chassis_can_send_data[2] = 0;
-    chassis_can_send_data[3] = 0;
-    chassis_can_send_data[4] = 0;
-    chassis_can_send_data[5] = 0;
-    chassis_can_send_data[6] = 0;
-    chassis_can_send_data[7] = 0;
 
-    HAL_CAN_AddTxMessage(&CHASSIS_CAN, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
-}
+
+
+
 
 
 /**
   * @brief          发送电机控制电流(0x201,0x202,0x203,0x204)
-  * @param[in]      motor1: (0x201) 3508电机控制电流, 范围 [-16384,16384]
-  * @param[in]      motor2: (0x202) 3508电机控制电流, 范围 [-16384,16384]
-  * @param[in]      motor3: (0x203) 3508电机控制电流, 范围 [-16384,16384]
-  * @param[in]      motor4: (0x204) 3508电机控制电流, 范围 [-16384,16384]
+  * @param[in]      trigger: (0x201) 2006电机控制电流, 范围 [-10000,10000]
+  * @param[in]      left_fric: (0x202) 3508电机控制电流, 范围 [-16384,16384]
+  * @param[in]      right_fric: (0x203) 3508电机控制电流, 范围 [-16384,16384]
+  * @param[in]      chassis: (0x204) 3508电机控制电路，范围 [-16384,16384]
   * @retval         none
   */
-void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor4)
+void CAN_cmd_chassis_shoot(int16_t trigger, int16_t left_fric, int16_t right_fric, int16_t chassis)
 {
     uint32_t send_mail_box;
-    chassis_tx_message.StdId = CAN_CHASSIS_ALL_ID;
-    chassis_tx_message.IDE = CAN_ID_STD;
-    chassis_tx_message.RTR = CAN_RTR_DATA;
-    chassis_tx_message.DLC = 0x08;
-    chassis_can_send_data[0] = motor1 >> 8;
-    chassis_can_send_data[1] = motor1;
-    chassis_can_send_data[2] = motor2 >> 8;
-    chassis_can_send_data[3] = motor2;
-    chassis_can_send_data[4] = motor3 >> 8;
-    chassis_can_send_data[5] = motor3;
-    chassis_can_send_data[6] = motor4 >> 8;
-    chassis_can_send_data[7] = motor4;
-
-    HAL_CAN_AddTxMessage(&CHASSIS_CAN, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
-}
-
-
-/**
-  * @brief          发送电机控制电流(0x205,0x206,0x207,0x208)
-  * @param[in]      left_fric: (0x205) 3508电机控制电流, 范围 [-16384,16384]
-  * @param[in]      right_fric: (0x206) 3508电机控制电流, 范围 [-16384,16384]
-  * @param[in]      trigger: (0x207) 2006电机控制电流, 范围 [-10000,10000]
-  * @param[in]      保留: (0x208) 保留，电机控制电流
-  * @retval         none
-  */
-void CAN_cmd_shoot(int16_t left_fric, int16_t right_fric, int16_t trigger, int16_t rev)
-{
-    uint32_t send_mail_box;
-    shoot_tx_message.StdId = CAN_SHOOT_ALL_ID;
-    shoot_tx_message.IDE = CAN_ID_STD;
-    shoot_tx_message.RTR = CAN_RTR_DATA;
-    shoot_tx_message.DLC = 0x08;
-    shoot_can_send_data[0] = (left_fric >> 8);
-    shoot_can_send_data[1] = left_fric;
-    shoot_can_send_data[2] = (right_fric >> 8);
-    shoot_can_send_data[3] = right_fric;
-    shoot_can_send_data[4] = (trigger >> 8);
-    shoot_can_send_data[5] = trigger;
-    shoot_can_send_data[6] = (rev >> 8);
-    shoot_can_send_data[7] = rev;
-    HAL_CAN_AddTxMessage(&SHOOT_CAN, &shoot_tx_message, shoot_can_send_data, &send_mail_box);
+    chassis_shoot_tx_message.StdId = CAN_CHASSIS_SHOOT_ALL_ID;
+    chassis_shoot_tx_message.IDE = CAN_ID_STD;
+    chassis_shoot_tx_message.RTR = CAN_RTR_DATA;
+    chassis_shoot_tx_message.DLC = 0x08;
+    chassis_shoot_can_send_data[0] = (trigger >> 8);
+    chassis_shoot_can_send_data[1] = trigger;
+    chassis_shoot_can_send_data[2] = (left_fric >> 8);
+    chassis_shoot_can_send_data[3] = left_fric;
+    chassis_shoot_can_send_data[4] = (right_fric >> 8);
+    chassis_shoot_can_send_data[5] = right_fric;
+    chassis_shoot_can_send_data[6] = (chassis >> 8);
+    chassis_shoot_can_send_data[7] = chassis;
+    HAL_CAN_AddTxMessage(&CHASSIS_SHOOT_CAN, &chassis_shoot_tx_message, chassis_shoot_can_send_data, &send_mail_box);
 
 }
 
-/**
-  * @brief          超级电容发送功率输出
-  * @param[in]      0x211 超级电容功率
-  * @retval         none
-  */
-void CAN_cmd_super_cap(int16_t temPower)
-{	
-   uint32_t send_mail_box;
-    super_cap_tx_message.StdId = CAN_SUPER_CAP_ALL_ID;
-    super_cap_tx_message.IDE = CAN_ID_STD;
-    super_cap_tx_message.RTR = CAN_RTR_DATA;
-    super_cap_tx_message.DLC = 0x08;
-    super_cap_can_send_data[0] = (temPower >> 8);
-    super_cap_can_send_data[1] = temPower;
-    super_cap_can_send_data[2] = 0;
-    super_cap_can_send_data[3] = 0;
-    super_cap_can_send_data[4] = 0;
-    super_cap_can_send_data[5] = 0;
-    super_cap_can_send_data[6] = 0;
-    super_cap_can_send_data[7] = 0;
+///**
+//  * @brief          板间通信发送函数
+//  * @param[in]      0x220 
+//  * @retval         none
+//  */
+//void CAN_cmd_board_communicat(int16_t temPower)
+//{	
+//   uint32_t send_mail_box;
+//    super_cap_tx_message.StdId = CAN_SUPER_CAP_ALL_ID;
+//    super_cap_tx_message.IDE = CAN_ID_STD;
+//    super_cap_tx_message.RTR = CAN_RTR_DATA;
+//    super_cap_tx_message.DLC = 0x08;
+//    super_cap_can_send_data[0] = (temPower >> 8);
+//    super_cap_can_send_data[1] = temPower;
+//    super_cap_can_send_data[2] = 0;
+//    super_cap_can_send_data[3] = 0;
+//    super_cap_can_send_data[4] = 0;
+//    super_cap_can_send_data[5] = 0;
+//    super_cap_can_send_data[6] = 0;
+//    super_cap_can_send_data[7] = 0;
 
-    HAL_CAN_AddTxMessage(&SUPER_CAP_CAN, &super_cap_tx_message, super_cap_can_send_data, &send_mail_box);
+//    HAL_CAN_AddTxMessage(&SUPER_CAP_CAN, &super_cap_tx_message, super_cap_can_send_data, &send_mail_box);
 
-}
+//}
 
 /**
   * @brief          返回yaw 6020电机数据指针
@@ -255,7 +201,7 @@ void CAN_cmd_super_cap(int16_t temPower)
   */
 const motor_measure_t *get_yaw_gimbal_motor_measure_point(void)
 {
-    return &motor_chassis[8];
+    return &motor_chassis[4];
 }
 
 
@@ -266,7 +212,7 @@ const motor_measure_t *get_yaw_gimbal_motor_measure_point(void)
   */
 const motor_measure_t *get_pitch_gimbal_motor_measure_point(void)
 {
-    return &motor_chassis[9];
+    return &motor_chassis[5];
 }
 
 
@@ -277,8 +223,9 @@ const motor_measure_t *get_pitch_gimbal_motor_measure_point(void)
   */
 const motor_measure_t *get_trigger_motor_measure_point(void)
 {
-    return &motor_chassis[6];
+    return &motor_chassis[0];
 }
+
 
 /**
   * @brief          返回摩擦轮 3508电机数据指针
@@ -287,17 +234,16 @@ const motor_measure_t *get_trigger_motor_measure_point(void)
   */
 const motor_measure_t *get_fric_motor_measure_point(uint8_t i)
 {
-    return &motor_chassis[i + 4];
+    return &motor_chassis[i];
 }
-
 
 
 /**
   * @brief          返回底盘电机 3508电机数据指针
-  * @param[in]      i: 电机编号,范围[0,3]
+  * @param[in]      none
   * @retval         电机数据指针
   */
-const motor_measure_t *get_chassis_motor_measure_point(uint8_t i)
+const motor_measure_t *get_chassis_motor_measure_point(void)
 {
-    return &motor_chassis[(i & 0x03)];
+    return &motor_chassis[3];
 }

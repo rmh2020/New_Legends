@@ -65,7 +65,7 @@
   * @param[in]      chassis_move_rc_to_vector底盘数据
   * @retval         返回空
   */
-static void chassis_zero_force_control(fp32 *vx_can_set, fp32 *vy_can_set, fp32 *wz_can_set, chassis_move_t *chassis_move_rc_to_vector);
+static void chassis_zero_force_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector);
 
 
 
@@ -78,43 +78,26 @@ static void chassis_zero_force_control(fp32 *vx_can_set, fp32 *vy_can_set, fp32 
   * @param[in]      chassis_move_rc_to_vector底盘数据
   * @retval         返回空
   */
-static void chassis_no_move_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, chassis_move_t *chassis_move_rc_to_vector);
+static void chassis_no_move_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector);
 
 /**
-  * @brief          底盘跟随云台的行为状态机下，底盘模式是跟随云台角度，底盘旋转速度会根据角度差计算底盘旋转的角速度
-  * @author         RM
-  * @param[in]      vx_set前进的速度,正值 前进速度， 负值 后退速度
+  * @brief          底盘有遥控器控制的行为状态机下，
+  * @author         RM  
   * @param[in]      vy_set左右的速度,正值 左移速度， 负值 右移速度
-  * @param[in]      angle_set底盘与云台控制到的相对角度
   * @param[in]      chassis_move_rc_to_vector底盘数据
   * @retval         返回空
   */
-static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, chassis_move_t *chassis_move_rc_to_vector);
+static void chassis_rc_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector);
 
 
 /**
-  * @brief          底盘跟随底盘yaw的行为状态机下，底盘模式是跟随底盘角度，底盘旋转速度会根据角度差计算底盘旋转的角速度
+  * @brief          底盘自动控制的行为状态机下
   * @author         RM
-  * @param[in]      vx_set前进的速度,正值 前进速度， 负值 后退速度
   * @param[in]      vy_set左右的速度,正值 左移速度， 负值 右移速度
-  * @param[in]      angle_set底盘设置的yaw，范围 -PI到PI
   * @param[in]      chassis_move_rc_to_vector底盘数据
   * @retval         返回空
   */
-static void chassis_engineer_follow_chassis_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, chassis_move_t *chassis_move_rc_to_vector);
-
-
-/**
-  * @brief          底盘不跟随角度的行为状态机下，底盘模式是不跟随角度，底盘旋转速度由参数直接设定
-  * @author         RM
-  * @param[in]      vx_set前进的速度,正值 前进速度， 负值 后退速度
-  * @param[in]      vy_set左右的速度,正值 左移速度， 负值 右移速度
-  * @param[in]      wz_set底盘设置的旋转速度,正值 逆时针旋转，负值 顺时针旋转
-  * @param[in]      chassis_move_rc_to_vector底盘数据
-  * @retval         返回空
-  */
-static void chassis_no_follow_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, chassis_move_t *chassis_move_rc_to_vector);
-
+static void chassis_auto_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector);
 
 
 /**
@@ -126,30 +109,13 @@ static void chassis_no_follow_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_s
   * @retval         none
   */
 
-static void chassis_open_set_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, chassis_move_t *chassis_move_rc_to_vector);
+static void chassis_open_set_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector);
 
 
 
 //留意，这个底盘行为模式变量
 chassis_behaviour_e chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
 chassis_behaviour_e last_chassis_behaviour_mode = CHASSIS_NO_MOVE;
-
-//扭腰控制数据
-fp32 swing_angle = 0.0f;
-uint8_t swing_switch = 0;  
-uint8_t key_pressed_num_ctrl = 0;
-
-//小陀螺控制数据
-fp32 top_angle = 0;
-bool_t top_switch = 0;   
-
-//45度角对敌数据
-fp32 pisa_angle = 0;    //保留45度对敌前的云台相对底盘角度
-bool_t pisa_switch = 0; 
-
-
-
-
 
 /**
   * @brief          通过逻辑判断，赋值"chassis_behaviour_mode"成哪种模式
@@ -162,36 +128,28 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     {
         return;
     }
-      //can change to CHASSIS_ZERO_FORCE,CHASSIS_NO_MOVE,CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW,
-      //CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW,CHASSIS_NO_FOLLOW_YAW,CHASSIS_OPEN
     last_chassis_behaviour_mode = chassis_behaviour_mode;
-
 
     //遥控器设置模式
     if (switch_is_up(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {    
-       //chassis_behaviour_mode = CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW;    
-       chassis_behaviour_mode =CHASSIS_NO_FOLLOW_YAW ;
+       chassis_behaviour_mode =CHASSIS_RC ;
     }
     else if (switch_is_mid(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
-       chassis_behaviour_mode = CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW;
-       //chassis_behaviour_mode = CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW;
+       chassis_behaviour_mode = CHASSIS_AUTO;
     }
     else if (switch_is_down(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
         chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
     }
     
-
-
     //当云台在某些模式下或者弹仓打开，像初始化， 底盘不动
     if (gimbal_cmd_to_chassis_stop())
     {
         chassis_behaviour_mode = CHASSIS_NO_MOVE;
     }
     
-
     //添加自己的逻辑判断进入新模式
 
 
@@ -204,15 +162,11 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     {
         chassis_move_mode->chassis_mode = CHASSIS_VECTOR_NO_FOLLOW_YAW; 
     }
-    else if (chassis_behaviour_mode == CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW)
+    else if (chassis_behaviour_mode == CHASSIS_RC)
     {
-        chassis_move_mode->chassis_mode = CHASSIS_VECTOR_FOLLOW_GIMBAL_YAW; 
+        chassis_move_mode->chassis_mode = CHASSIS_VECTOR_NO_FOLLOW_YAW; 
     }
-    else if (chassis_behaviour_mode == CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW)
-    {
-        chassis_move_mode->chassis_mode = CHASSIS_VECTOR_FOLLOW_CHASSIS_YAW;
-    }
-    else if (chassis_behaviour_mode == CHASSIS_NO_FOLLOW_YAW)
+    else if (chassis_behaviour_mode == CHASSIS_AUTO)
     {
         chassis_move_mode->chassis_mode = CHASSIS_VECTOR_NO_FOLLOW_YAW;
     }
@@ -234,37 +188,33 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
   * @retval         none
   */
 
-void chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, chassis_move_t *chassis_move_rc_to_vector)
+void chassis_behaviour_control_set(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector)
 {
 
-    if (vx_set == NULL || vy_set == NULL || angle_set == NULL || chassis_move_rc_to_vector == NULL)
+    if (vy_set == NULL || chassis_move_rc_to_vector == NULL)
     {
         return;
     }
 
     if (chassis_behaviour_mode == CHASSIS_ZERO_FORCE)
     {
-        chassis_zero_force_control(vx_set, vy_set, angle_set, chassis_move_rc_to_vector);
+        chassis_zero_force_control(vy_set, chassis_move_rc_to_vector);
     }
     else if (chassis_behaviour_mode == CHASSIS_NO_MOVE)
     {
-        chassis_no_move_control(vx_set, vy_set, angle_set, chassis_move_rc_to_vector);
+        chassis_no_move_control(vy_set, chassis_move_rc_to_vector);
     }
-    else if (chassis_behaviour_mode == CHASSIS_INFANTRY_FOLLOW_GIMBAL_YAW)
+    else if (chassis_behaviour_mode == CHASSIS_RC)
     {
-        chassis_infantry_follow_gimbal_yaw_control(vx_set, vy_set, angle_set, chassis_move_rc_to_vector);
+        chassis_rc_control(vy_set, chassis_move_rc_to_vector);
     }
-    else if (chassis_behaviour_mode == CHASSIS_ENGINEER_FOLLOW_CHASSIS_YAW)
+    else if (chassis_behaviour_mode == CHASSIS_AUTO)
     {
-        chassis_engineer_follow_chassis_yaw_control(vx_set, vy_set, angle_set, chassis_move_rc_to_vector);
-    }
-    else if (chassis_behaviour_mode == CHASSIS_NO_FOLLOW_YAW)
-    {
-        chassis_no_follow_yaw_control(vx_set, vy_set, angle_set, chassis_move_rc_to_vector);
+        chassis_auto_control(vy_set, chassis_move_rc_to_vector);
     }
     else if (chassis_behaviour_mode == CHASSIS_OPEN)
     {
-        chassis_open_set_control(vx_set, vy_set, angle_set, chassis_move_rc_to_vector);
+        chassis_open_set_control(vy_set, chassis_move_rc_to_vector);
     }
     
 }
@@ -280,15 +230,15 @@ void chassis_behaviour_control_set(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, 
   * @retval         返回空
   */
 
-static void chassis_zero_force_control(fp32 *vx_can_set, fp32 *vy_can_set, fp32 *wz_can_set, chassis_move_t *chassis_move_rc_to_vector)
+static void chassis_zero_force_control(fp32 *vy_can_set, chassis_move_t *chassis_move_rc_to_vector)
 {
-    if (vx_can_set == NULL || vy_can_set == NULL || wz_can_set == NULL || chassis_move_rc_to_vector == NULL)
+    if (vy_can_set == NULL || chassis_move_rc_to_vector == NULL)
     {
         return;
     }
-    *vx_can_set = 0.0f;
+
     *vy_can_set = 0.0f;
-    *wz_can_set = 0.0f;
+
 }
 
 
@@ -302,15 +252,15 @@ static void chassis_zero_force_control(fp32 *vx_can_set, fp32 *vy_can_set, fp32 
   * @retval         返回空
   */
 
-static void chassis_no_move_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, chassis_move_t *chassis_move_rc_to_vector)
+static void chassis_no_move_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector)
 {
-    if (vx_set == NULL || vy_set == NULL || wz_set == NULL || chassis_move_rc_to_vector == NULL)
+    if (vy_set == NULL || chassis_move_rc_to_vector == NULL)
     {
         return;
     }
-    *vx_set = 0.0f;
+
     *vy_set = 0.0f;
-    *wz_set = 0.0f;
+
 }
 
 
@@ -324,134 +274,15 @@ static void chassis_no_move_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, ch
   * @retval         返回空
   */
 
-static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, chassis_move_t *chassis_move_rc_to_vector)
+static void chassis_rc_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector)
 {
-    if (vx_set == NULL || vy_set == NULL || angle_set == NULL || chassis_move_rc_to_vector == NULL)
+    if (vy_set == NULL || chassis_move_rc_to_vector == NULL)
     {
         return;
     }
 
     //遥控器的通道值以及键盘按键 得出 一般情况下的速度设定值
-    chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
-    
-    /**************************扭腰和自动闪避控制输入*******************************/
-    //判断是否要摇摆  当键盘单击C            (或者装甲板受到伤害摇摆 这个暂时有问题)
-
-    //摇摆角度是利用sin函数生成，swing_time 是sin函数的输入值
-    static fp32 swing_time = 0.0f;
-    
-    //max_angle是sin函数的幅值
-    static fp32 max_angle = SWING_NO_MOVE_ANGLE;
-    //在一个控制周期内，加上 add_time
-    static fp32 const add_time = 2 * PI * 0.5f * configTICK_RATE_HZ / CHASSIS_CONTROL_TIME_MS;
-
-    //闪避摇摆时间
-    static uint16_t miss_swing_time = 700; 
-    //0表示未开始闪避 1表示正在闪避 2表示闪避已结束
-    static uint8_t miss_flag = MISS_CLOSE;  
-
-    //开始自动闪避,扭腰倒计时开始        
-    if(if_hit() == TRUE)
-    {
-        miss_flag = MISS_BEGIN;  
-        miss_swing_time--;
-    }
-    //结束并退出扭腰
-    if(miss_swing_time == 0)
-    {
-        miss_flag = MISS_OVER;
-        miss_swing_time = 700;
-    }
-
-    //开启扭腰
-    if ((SWING_KEY || miss_flag == MISS_BEGIN)&& swing_switch == FALSE)
-    {   
-        swing_switch = TRUE;
-        swing_time = 0.0f;
-    }
-    else if ((SWING_KEY || miss_flag == MISS_OVER)  && swing_switch == TRUE) //关闭扭腰
-    {
-        miss_flag = MISS_CLOSE;
-        swing_switch = 0;
-    }
-
-    
-    
-
-    //判断键盘输入是不是在控制底盘运动，底盘在运动减小摇摆角度
-    if (chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_FRONT_KEY || chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_BACK_KEY ||
-        chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_LEFT_KEY || chassis_move_rc_to_vector->chassis_RC->key.v & CHASSIS_RIGHT_KEY)
-    {
-        max_angle = SWING_MOVE_ANGLE;
-    }
-    else
-    {
-        max_angle = SWING_NO_MOVE_ANGLE;
-    }
-    
-    if (swing_switch)
-    {
-        swing_angle = max_angle * arm_sin_f32(swing_time);
-        swing_time += add_time;
-    }
-    else
-    {
-        swing_angle = 0.0f;
-    }
-    //sin函数不超过2pi
-    if (swing_time > 2 * PI)
-    {
-        swing_time -= 2 * PI;
-    }
-
-   
-    /**************************小陀螺控制输入********************************/
-    //单击F开启和关闭小陀螺
-    if(TOP_KEY && top_switch == 0 )  //开启小陀螺
-    {
-        top_switch = 1;
-    }
-    else if(TOP_KEY && top_switch == 1 ) //关闭小陀螺
-    {
-        top_switch = 0;
-    }
-
-    // //遥控器拨至上 打开小陀螺
-    // if(switch_is_up(chassis_move.chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]) && top_switch == 0)
-    // {
-    //     top_switch = 1;
-    // }
-    // else if(switch_is_up(chassis_move.chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]) && top_switch == 1)
-    // {
-    //     top_switch = 0;
-    // }
-    
-    if(top_switch == 1)
-    {
-        if((fabs(*vx_set)<0.001)&&(fabs(*vy_set)<0.001)) 
-        top_angle = TOP_WZ_ANGLE_STAND;
-        else
-        top_angle = TOP_WZ_ANGLE_MOVE;
-    }
-    else
-        top_angle = 0;
-
-
-    /****************************45度角对敌控制输入*********************************************/
-    //单击C,开启45度角对敌;重复操作取消45度角对敌
-    if(PISA_KEY && pisa_switch == 0)//打开45度对敌
-    {
-        pisa_switch = TRUE;
-    }
-    else if(PISA_KEY && pisa_switch != 0)//关闭45度对敌
-    {
-        pisa_switch = FALSE;
-    }
-
-    //更新上一次键盘值
-    chassis_move_rc_to_vector->chassis_last_key_v = chassis_move_rc_to_vector->chassis_RC->key.v;
-    
-    *angle_set = swing_angle + top_angle;
+    chassis_rc_to_control_vector(vy_set, chassis_move_rc_to_vector);
 }
 
 
@@ -465,39 +296,16 @@ static void chassis_infantry_follow_gimbal_yaw_control(fp32 *vx_set, fp32 *vy_se
   * @retval         返回空
   */
 
-static void chassis_engineer_follow_chassis_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *angle_set, chassis_move_t *chassis_move_rc_to_vector)
+static void chassis_auto_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector)
 {
-    if (vx_set == NULL || vy_set == NULL || angle_set == NULL || chassis_move_rc_to_vector == NULL)
+    if ( vy_set == NULL || chassis_move_rc_to_vector == NULL)
     {
         return;
-    }
+    }   
 
-    chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
-
-    *angle_set = rad_format(chassis_move_rc_to_vector->chassis_yaw_set - CHASSIS_ANGLE_Z_RC_SEN * chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL]);
+    
 }
 
-
-/**
-  * @brief          底盘不跟随角度的行为状态机下，底盘模式是不跟随角度，底盘旋转速度由参数直接设定
-  * @author         RM
-  * @param[in]      vx_set前进的速度,正值 前进速度， 负值 后退速度
-  * @param[in]      vy_set左右的速度,正值 左移速度， 负值 右移速度
-  * @param[in]      wz_set底盘设置的旋转速度,正值 逆时针旋转，负值 顺时针旋转
-  * @param[in]      chassis_move_rc_to_vector底盘数据
-  * @retval         返回空
-  */
-
-static void chassis_no_follow_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, chassis_move_t *chassis_move_rc_to_vector)
-{
-    if (vx_set == NULL || vy_set == NULL || wz_set == NULL || chassis_move_rc_to_vector == NULL)
-    {
-        return;
-    }
-
-    chassis_rc_to_control_vector(vx_set, vy_set, chassis_move_rc_to_vector);
-    *wz_set = -CHASSIS_WZ_RC_SEN * chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL];
-}
 
 /**
   * @brief          底盘开环的行为状态机下，底盘模式是raw原生状态，故而设定值会直接发送到can总线上
@@ -508,16 +316,14 @@ static void chassis_no_follow_yaw_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_s
   * @retval         none
   */
 
-static void chassis_open_set_control(fp32 *vx_set, fp32 *vy_set, fp32 *wz_set, chassis_move_t *chassis_move_rc_to_vector)
+static void chassis_open_set_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector)
 {
-    if (vx_set == NULL || vy_set == NULL || wz_set == NULL || chassis_move_rc_to_vector == NULL)
+    if (vy_set == NULL || chassis_move_rc_to_vector == NULL)
     {
         return;
     }
 
-    *vx_set = chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_X_CHANNEL] * CHASSIS_OPEN_RC_SCALE;
     *vy_set = -chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_Y_CHANNEL] * CHASSIS_OPEN_RC_SCALE;
-    *wz_set = -chassis_move_rc_to_vector->chassis_RC->rc.ch[CHASSIS_WZ_CHANNEL] * CHASSIS_OPEN_RC_SCALE;
     return;
 }
 

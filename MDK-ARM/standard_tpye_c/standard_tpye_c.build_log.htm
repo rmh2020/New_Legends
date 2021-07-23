@@ -27,23 +27,24 @@ Project File Date:  06/01/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-compiling chassis_task.c...
+compiling gimbal_task.c...
+..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
+  extern const motor_measure_t *get_chassis_motor_measure_point();
 ..\application\gimbal_task.h(336): warning:  #1295-D: Deprecated declaration software_reset - give arg types
   extern void software_reset();
-..\application\chassis_behaviour.h(88): warning:  #47-D: incompatible redefinition of macro "SWING_KEY"  (declared at line 85 of "..\application\chassis_task.h")
-  #define SWING_KEY ((chassis_move.chassis_RC->key.v  & KEY_PRESSED_OFFSET_C) && !(chassis_move.chassis_last_key_v & KEY_PRESSED_OFFSET_C))
-..\application\chassis_behaviour.h(90): warning:  #47-D: incompatible redefinition of macro "TOP_KEY"  (declared at line 87 of "..\application\chassis_task.h")
-  #define TOP_KEY ((chassis_move.chassis_RC->key.v  & KEY_PRESSED_OFFSET_F) && !(chassis_move.chassis_last_key_v & KEY_PRESSED_OFFSET_F))
-..\application\shoot_task.h(159): warning:  #381-D: extra ";" ignored
-      uint16_t shoot_last_key_v;;
-..\application\chassis_task.c(515): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-          chassis_move_control_loop->max_wheel_speed = 1.5 * 
-AX_WHEEL_SPEED;
-..\application\chassis_task.c: 5 warnings, 0 errors
+..\application\vision.h(142): warning:  #1295-D: Deprecated declaration vision_if_find_target - give arg types
+  bool_t vision_if_find_target();
+..\application\vision.h(146): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\application\gimbal_task.c(1046): warning:  #1-D: last line of file ends without a newline
+  }
+..\application\gimbal_task.c(221): warning:  #177-D: variable "shoot_can_set_current"  was declared but never referenced
+  static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
+..\application\gimbal_task.c: 6 warnings, 0 errors
 linking...
-Program Size: Code=114168 RO-data=14768 RW-data=1440 ZI-data=59272  
+Program Size: Code=111032 RO-data=14752 RW-data=1372 ZI-data=58708  
 FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 5 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Software Packages used:</h2>
 
