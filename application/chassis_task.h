@@ -84,6 +84,11 @@
 #define M3505_MOTOR_SPEED_PID_MAX_OUT  6000.0f
 #define M3505_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
 
+//底盘运动方向
+#define LEFT 0
+#define RIGHT 1
+
+
 typedef enum
 {
   CHASSIS_VECTOR_NO_FOLLOW_YAW,       //chassis will have rotation speed control. 底盘有旋转速度控制
@@ -127,6 +132,12 @@ typedef struct
   fp32 chassis_yaw;   //the yaw angle calculated by gyro sensor and gimbal motor.陀螺仪和云台电机叠加的yaw角度
   fp32 chassis_pitch; //the pitch angle calculated by gyro sensor and gimbal motor.陀螺仪和云台电机叠加的pitch角度
   fp32 chassis_roll;  //the roll angle calculated by gyro sensor and gimbal motor.陀螺仪和云台电机叠加的roll角度
+
+
+  bool_t left_light_sensor;  //左侧光电传感器 0为未感应到 1为感应到
+  bool_t light_light_sensor;  //右侧光电传感器 0为未感应到 1为感应到
+  uint8_t direction;          //底盘移动方向 分为LEFT RIGHT 
+  
 
 } chassis_move_t;
 

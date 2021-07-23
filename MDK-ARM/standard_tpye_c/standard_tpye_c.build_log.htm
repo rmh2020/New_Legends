@@ -22,29 +22,19 @@ Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
 E:\file\competition\RM\code\code_reconsitut\New_Legends\MDK-ARM\standard_robot.uvprojx
-Project File Date:  06/01/2021
+Project File Date:  07/23/2021
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-compiling gimbal_task.c...
-..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
-  extern const motor_measure_t *get_chassis_motor_measure_point();
-..\application\gimbal_task.h(336): warning:  #1295-D: Deprecated declaration software_reset - give arg types
-  extern void software_reset();
-..\application\vision.h(142): warning:  #1295-D: Deprecated declaration vision_if_find_target - give arg types
-  bool_t vision_if_find_target();
-..\application\vision.h(146): warning:  #1-D: last line of file ends without a newline
-  #endif
-..\application\gimbal_task.c(1046): warning:  #1-D: last line of file ends without a newline
-  }
-..\application\gimbal_task.c(221): warning:  #177-D: variable "shoot_can_set_current"  was declared but never referenced
-  static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
-..\application\gimbal_task.c: 6 warnings, 0 errors
+compiling stm32f4xx_it.c...
+../Src/stm32f4xx_it.c(174): warning:  #223-D: function "xPortSysTickHandler" declared implicitly
+    xPortSysTickHandler();
+../Src/stm32f4xx_it.c: 1 warning, 0 errors
 linking...
-Program Size: Code=111032 RO-data=14752 RW-data=1372 ZI-data=58708  
+Program Size: Code=110888 RO-data=14752 RW-data=1372 ZI-data=58716  
 FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 6 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 

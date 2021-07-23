@@ -133,11 +133,11 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     //Ò£¿ØÆ÷ÉèÖÃÄ£Ê½
     if (switch_is_up(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {    
-       chassis_behaviour_mode =CHASSIS_RC ;
+       chassis_behaviour_mode =CHASSIS_AUTO;
     }
     else if (switch_is_mid(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
-       chassis_behaviour_mode = CHASSIS_AUTO;
+       chassis_behaviour_mode = CHASSIS_RC;
     }
     else if (switch_is_down(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
@@ -298,12 +298,13 @@ static void chassis_rc_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_
 
 static void chassis_auto_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector)
 {
-    if ( vy_set == NULL || chassis_move_rc_to_vector == NULL)
+    if (vy_set == NULL || chassis_move_rc_to_vector == NULL)
     {
         return;
     }   
 
-    
+
+    if()
 }
 
 

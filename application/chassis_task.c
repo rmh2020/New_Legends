@@ -184,6 +184,11 @@ static void chassis_init(chassis_move_t *chassis_move_init)
     //记录上一次键盘值
     chassis_move_init->chassis_last_key_v = 0;
 
+    //默认初始状态左右为识别到，初始方向向左运动
+    chassis_move_init->left_light_sensor = 0;
+    chassis_move_init->right_light_sensor = 0;
+    chassis_move_init->direction = LEFT;
+
     //update data
     //更新一下数据
     chassis_feedback_update(chassis_move_init);
@@ -240,7 +245,6 @@ static void chassis_feedback_update(chassis_move_t *chassis_move_update)
 
     chassis_move_update->motor_chassis.speed = CHASSIS_MOTOR_RPM_TO_VECTOR_SEN * chassis_move_update->motor_chassis.chassis_motor_measure->speed_rpm;
 
-
     //更新底盘平移速度y
     chassis_move_update->vy = chassis_move_update->motor_chassis.speed * MOTOR_SPEED_TO_CHASSIS_SPEED_VY;
 
@@ -249,6 +253,11 @@ static void chassis_feedback_update(chassis_move_t *chassis_move_update)
     chassis_move_update->chassis_pitch = rad_format(*(chassis_move_update->chassis_INS_angle + INS_PITCH_ADDRESS_OFFSET) - chassis_move_update->chassis_pitch_motor->relative_angle);
     chassis_move_update->chassis_roll = *(chassis_move_update->chassis_INS_angle + INS_ROLL_ADDRESS_OFFSET);
     
+
+    //更新光电传感器数据
+    chassis_move_update->left_light_sensor = !(HAL_GPIO_WritePin(left_light_sensor_GPIO_Port, left_light_sensor_Pin));
+    chassis_move_update->right_light_sensor = !(HAL_GPIO_WritePin(right_light_sensor_GPIO_Port, right_light_sensor_Pin));
+
 }
 
 /**
