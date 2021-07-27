@@ -22,19 +22,33 @@ Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
 E:\file\competition\RM\code\code_reconsitut\New_Legends\MDK-ARM\standard_robot.uvprojx
-Project File Date:  07/23/2021
+Project File Date:  07/26/2021
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-compiling stm32f4xx_it.c...
-../Src/stm32f4xx_it.c(174): warning:  #223-D: function "xPortSysTickHandler" declared implicitly
-    xPortSysTickHandler();
-../Src/stm32f4xx_it.c: 1 warning, 0 errors
+compiling chassis_task.c...
+..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
+  extern const motor_measure_t *get_chassis_motor_measure_point();
+..\application\gimbal_task.h(363): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+  extern void software_reset();
+..\application\shoot_task.h(125): warning:  #47-D: incompatible redefinition of macro "LEFT"  (declared at line 94 of "..\application\chassis_task.h")
+  #define LEFT 0
+..\application\shoot_task.h(126): warning:  #47-D: incompatible redefinition of macro "RIGHT"  (declared at line 95 of "..\application\chassis_task.h")
+  #define RIGHT 1
+..\application\chassis_task.c(159): warning:  #177-D: variable "i"  was declared but never referenced
+      uint8_t i;
+..\application\chassis_task.c(222): warning:  #177-D: function "chassis_mode_change_control_transit"  was declared but never referenced
+  static void chassis_mode_change_control_transit(chassis_move_t *chassis_move_transit)
+..\application\chassis_task.c(316): warning:  #177-D: function "chassis_set_contorl"  was declared but never referenced
+  static void chassis_set_contorl(chassis_move_t *chassis_move_control)
+..\application\chassis_task.c(346): warning:  #177-D: function "chassis_control_loop"  was declared but never referenced
+  static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
+..\application\chassis_task.c: 8 warnings, 0 errors
 linking...
-Program Size: Code=110888 RO-data=14752 RW-data=1372 ZI-data=58716  
+Program Size: Code=85584 RO-data=4532 RW-data=1136 ZI-data=56888  
 FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 1 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 8 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -52,7 +66,7 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

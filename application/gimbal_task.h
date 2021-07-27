@@ -31,6 +31,11 @@
 #include "CAN_receive.h"
 #include "pid.h"
 #include "remote_control.h"
+
+#define RC   0  //遥控器控制
+#define AUTO 1  //自动程序控制
+
+
 //pitch 速度环 PID参数以及 PID最大输出，积分输出
 #define PITCH_SPEED_PID_KP        2000.0f  //2900
 #define PITCH_SPEED_PID_KI        0.0f
@@ -171,6 +176,18 @@
 #define MIN_ABSOULATE_PITCH      -2.0f
 #define MAX_ABSOULATE_PITCH       3.0f
 
+//云台巡逻时的限幅
+#define MIN_PATROL_YAW -PI
+#define MAX_PATROL_YAW PI
+
+#define MIN_PATROL_PITCH -2.0f
+#define MAX_PATROL_PITCH 3.0f
+
+//旋转方向
+#define CCW 0  //逆时针
+#define CW 1   //顺时针
+
+
 #define GIMBAL_ACCEL_YAW_NUM 0.002f
 #define GIMBAL_ACCEL_PITCH_NUM 0.002f
 
@@ -233,6 +250,9 @@ typedef struct
     fp32 current_set;
     int16_t given_current;
 
+
+
+
 } gimbal_motor_t;
 
 typedef struct
@@ -257,6 +277,13 @@ typedef struct
     gimbal_motor_t gimbal_yaw_motor;
     gimbal_motor_t gimbal_pitch_motor;
     gimbal_step_cali_t gimbal_cali;
+
+
+    //巡逻会用到的数据
+    bool_t  gimbal_control_way;        //云台控制方式
+    uint8_t yaw_patrol_dir;     //yaw轴巡逻旋转方向
+    uint8_t pitch_patrol_dir;   //pitch轴巡逻旋转方向
+
 } gimbal_control_t;
 
 extern gimbal_control_t gimbal_control;

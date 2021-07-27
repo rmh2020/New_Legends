@@ -76,6 +76,11 @@
 //底盘运动过程最大平移速度
 #define NORMAL_MAX_CHASSIS_SPEED_Y 1.5f  //1.5
 
+//底盘巡逻速度等级
+#define CHASSIS_LOW_SPEED 0.5*NORMAL_MAX_CHASSIS_SPEED_Y
+#define CHASSIS_MID_SPEED 0.8*NORMAL_MAX_CHASSIS_SPEED_Y
+#define CHASSIS_HIGH_SPEED 1.0*NORMAL_MAX_CHASSIS_SPEED_Y
+
 //chassis motor speed PID
 //底盘电机速度环PID
 #define M3505_MOTOR_SPEED_PID_KP 6000.0f
@@ -85,8 +90,9 @@
 #define M3505_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
 
 //底盘运动方向
-#define LEFT 0
-#define RIGHT 1
+#define NO_MOVE 0
+#define LEFT 1
+#define RIGHT 2
 
 
 typedef enum
@@ -133,10 +139,13 @@ typedef struct
   fp32 chassis_pitch; //the pitch angle calculated by gyro sensor and gimbal motor.陀螺仪和云台电机叠加的pitch角度
   fp32 chassis_roll;  //the roll angle calculated by gyro sensor and gimbal motor.陀螺仪和云台电机叠加的roll角度
 
-
+  //巡逻会用到的数据
+  bool_t chassis_control_way; //底盘控制方式
   bool_t left_light_sensor;  //左侧光电传感器 0为未感应到 1为感应到
-  bool_t light_light_sensor;  //右侧光电传感器 0为未感应到 1为感应到
-  uint8_t direction;          //底盘移动方向 分为LEFT RIGHT 
+  bool_t right_light_sensor;  //右侧光电传感器 0为未感应到 1为感应到
+  uint16_t left_light_sensor_update_time; //光电传感器数据更新时间
+  uint16_t right_light_sensor_update_time; //光电传感器数据更新时间
+  uint8_t direction;          //底盘移动方向 分为NO_MOVE LEFT RIGHT 
   
 
 } chassis_move_t;

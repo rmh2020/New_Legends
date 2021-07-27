@@ -470,7 +470,7 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
     
     if (switch_is_up(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
-        gimbal_behaviour = GIMBAL_RELATIVE_ANGLE;
+        gimbal_behaviour = GIMBAL_ABSOLUTE_ANGLE;
     }
     else if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
@@ -625,23 +625,18 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
         return;
     }
 
-    //单击右键 打开自瞄 再次单击 关闭自瞄
-    if(IF_MOUSE_SINGAL_PRESSED_R && auto_switch == FALSE)
+
+    //云台陀螺仪绝对角度控制模式下，切换自动控制和遥控器控制
+    if (switch_is_up(gimbal_control_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
-        auto_switch = TRUE;
+        gimbal_control_set->gimbal_control_way = AUTO;
     }
-    else  if (IF_MOUSE_SINGAL_PRESSED_R && auto_switch ==  TRUE)
+    else if (switch_is_mid(gimbal_control_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
-        auto_switch = FALSE;
+        gimbal_control_set->gimbal_control_way = RC;
     }
 
-    //当在自瞄模式下且识别到目标,云台控制权交给mini pc
-    if (auto_switch == TRUE && vision_if_find_target() == TRUE)
-    {
-        vision_error_angle(yaw, pitch); //获取yaw 和 pitch的偏移量
-        vision_send_data(CmdID);       //发送指令给小电脑
-    }
-    else
+    if(gimbal_control_set->gimbal_control_way == RC)       //遥控器控制云台旋转 
     {
         static int16_t yaw_channel = 0, pitch_channel = 0;
 
@@ -651,33 +646,29 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
         *yaw = yaw_channel * YAW_RC_SEN - gimbal_control_set->gimbal_rc_ctrl->mouse.x * YAW_MOUSE_SEN;
         *pitch = pitch_channel * PITCH_RC_SEN + gimbal_control_set->gimbal_rc_ctrl->mouse.y * PITCH_MOUSE_SEN;
 
+    }
+    else if(gimbal_control_set->gimbal_control_way == AUTO)  //自动程序控制云台旋转
     {
-        //云台旋转固定角度
-        static fp32 gimbal_end_angle = 0.0f;
-
-
-        //仅单击Q 左转90度 E 右转90度V 后转180度    避免与ctrl+q混淆
-        if(IF_KEY_SINGAL_PRESSED_Q && ! IF_KEY_PRESSED_CTRL)
-        {   
-            gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle - PI/2);
-            gimbal_turn_switch = 1;
-        }
-        else if(IF_KEY_SINGAL_PRESSED_E && ! IF_KEY_PRESSED_CTRL)
-        {   
-            gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI/2);
-            gimbal_turn_switch = 1;
-        }
-        else if(IF_KEY_SINGAL_PRESSED_V && ! IF_KEY_PRESSED_CTRL)
-        {   
-            gimbal_end_angle = rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle + PI);
-            gimbal_turn_switch = 1;
-        } 
-
-
-        if (gimbal_turn_switch == 1)
+        //当在自瞄模式下且识别到目标,云台控制权交给mini pc
+        if (auto_switch == TRUE && vision_if_find_target() == TRUE)
         {
+            vision_error_angle(yaw, pitch); //获取yaw 和 pitch的偏移量
+            vision_send_data(CmdID);       //发送指令给小电脑
+        }
+        else    //未识别到目标，进入巡逻状态
+        {
+            //yaw轴巡逻
+            if(gimbal_control_set->yaw_patrol_dir == CCW)  //yaw轴逆时针旋转
+            {
+                gimbal_control_set->gimbal_yaw_motor.absolute_angle_set = rad_format(MAX_PATROL_YAW);
+            }
+            else if(gimbal_control_set->yaw_patrol_dir == CW)  //yaw轴顺时针旋转
+            {
+                gimbal_control_set->gimbal_yaw_motor.absolute_angle_set = rad_format(MIN_PATROL_YAW);
+            }
+
             //不断控制到掉头的目标值，正转，反装是随机
-            if (rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle) > 0.0f)
+            if (rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle_set - gimbal_control_set->gimbal_yaw_motor.absolute_angle) > 0.0f)
             {      
                 *yaw += TURN_SPEED;
             }
@@ -685,19 +676,54 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
             {        
                 *yaw -= TURN_SPEED;
             }
+            
+            //到达对应角度后向方向旋转
+            if (fabs(rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle_set - gimbal_control_set->gimbal_yaw_motor.absolute_angle)) < 0.01f)
+            {
+                if(gimbal_control_set->yaw_patrol_dir == CW)
+                    gimbal_control_set->yaw_patrol_dir = CCW;
+                else if(gimbal_control_set->yaw_patrol_dir == CW)
+                    gimbal_control_set->yaw_patrol_dir == CCW;
+            }
+           
+
+            //pitch轴巡逻
+            if(gimbal_control_set->pitch_patrol_dir == CCW)  //yaw轴逆时针旋转
+            {
+                gimbal_control_set->gimbal_pitch_motor.absolute_angle_set = rad_format(MAX_PATROL_PITCH);
+            }
+            else if(gimbal_control_set->pitch_patrol_dir == CW)  //yaw轴顺时针旋转
+            {
+                gimbal_control_set->gimbal_pitch_motor.absolute_angle_set = rad_format(MIN_PATROL_PITCH);
+            }
+
+            //不断控制到掉头的目标值，正转，反装是随机
+            if (rad_format(gimbal_control_set->gimbal_pitch_motor.absolute_angle_set - gimbal_control_set->gimbal_pitch_motor.absolute_angle) > 0.0f)
+            {      
+                *pitch += TURN_SPEED;
+            }
+            else
+            {        
+                *pitch -= TURN_SPEED;
+            }
+            
+            //到达对应角度后向方向旋转
+            if (fabs(rad_format(gimbal_control_set->gimbal_pitch_motor.absolute_angle_set - gimbal_control_set->gimbal_pitch_motor.absolute_angle)) < 0.01f)
+            {
+                if(gimbal_control_set->pitch_patrol_dir == CW)
+                    gimbal_control_set->pitch_patrol_dir = CCW;
+                else if(gimbal_control_set->pitch_patrol_dir == CW)
+                    gimbal_control_set->pitch_patrol_dir == CCW;
+            }
+
+
         }
-        //到达对应角度后停止
-        if (gimbal_turn_switch == 1 && fabs(rad_format(gimbal_end_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle)) < 0.01f)
-        {
-            gimbal_turn_switch = 0;
-            turn_switch_delay_time = 0;
-        }
-
     }
-
-    }
-
 }
+
+    
+
+
 
 
 

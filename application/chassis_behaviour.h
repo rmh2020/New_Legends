@@ -54,9 +54,7 @@ typedef enum
 {
   CHASSIS_ZERO_FORCE,                   //chassis will be like no power,底盘无力, 跟没上电那样
   CHASSIS_NO_MOVE,                      //chassis will be stop,底盘保持不动
-  CHASSIS_RC,                            //遥控器控制
-  CHASSIS_AUTO,                          //自动模式
-
+  CHASSIS_NO_FOLLOW_YAW,                //chassis does not follow angle, angle is open-loop,but wheels have closed-loop speed
   CHASSIS_OPEN,                          //the value of remote control will mulitiply a value, get current value that will be sent to can bus
                                         // 遥控器的值乘以比例成电流值 直接发送到can总线上
 } chassis_behaviour_e;

@@ -264,7 +264,13 @@ bool_t if_hit()
         return FALSE;
 }
 
-
+/**
+  * @brief  判断自己红蓝方
+  * @param  void
+  * @retval RED   BLUE
+  * @attention  数据打包,打包完成后通过串口发送到裁判系统
+  */
+ 
 
 
 /**

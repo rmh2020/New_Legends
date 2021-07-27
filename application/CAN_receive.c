@@ -77,7 +77,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
         case CAN_LEFT_FRIC_MOTOR_ID:
         case CAN_RIGHT_FRIC_MOTOR_ID:
         case CAN_TRIGGER_MOTOR_ID:
-         case CAN_CHASSIS_MOTOR_ID:
+        case CAN_CHASSIS_MOTOR_ID:
         case CAN_YAW_MOTOR_ID:
         case CAN_PIT_MOTOR_ID:
         case CAN_BORAD1_COMMUNICAT_ID:
@@ -92,7 +92,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
             {
               static uint8_t i = 0;
               //get motor id
-              i = rx_header.StdId - CAN_LEFT_FRIC_MOTOR_ID;
+              i = rx_header.StdId - CAN_TRIGGER_MOTOR_ID;
               get_motor_measure(&motor_chassis[i], rx_data);
               detect_hook(CHASSIS_MOTOR_TOE + i);
             }

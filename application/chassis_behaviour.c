@@ -80,15 +80,6 @@ static void chassis_zero_force_control(fp32 *vy_set, chassis_move_t *chassis_mov
   */
 static void chassis_no_move_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector);
 
-/**
-  * @brief          底盘有遥控器控制的行为状态机下，
-  * @author         RM  
-  * @param[in]      vy_set左右的速度,正值 左移速度， 负值 右移速度
-  * @param[in]      chassis_move_rc_to_vector底盘数据
-  * @retval         返回空
-  */
-static void chassis_rc_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector);
-
 
 /**
   * @brief          底盘自动控制的行为状态机下
@@ -97,7 +88,7 @@ static void chassis_rc_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_
   * @param[in]      chassis_move_rc_to_vector底盘数据
   * @retval         返回空
   */
-static void chassis_auto_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector);
+static void chassis_no_follow_yaw_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector);
 
 
 /**
@@ -133,11 +124,11 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     //遥控器设置模式
     if (switch_is_up(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {    
-       chassis_behaviour_mode =CHASSIS_AUTO;
+       chassis_behaviour_mode = CHASSIS_NO_FOLLOW_YAW;
     }
     else if (switch_is_mid(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
-       chassis_behaviour_mode = CHASSIS_RC;
+       chassis_behaviour_mode = CHASSIS_NO_FOLLOW_YAW;
     }
     else if (switch_is_down(chassis_move_mode->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
     {
@@ -162,11 +153,7 @@ void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode)
     {
         chassis_move_mode->chassis_mode = CHASSIS_VECTOR_NO_FOLLOW_YAW; 
     }
-    else if (chassis_behaviour_mode == CHASSIS_RC)
-    {
-        chassis_move_mode->chassis_mode = CHASSIS_VECTOR_NO_FOLLOW_YAW; 
-    }
-    else if (chassis_behaviour_mode == CHASSIS_AUTO)
+    else if (chassis_behaviour_mode == CHASSIS_NO_FOLLOW_YAW)
     {
         chassis_move_mode->chassis_mode = CHASSIS_VECTOR_NO_FOLLOW_YAW;
     }
@@ -204,13 +191,9 @@ void chassis_behaviour_control_set(fp32 *vy_set, chassis_move_t *chassis_move_rc
     {
         chassis_no_move_control(vy_set, chassis_move_rc_to_vector);
     }
-    else if (chassis_behaviour_mode == CHASSIS_RC)
+    else if (chassis_behaviour_mode == CHASSIS_NO_FOLLOW_YAW)
     {
-        chassis_rc_control(vy_set, chassis_move_rc_to_vector);
-    }
-    else if (chassis_behaviour_mode == CHASSIS_AUTO)
-    {
-        chassis_auto_control(vy_set, chassis_move_rc_to_vector);
+        chassis_no_follow_yaw_control(vy_set, chassis_move_rc_to_vector);
     }
     else if (chassis_behaviour_mode == CHASSIS_OPEN)
     {
@@ -265,28 +248,6 @@ static void chassis_no_move_control(fp32 *vy_set, chassis_move_t *chassis_move_r
 
 
 /**
-  * @brief          底盘跟随云台的行为状态机下，底盘模式是跟随云台角度，底盘旋转速度会根据角度差计算底盘旋转的角速度
-  * @author         RM
-  * @param[in]      vx_set前进的速度,正值 前进速度， 负值 后退速度
-  * @param[in]      vy_set左右的速度,正值 左移速度， 负值 右移速度
-  * @param[in]      angle_set底盘与云台控制到的相对角度
-  * @param[in]      chassis_move_rc_to_vector底盘数据
-  * @retval         返回空
-  */
-
-static void chassis_rc_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector)
-{
-    if (vy_set == NULL || chassis_move_rc_to_vector == NULL)
-    {
-        return;
-    }
-
-    //遥控器的通道值以及键盘按键 得出 一般情况下的速度设定值
-    chassis_rc_to_control_vector(vy_set, chassis_move_rc_to_vector);
-}
-
-
-/**
   * @brief          底盘跟随底盘yaw的行为状态机下，底盘模式是跟随底盘角度，底盘旋转速度会根据角度差计算底盘旋转的角速度
   * @author         RM
   * @param[in]      vx_set前进的速度,正值 前进速度， 负值 后退速度
@@ -296,15 +257,72 @@ static void chassis_rc_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_
   * @retval         返回空
   */
 
-static void chassis_auto_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector)
+static void chassis_no_follow_yaw_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector)
 {
     if (vy_set == NULL || chassis_move_rc_to_vector == NULL)
     {
         return;
     }   
 
+    //底盘不跟随yaw模式下，切换自动控制和遥控器控制
+    if (switch_is_up(chassis_move_rc_to_vector->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
+    {    
+        chassis_move_rc_to_vector->chassis_control_way = AUTO;
+    }
+    else if (switch_is_mid(chassis_move_rc_to_vector->chassis_RC->rc.s[CHASSIS_MODE_CHANNEL]))
+    {
+        chassis_move_rc_to_vector->chassis_control_way = RC;
+    }
 
-    if()
+
+    //遥控器控制
+    if(chassis_move_rc_to_vector->chassis_control_way == RC)
+    {
+        //遥控器的通道值以及键盘按键 得出 一般情况下的速度设定值
+        chassis_rc_to_control_vector(vy_set, chassis_move_rc_to_vector);
+    }
+    else if(chassis_move_rc_to_vector->chassis_control_way == AUTO)  //自动程序控制
+    {
+        //底盘基础巡逻轨迹
+        /*
+        左边识别 右边识别    静止不动
+        左边未识别 右边识别  方向向左
+        左边识别 右边未识别  方向向右
+        左边未识别 右边未识别 保持原状态
+        */
+        if(chassis_move_rc_to_vector->left_light_sensor == TRUE && chassis_move_rc_to_vector->right_light_sensor == TRUE)
+        {
+            chassis_move_rc_to_vector->direction = NO_MOVE;
+        }
+        else if(chassis_move_rc_to_vector->left_light_sensor == FALSE && chassis_move_rc_to_vector->right_light_sensor == TRUE)
+        {
+            chassis_move_rc_to_vector->direction = LEFT;
+        }
+        else if(chassis_move_rc_to_vector->left_light_sensor == TRUE && chassis_move_rc_to_vector->right_light_sensor == FALSE)
+        {
+            chassis_move_rc_to_vector->direction = RIGHT;
+        }
+        else if(chassis_move_rc_to_vector->left_light_sensor == FALSE && chassis_move_rc_to_vector->right_light_sensor == FALSE)
+        {
+            chassis_move_rc_to_vector->direction = chassis_move_rc_to_vector->direction;
+        }
+
+
+        //根据不同情况设置速度等级
+        if(if_hit())
+        {
+            *vy_set = CHASSIS_MID_SPEED;
+        }
+        else
+        {
+            *vy_set = CHASSIS_HIGH_SPEED;
+        }
+
+        //防止缓冲能量全用完
+        //if()
+
+    }
+   
 }
 
 

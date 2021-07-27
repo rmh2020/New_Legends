@@ -115,7 +115,7 @@ extern const motor_measure_t *get_fric_motor_measure_point(uint8_t i);
 
 /**
   * @brief          返回底盘电机 3508电机数据指针
-  * @param[in]      i: 电机编号,范围[0,3]
+  * @param[in]      none
   * @retval         电机数据指针
   */
 extern const motor_measure_t *get_chassis_motor_measure_point();

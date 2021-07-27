@@ -235,16 +235,16 @@ void gimbal_task(void const *pvParameters)
     //云台初始化
     gimbal_init(&gimbal_control);
 
-    //判断电机是否都上线
-    while (toe_is_error(YAW_GIMBAL_MOTOR_TOE) || toe_is_error(PITCH_GIMBAL_MOTOR_TOE))
-    {
-        vTaskDelay(GIMBAL_CONTROL_TIME);
-        gimbal_feedback_update(&gimbal_control);             //云台数据反馈
-    }
+    // //判断电机是否都上线  调试单个云台电机可以把这里注释
+    // while (toe_is_error(YAW_GIMBAL_MOTOR_TOE) || toe_is_error(PITCH_GIMBAL_MOTOR_TOE))
+    // {
+    //     vTaskDelay(GIMBAL_CONTROL_TIME);
+    //     gimbal_feedback_update(&gimbal_control);             //云台数据反馈
+    // }
 
     while (1)
     {
-        software_reset();                                    //软件复位
+        //software_reset();                                    //软件复位
         gimbal_set_mode(&gimbal_control);                    //设置云台控制模式
         gimbal_mode_change_control_transit(&gimbal_control); //控制模式切换 控制数据过渡
         gimbal_feedback_update(&gimbal_control);             //云台数据反馈
@@ -541,6 +541,13 @@ static void gimbal_init(gimbal_control_t *init)
         CmdID = VISION_RED;
 
     vision_send_data(CmdID);
+    
+    //初始化控制发送为遥控器控制
+    init->gimbal_control_way = RC;
+    //初始化巡逻状态下云台电机旋转方向 默认为逆时针
+    init->yaw_patrol_dir = CCW;
+    init->pitch_patrol_dir = CCW;
+
 
     //由于自动校准有问题,只能暂时手动校准
     set_hand_operator_gimbal_hook(YAW_OFFSET, PITCH_OFFSET, MAX_YAW, MIN_YAW, MAX_PITCH, MIN_PITCH);
@@ -586,13 +593,11 @@ static void gimbal_init(gimbal_control_t *init)
     init->gimbal_yaw_motor.relative_angle_set = init->gimbal_yaw_motor.relative_angle;
     init->gimbal_yaw_motor.motor_gyro_set = init->gimbal_yaw_motor.motor_gyro;
 
-
     init->gimbal_pitch_motor.absolute_angle_set = init->gimbal_pitch_motor.absolute_angle;
     init->gimbal_pitch_motor.relative_angle_set = init->gimbal_pitch_motor.relative_angle;
     init->gimbal_pitch_motor.motor_gyro_set = init->gimbal_pitch_motor.motor_gyro;
 
  
-
 }
 
 

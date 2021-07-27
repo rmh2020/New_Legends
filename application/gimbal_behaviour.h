@@ -59,10 +59,10 @@ typedef enum
 {
   GIMBAL_ZERO_FORCE = 0,             //无力模式
   GIMBAL_INIT,                       //初始化模式
-  GIMBAL_CALI,                      //校准模式
-  GIMBAL_ABSOLUTE_ANGLE,            //云台陀螺仪绝对角度控制
-  GIMBAL_RELATIVE_ANGLE,            //云台电机编码值相对角度控制
-  GIMBAL_MOTIONLESS,                //云台在遥控器无输入一段时间后保持不动，避免陀螺仪漂移
+  GIMBAL_CALI,                       //校准模式
+  GIMBAL_ABSOLUTE_ANGLE,             //云台陀螺仪绝对角度控制
+  GIMBAL_RELATIVE_ANGLE,             //云台电机编码值相对角度控制
+  GIMBAL_MOTIONLESS,                 //云台在遥控器无输入一段时间后保持不动，避免陀螺仪漂移
 
 } gimbal_behaviour_e;
 

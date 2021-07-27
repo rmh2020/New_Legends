@@ -109,24 +109,24 @@ void chassis_task(void const *pvParameters)
 
     //底盘初始化
     chassis_init(&chassis_move);
-    //判断底盘电机是否都在线
-    while (toe_is_error(CHASSIS_MOTOR_TOE))
-    {
-        vTaskDelay(CHASSIS_CONTROL_TIME_MS);
-    }
+    // //判断底盘电机是否都在线
+    // while (toe_is_error(CHASSIS_MOTOR_TOE))
+    // {
+    //     vTaskDelay(CHASSIS_CONTROL_TIME_MS);
+    // }
 
     while (1)
     {
         //设置底盘控制模式
         chassis_set_mode(&chassis_move);
         //模式切换数据保存
-        chassis_mode_change_control_transit(&chassis_move);
+        //chassis_mode_change_control_transit(&chassis_move);
         //底盘数据更新
-        chassis_feedback_update(&chassis_move);
+        //chassis_feedback_update(&chassis_move);
         //底盘控制量设置
-        chassis_set_contorl(&chassis_move);
+        //chassis_set_contorl(&chassis_move);
         //底盘控制PID计算
-        chassis_control_loop(&chassis_move);
+        //chassis_control_loop(&chassis_move);
 
         //发送电流随发射机构电机数据一起发送 在shoot_task函数内
 
@@ -154,7 +154,7 @@ static void chassis_init(chassis_move_t *chassis_move_init)
 
     //底盘速度环pid值
     const static fp32 motor_speed_pid[3] = {M3505_MOTOR_SPEED_PID_KP, M3505_MOTOR_SPEED_PID_KI, M3505_MOTOR_SPEED_PID_KD};
-    
+    //底盘数电滤波
     const static fp32 chassis_y_order_filter[1] = {CHASSIS_ACCEL_Y_NUM};
     uint8_t i;
 
@@ -183,6 +183,9 @@ static void chassis_init(chassis_move_t *chassis_move_init)
 
     //记录上一次键盘值
     chassis_move_init->chassis_last_key_v = 0;
+
+    //设置底盘初始控制方式
+    chassis_move_init->chassis_control_way = RC;
 
     //默认初始状态左右为识别到，初始方向向左运动
     chassis_move_init->left_light_sensor = 0;
@@ -255,9 +258,11 @@ static void chassis_feedback_update(chassis_move_t *chassis_move_update)
     
 
     //更新光电传感器数据
-    chassis_move_update->left_light_sensor = !(HAL_GPIO_WritePin(left_light_sensor_GPIO_Port, left_light_sensor_Pin));
-    chassis_move_update->right_light_sensor = !(HAL_GPIO_WritePin(right_light_sensor_GPIO_Port, right_light_sensor_Pin));
+    chassis_move_update->left_light_sensor = !(HAL_GPIO_ReadPin(left_light_sensor_GPIO_Port, left_light_sensor_Pin));
+    chassis_move_update->right_light_sensor = !(HAL_GPIO_ReadPin(right_light_sensor_GPIO_Port, right_light_sensor_Pin));
 
+    //如果光电传感器掉线,停止底盘运动            暂时未完成
+    //if 
 }
 
 /**
