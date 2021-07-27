@@ -321,6 +321,14 @@ static void chassis_no_follow_yaw_control(fp32 *vy_set, chassis_move_t *chassis_
         //防止缓冲能量全用完
         //if()
 
+
+        //根据方向设置输出
+        if(chassis_move_rc_to_vector->direction == LEFT)
+             *vy_set = *vy_set;
+        else if(chassis_move_rc_to_vector->direction == RIGHT)
+             *vy_set = -*vy_set;
+        else if(chassis_move_rc_to_vector->direction == NO_MOVE)
+             *vy_set = 0;
     }
    
 }

@@ -90,9 +90,9 @@
 #define M3505_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
 
 //底盘运动方向
-#define NO_MOVE 0
-#define LEFT 1
-#define RIGHT 2
+#define LEFT 0
+#define RIGHT 1
+#define NO_MOVE 2
 
 
 typedef enum

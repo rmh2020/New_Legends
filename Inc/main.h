@@ -91,10 +91,6 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define BUTTON_TRIG_Pin GPIO_PIN_7
 #define BUTTON_TRIG_GPIO_Port GPIOI
-#define right_light_sensor_Pin GPIO_PIN_8
-#define right_light_sensor_GPIO_Port GPIOC
-#define left_light_sensor_Pin GPIO_PIN_7
-#define left_light_sensor_GPIO_Port GPIOC
 #define RSTN_IST8310_Pin GPIO_PIN_6
 #define RSTN_IST8310_GPIO_Port GPIOG
 #define LED_R_Pin GPIO_PIN_12
@@ -126,6 +122,10 @@ void Error_Handler(void);
 #define INT1_GYRO_Pin GPIO_PIN_5
 #define INT1_GYRO_GPIO_Port GPIOC
 #define INT1_GYRO_EXTI_IRQn EXTI9_5_IRQn
+#define right_light_sensor_Pin GPIO_PIN_9
+#define right_light_sensor_GPIO_Port GPIOE
+#define left_light_sensor_Pin GPIO_PIN_11
+#define left_light_sensor_GPIO_Port GPIOE
 #define SPI2_CS_Pin GPIO_PIN_12
 #define SPI2_CS_GPIO_Port GPIOB
 #define CS1_GYRO_Pin GPIO_PIN_0

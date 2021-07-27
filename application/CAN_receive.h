@@ -39,9 +39,9 @@ typedef enum
     CAN_CHASSIS_MOTOR_ID = 0x204,
     
   //云台电机接收ID
-    CAN_GIMBAL_ALL_ID = 0x2FF,
-    CAN_YAW_MOTOR_ID = 0x209,
-    CAN_PIT_MOTOR_ID = 0x20A,
+    CAN_GIMBAL_ALL_ID = 0x1FF,
+    CAN_YAW_MOTOR_ID = 0x205,
+    CAN_PIT_MOTOR_ID = 0x206,
 
   //板间通信接收ID
     CAN_BORAD_COMMUNICAT_ALL_ID = 0x220,

@@ -109,24 +109,24 @@ void chassis_task(void const *pvParameters)
 
     //底盘初始化
     chassis_init(&chassis_move);
-    // //判断底盘电机是否都在线
-    // while (toe_is_error(CHASSIS_MOTOR_TOE))
-    // {
-    //     vTaskDelay(CHASSIS_CONTROL_TIME_MS);
-    // }
+    //判断底盘电机是否都在线
+    while (toe_is_error(CHASSIS_MOTOR_TOE))
+    {
+        vTaskDelay(CHASSIS_CONTROL_TIME_MS);
+    }
 
     while (1)
     {
         //设置底盘控制模式
         chassis_set_mode(&chassis_move);
         //模式切换数据保存
-        //chassis_mode_change_control_transit(&chassis_move);
+        chassis_mode_change_control_transit(&chassis_move);
         //底盘数据更新
-        //chassis_feedback_update(&chassis_move);
+        chassis_feedback_update(&chassis_move);
         //底盘控制量设置
-        //chassis_set_contorl(&chassis_move);
+        chassis_set_contorl(&chassis_move);
         //底盘控制PID计算
-        //chassis_control_loop(&chassis_move);
+        chassis_control_loop(&chassis_move);
 
         //发送电流随发射机构电机数据一起发送 在shoot_task函数内
 
@@ -165,8 +165,8 @@ static void chassis_init(chassis_move_t *chassis_move_init)
     //获取陀螺仪姿态角指针
     chassis_move_init->chassis_INS_angle = get_INS_angle_point();
     //获取云台电机数据指针
-    chassis_move_init->chassis_yaw_motor = get_yaw_motor_point();
-    chassis_move_init->chassis_pitch_motor = get_pitch_motor_point();
+    // chassis_move_init->chassis_yaw_motor = get_yaw_motor_point();
+    // chassis_move_init->chassis_pitch_motor = get_pitch_motor_point();
     
     //获取底盘电机数据指针，初始化PID 
     chassis_move_init->motor_chassis.chassis_motor_measure = get_chassis_motor_measure_point();
@@ -338,6 +338,9 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
     }
 }
 
+
+
+
 /**
   * @brief          控制循环，根据控制设定值，计算电机电流值，进行控制
   * @param[out]     chassis_move_control_loop:"chassis_move"变量指针.
@@ -345,36 +348,34 @@ static void chassis_set_contorl(chassis_move_t *chassis_move_control)
   */
 static void chassis_control_loop(chassis_move_t *chassis_move_control_loop)
 {
+
     fp32 max_vector = 0.0f, vector_rate = 0.0f;
     fp32 temp = 0.0f;
     fp32 wheel_speed = 0.0f;
+    wheel_speed = chassis_move_control_loop->vy_set;
 
 
     if (chassis_move_control_loop->chassis_mode == CHASSIS_VECTOR_RAW)
     {
-        
-
         chassis_move_control_loop->motor_chassis.give_current = (int16_t)(wheel_speed);
 
         //raw控制直接返回
         return;
     }
-
+    
     //计算轮子控制最大速度，并限制其最大速度
-
-        chassis_move_control_loop->motor_chassis.speed_set = wheel_speed;
-        temp = fabs(chassis_move_control_loop->motor_chassis.speed_set);
-        if (max_vector < temp)
-        {
-            max_vector = temp;
-        }
+    chassis_move_control_loop->motor_chassis.speed_set = wheel_speed;
+    temp = fabs(chassis_move_control_loop->motor_chassis.speed_set);
+    if (max_vector < temp)
+    {
+        max_vector = temp;
+    }
 
 
     if (max_vector > chassis_move_control_loop->max_wheel_speed)
     {
         vector_rate = chassis_move_control_loop->max_wheel_speed / max_vector;
-        chassis_move_control_loop->motor_chassis.speed_set *= vector_rate;
-        
+        chassis_move_control_loop->motor_chassis.speed_set *= vector_rate; 
     }
 
     //计算pid
