@@ -156,20 +156,20 @@
 
 //限幅 需要自己手动校准  
 #define YAW_OFFSET        6506  //编码器
-#define PITCH_OFFSET      4000 //编码器
+#define PITCH_OFFSET      3493 //编码器
 
 #define MIN_YAW         -2*PI
 #define MAX_YAW         2*PI
 
 #define MIN_PITCH      -2.0f
-#define MAX_PITCH      3.0f
+#define MAX_PITCH      2.8f
 
 
 #define MIN_ABSOULATE_YAW     -PI
 #define MAX_ABSOULATE_YAW     PI    
 
 #define MIN_ABSOULATE_PITCH      -2.0f
-#define MAX_ABSOULATE_PITCH       3.0f
+#define MAX_ABSOULATE_PITCH       2.8f
 
 #define GIMBAL_ACCEL_YAW_NUM 0.002f
 #define GIMBAL_ACCEL_PITCH_NUM 0.002f

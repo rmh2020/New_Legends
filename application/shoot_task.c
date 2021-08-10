@@ -95,7 +95,8 @@ void shoot_task(void const *pvParameters)
         shoot_set_control();        //射击任务控制循环
 
         //CAN发送
-        //CAN_cmd_shoot(shoot_control.fric_motor[LEFT].give_current, shoot_control.fric_motor[RIGHT].give_current, shoot_control.given_current, 0);
+        CAN_cmd_shoot(shoot_control.fric_motor[LEFT].give_current, shoot_control.fric_motor[RIGHT].give_current, shoot_control.given_current, 0);
+        //CAN_cmd_shoot(0, 0, 0, 0);
 
 
         //last_rc_ctrl = rc_ctrl;
