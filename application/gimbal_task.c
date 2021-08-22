@@ -723,6 +723,10 @@ static void gimbal_mode_change_control_transit(gimbal_control_t *gimbal_mode_cha
     gimbal_mode_change->gimbal_pitch_motor.last_gimbal_motor_mode = gimbal_mode_change->gimbal_pitch_motor.gimbal_motor_mode;
 }
 
+
+fp32 add_yaw_angle = 0.0f;
+fp32 add_pitch_angle = 0.0f;
+
 /**
   * @brief          设置云台控制设定值，控制值是通过gimbal_behaviour_control_set函数设置的
   * @param[out]     gimbal_set_control:"gimbal_control"变量指针.
@@ -735,8 +739,6 @@ static void gimbal_set_control(gimbal_control_t *set_control)
         return;
     }
 
-    fp32 add_yaw_angle = 0.0f;
-    fp32 add_pitch_angle = 0.0f;
 
     gimbal_behaviour_control_set(&add_yaw_angle, &add_pitch_angle, set_control);
 
@@ -838,6 +840,7 @@ static void gimbal_relative_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add)
     }
     gimbal_motor->relative_angle_set += add;
     //是否超过最大 最小值
+    
     if (gimbal_motor->relative_angle_set > gimbal_motor->max_relative_angle)
     {
         gimbal_motor->relative_angle_set = gimbal_motor->max_relative_angle;

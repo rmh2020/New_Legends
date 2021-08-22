@@ -3,7 +3,7 @@
 <title>Static Call Graph - [standard_tpye_c\standard_tpye_c.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image standard_tpye_c\standard_tpye_c.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Tue Jul 27 16:29:46 2021
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Sat Aug 21 21:32:38 2021
 <BR><P>
 <H3>Maximum Stack Usage =        400 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -2787,8 +2787,7 @@ Global Symbols
 <P><STRONG><a name="[1e2]"></a>__hardfp_fabs</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, fabs.o(i.__hardfp_fabs))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = __hardfp_fabs
 </UL>
-<BR>[Called By]<UL><LI><a href="#[20b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behavour_set
-<LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
+<BR>[Called By]<UL><LI><a href="#[20a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behavour_set
 <LI><a href="#[1e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_control_loop
 <LI><a href="#[26b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;trigger_motor_turn_back
 </UL>
@@ -3145,23 +3144,23 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[212]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_init
 </UL>
 
-<P><STRONG><a name="[204]"></a>gimbal_behaviour_control_set</STRONG> (Thumb, 136 bytes, Stack size 16 bytes, gimbal_behaviour.o(i.gimbal_behaviour_control_set))
-<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = gimbal_behaviour_control_set &rArr; gimbal_absolute_angle_control &rArr; vision_send_data &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
+<P><STRONG><a name="[203]"></a>gimbal_behaviour_control_set</STRONG> (Thumb, 136 bytes, Stack size 16 bytes, gimbal_behaviour.o(i.gimbal_behaviour_control_set))
+<BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = gimbal_behaviour_control_set &rArr; gimbal_relative_angle_control &rArr; vision_send_data &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
-<BR>[Calls]<UL><LI><a href="#[205]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_zero_force_control
-<LI><a href="#[208]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_relative_angle_control
-<LI><a href="#[209]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_motionless_control
-<LI><a href="#[206]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_init_control
-<LI><a href="#[207]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_cali_control
+<BR>[Calls]<UL><LI><a href="#[204]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_zero_force_control
+<LI><a href="#[207]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_relative_angle_control
+<LI><a href="#[208]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_motionless_control
+<LI><a href="#[205]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_init_control
+<LI><a href="#[206]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_cali_control
 <LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
 </UL>
 <BR>[Called By]<UL><LI><a href="#[21c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_set_control
 </UL>
 
-<P><STRONG><a name="[20a]"></a>gimbal_behaviour_mode_set</STRONG> (Thumb, 134 bytes, Stack size 8 bytes, gimbal_behaviour.o(i.gimbal_behaviour_mode_set))
+<P><STRONG><a name="[209]"></a>gimbal_behaviour_mode_set</STRONG> (Thumb, 134 bytes, Stack size 8 bytes, gimbal_behaviour.o(i.gimbal_behaviour_mode_set))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = gimbal_behaviour_mode_set &rArr; gimbal_behavour_set &rArr; __aeabi_cdcmple
 </UL>
-<BR>[Calls]<UL><LI><a href="#[20b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behavour_set
+<BR>[Calls]<UL><LI><a href="#[20a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behavour_set
 </UL>
 <BR>[Called By]<UL><LI><a href="#[21e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_set_mode
 </UL>
@@ -3176,7 +3175,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[6e]"></a>gimbal_task</STRONG> (Thumb, 144 bytes, Stack size 0 bytes, gimbal_task.o(i.gimbal_task))
-<BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = gimbal_task &rArr; gimbal_set_control &rArr; gimbal_behaviour_control_set &rArr; gimbal_absolute_angle_control &rArr; vision_send_data &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = gimbal_task &rArr; gimbal_set_control &rArr; gimbal_behaviour_control_set &rArr; gimbal_relative_angle_control &rArr; vision_send_data &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[21e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_set_mode
 <LI><a href="#[21c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_set_control
@@ -3295,9 +3294,8 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> freertos.o(.constdata)
 </UL>
 <P><STRONG><a name="[1e6]"></a>loop_fp32_constrain</STRONG> (Thumb, 96 bytes, Stack size 0 bytes, user_lib.o(i.loop_fp32_constrain))
-<BR><BR>[Called By]<UL><LI><a href="#[203]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_limit
+<BR><BR>[Called By]<UL><LI><a href="#[202]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_limit
 <LI><a href="#[1fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_PID_calc
-<LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
 <LI><a href="#[1e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_update
 <LI><a href="#[26a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;shoot_bullet_control
 </UL>
@@ -3441,7 +3439,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[20c]"></a>shoot_cmd_to_gimbal_stop</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, shoot_task.o(i.shoot_cmd_to_gimbal_stop))
-<BR><BR>[Called By]<UL><LI><a href="#[20b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behavour_set
+<BR><BR>[Called By]<UL><LI><a href="#[20a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behavour_set
 </UL>
 
 <P><STRONG><a name="[26d]"></a>shoot_init</STRONG> (Thumb, 266 bytes, Stack size 8 bytes, shoot_task.o(i.shoot_init))
@@ -3503,7 +3501,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;shoot_task
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_task
 <LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_task
-<LI><a href="#[20b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behavour_set
+<LI><a href="#[20a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behavour_set
 </UL>
 
 <P><STRONG><a name="[16e]"></a>ulTaskNotifyTake</STRONG> (Thumb, 108 bytes, Stack size 16 bytes, tasks.o(i.ulTaskNotifyTake))
@@ -3599,7 +3597,6 @@ Global Symbols
 
 <P><STRONG><a name="[23b]"></a>vPortEnterCritical</STRONG> (Thumb, 76 bytes, Stack size 0 bytes, port.o(i.vPortEnterCritical))
 <BR><BR>[Called By]<UL><LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ulTaskNotifyTake
-<LI><a href="#[258]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vQueueWaitForMessageRestricted
 <LI><a href="#[25b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvUnlockQueue
 <LI><a href="#[24f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvIsQueueFull
 <LI><a href="#[24e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvIsQueueEmpty
@@ -3611,11 +3608,11 @@ Global Symbols
 <LI><a href="#[254]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueReceive
 <LI><a href="#[286]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericSend
 <LI><a href="#[249]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericReset
+<LI><a href="#[258]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vQueueWaitForMessageRestricted
 </UL>
 
 <P><STRONG><a name="[23d]"></a>vPortExitCritical</STRONG> (Thumb, 56 bytes, Stack size 0 bytes, port.o(i.vPortExitCritical))
 <BR><BR>[Called By]<UL><LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ulTaskNotifyTake
-<LI><a href="#[258]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vQueueWaitForMessageRestricted
 <LI><a href="#[25b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvUnlockQueue
 <LI><a href="#[24f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvIsQueueFull
 <LI><a href="#[24e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvIsQueueEmpty
@@ -3627,6 +3624,7 @@ Global Symbols
 <LI><a href="#[254]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueReceive
 <LI><a href="#[286]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericSend
 <LI><a href="#[249]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericReset
+<LI><a href="#[258]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vQueueWaitForMessageRestricted
 </UL>
 
 <P><STRONG><a name="[247]"></a>vPortFree</STRONG> (Thumb, 140 bytes, Stack size 16 bytes, heap_4.o(i.vPortFree))
@@ -3764,11 +3762,13 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[200]"></a>vision_error_angle</STRONG> (Thumb, 102 bytes, Stack size 0 bytes, vision.o(i.vision_error_angle))
-<BR><BR>[Called By]<UL><LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
+<BR><BR>[Called By]<UL><LI><a href="#[207]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_relative_angle_control
+<LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
 </UL>
 
 <P><STRONG><a name="[1ff]"></a>vision_if_find_target</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, vision.o(i.vision_if_find_target))
-<BR><BR>[Called By]<UL><LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
+<BR><BR>[Called By]<UL><LI><a href="#[207]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_relative_angle_control
+<LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
 </UL>
 
 <P><STRONG><a name="[230]"></a>vision_init</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, vision.o(i.vision_init))
@@ -3795,6 +3795,7 @@ Global Symbols
 <LI><a href="#[19b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[212]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_init
+<LI><a href="#[207]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_relative_angle_control
 <LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
 </UL>
 
@@ -4041,11 +4042,10 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[29a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_f2d
 </UL>
 
-<P><STRONG><a name="[202]"></a>__aeabi_cdcmple</STRONG> (Thumb, 0 bytes, Stack size 32 bytes, dleqf.o(x$fpl$dleqf))
+<P><STRONG><a name="[20b]"></a>__aeabi_cdcmple</STRONG> (Thumb, 0 bytes, Stack size 32 bytes, dleqf.o(x$fpl$dleqf))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = __aeabi_cdcmple
 </UL>
-<BR>[Called By]<UL><LI><a href="#[20b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behavour_set
-<LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
+<BR>[Called By]<UL><LI><a href="#[20a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behavour_set
 <LI><a href="#[26b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;trigger_motor_turn_back
 </UL>
 
@@ -4099,8 +4099,7 @@ Global Symbols
 <P><STRONG><a name="[1e1]"></a>__aeabi_f2d</STRONG> (Thumb, 0 bytes, Stack size 16 bytes, f2d.o(x$fpl$f2d))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = __aeabi_f2d
 </UL>
-<BR>[Called By]<UL><LI><a href="#[20b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behavour_set
-<LI><a href="#[1fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_control
+<BR>[Called By]<UL><LI><a href="#[20a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behavour_set
 <LI><a href="#[1e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_control_loop
 <LI><a href="#[26b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;trigger_motor_turn_back
 <LI><a href="#[273]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;shoot_set_mode
@@ -4315,54 +4314,54 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_task
 </UL>
 
-<P><STRONG><a name="[1fe]"></a>gimbal_absolute_angle_control</STRONG> (Thumb, 754 bytes, Stack size 40 bytes, gimbal_behaviour.o(i.gimbal_absolute_angle_control))
-<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = gimbal_absolute_angle_control &rArr; vision_send_data &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
+<P><STRONG><a name="[1fe]"></a>gimbal_absolute_angle_control</STRONG> (Thumb, 474 bytes, Stack size 16 bytes, gimbal_behaviour.o(i.gimbal_absolute_angle_control))
+<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = gimbal_absolute_angle_control &rArr; vision_send_data &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[201]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vision_send_data
 <LI><a href="#[1ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vision_if_find_target
 <LI><a href="#[200]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vision_error_angle
-<LI><a href="#[1e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;loop_fp32_constrain
-<LI><a href="#[1e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_fabs
-<LI><a href="#[1e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
-<LI><a href="#[202]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdcmple
 </UL>
-<BR>[Called By]<UL><LI><a href="#[204]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
+<BR>[Called By]<UL><LI><a href="#[203]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
 </UL>
 
-<P><STRONG><a name="[20b]"></a>gimbal_behavour_set</STRONG> (Thumb, 398 bytes, Stack size 24 bytes, gimbal_behaviour.o(i.gimbal_behavour_set))
+<P><STRONG><a name="[20a]"></a>gimbal_behavour_set</STRONG> (Thumb, 400 bytes, Stack size 24 bytes, gimbal_behaviour.o(i.gimbal_behavour_set))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = gimbal_behavour_set &rArr; __aeabi_cdcmple
 </UL>
 <BR>[Calls]<UL><LI><a href="#[20c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;shoot_cmd_to_gimbal_stop
 <LI><a href="#[1f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;toe_is_error
 <LI><a href="#[1e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_fabs
 <LI><a href="#[1e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
-<LI><a href="#[202]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdcmple
+<LI><a href="#[20b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdcmple
 </UL>
-<BR>[Called By]<UL><LI><a href="#[20a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_mode_set
+<BR>[Called By]<UL><LI><a href="#[209]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_mode_set
 </UL>
 
-<P><STRONG><a name="[207]"></a>gimbal_cali_control</STRONG> (Thumb, 444 bytes, Stack size 8 bytes, gimbal_behaviour.o(i.gimbal_cali_control))
+<P><STRONG><a name="[206]"></a>gimbal_cali_control</STRONG> (Thumb, 444 bytes, Stack size 8 bytes, gimbal_behaviour.o(i.gimbal_cali_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = gimbal_cali_control
 </UL>
-<BR>[Called By]<UL><LI><a href="#[204]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
+<BR>[Called By]<UL><LI><a href="#[203]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
 </UL>
 
-<P><STRONG><a name="[206]"></a>gimbal_init_control</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, gimbal_behaviour.o(i.gimbal_init_control))
-<BR><BR>[Called By]<UL><LI><a href="#[204]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
+<P><STRONG><a name="[205]"></a>gimbal_init_control</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, gimbal_behaviour.o(i.gimbal_init_control))
+<BR><BR>[Called By]<UL><LI><a href="#[203]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
 </UL>
 
-<P><STRONG><a name="[209]"></a>gimbal_motionless_control</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, gimbal_behaviour.o(i.gimbal_motionless_control))
-<BR><BR>[Called By]<UL><LI><a href="#[204]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
+<P><STRONG><a name="[208]"></a>gimbal_motionless_control</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, gimbal_behaviour.o(i.gimbal_motionless_control))
+<BR><BR>[Called By]<UL><LI><a href="#[203]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
 </UL>
 
-<P><STRONG><a name="[208]"></a>gimbal_relative_angle_control</STRONG> (Thumb, 186 bytes, Stack size 8 bytes, gimbal_behaviour.o(i.gimbal_relative_angle_control))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = gimbal_relative_angle_control
+<P><STRONG><a name="[207]"></a>gimbal_relative_angle_control</STRONG> (Thumb, 474 bytes, Stack size 16 bytes, gimbal_behaviour.o(i.gimbal_relative_angle_control))
+<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = gimbal_relative_angle_control &rArr; vision_send_data &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
-<BR>[Called By]<UL><LI><a href="#[204]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
+<BR>[Calls]<UL><LI><a href="#[201]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vision_send_data
+<LI><a href="#[1ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vision_if_find_target
+<LI><a href="#[200]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vision_error_angle
+</UL>
+<BR>[Called By]<UL><LI><a href="#[203]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
 </UL>
 
-<P><STRONG><a name="[205]"></a>gimbal_zero_force_control</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, gimbal_behaviour.o(i.gimbal_zero_force_control))
-<BR><BR>[Called By]<UL><LI><a href="#[204]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
+<P><STRONG><a name="[204]"></a>gimbal_zero_force_control</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, gimbal_behaviour.o(i.gimbal_zero_force_control))
+<BR><BR>[Called By]<UL><LI><a href="#[203]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
 </UL>
 
 <P><STRONG><a name="[220]"></a>J_scope_gimbal_test</STRONG> (Thumb, 290 bytes, Stack size 0 bytes, gimbal_task.o(i.J_scope_gimbal_test))
@@ -4395,7 +4394,7 @@ Local Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[212]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_init
 </UL>
 
-<P><STRONG><a name="[203]"></a>gimbal_absolute_angle_limit</STRONG> (Thumb, 282 bytes, Stack size 16 bytes, gimbal_task.o(i.gimbal_absolute_angle_limit))
+<P><STRONG><a name="[202]"></a>gimbal_absolute_angle_limit</STRONG> (Thumb, 282 bytes, Stack size 16 bytes, gimbal_task.o(i.gimbal_absolute_angle_limit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = gimbal_absolute_angle_limit
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;loop_fp32_constrain
@@ -4475,12 +4474,12 @@ Local Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[21c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_set_control
 </UL>
 
-<P><STRONG><a name="[21c]"></a>gimbal_set_control</STRONG> (Thumb, 154 bytes, Stack size 16 bytes, gimbal_task.o(i.gimbal_set_control))
-<BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = gimbal_set_control &rArr; gimbal_behaviour_control_set &rArr; gimbal_absolute_angle_control &rArr; vision_send_data &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
+<P><STRONG><a name="[21c]"></a>gimbal_set_control</STRONG> (Thumb, 150 bytes, Stack size 8 bytes, gimbal_task.o(i.gimbal_set_control))
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = gimbal_set_control &rArr; gimbal_behaviour_control_set &rArr; gimbal_relative_angle_control &rArr; vision_send_data &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[21d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_relative_angle_limit
-<LI><a href="#[203]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_limit
-<LI><a href="#[204]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
+<LI><a href="#[202]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_absolute_angle_limit
+<LI><a href="#[203]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_control_set
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_task
 </UL>
@@ -4488,7 +4487,7 @@ Local Symbols
 <P><STRONG><a name="[21e]"></a>gimbal_set_mode</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, gimbal_task.o(i.gimbal_set_mode))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = gimbal_set_mode &rArr; gimbal_behaviour_mode_set &rArr; gimbal_behavour_set &rArr; __aeabi_cdcmple
 </UL>
-<BR>[Calls]<UL><LI><a href="#[20a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_mode_set
+<BR>[Calls]<UL><LI><a href="#[209]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_behaviour_mode_set
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_task
 </UL>
@@ -4582,7 +4581,7 @@ Local Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_fabs
 <LI><a href="#[1e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
-<LI><a href="#[202]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdcmple
+<LI><a href="#[20b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdcmple
 </UL>
 <BR>[Called By]<UL><LI><a href="#[270]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;shoot_set_control
 <LI><a href="#[26a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;shoot_bullet_control
@@ -4895,9 +4894,9 @@ Local Symbols
 <LI><a href="#[25c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xTaskRemoveFromEventList
 <LI><a href="#[25d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskMissedYield
 </UL>
-<BR>[Called By]<UL><LI><a href="#[258]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vQueueWaitForMessageRestricted
-<LI><a href="#[254]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueReceive
+<BR>[Called By]<UL><LI><a href="#[254]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueReceive
 <LI><a href="#[286]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericSend
+<LI><a href="#[258]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vQueueWaitForMessageRestricted
 </UL>
 
 <P><STRONG><a name="[236]"></a>prvAddCurrentTaskToDelayedList</STRONG> (Thumb, 134 bytes, Stack size 24 bytes, tasks.o(i.prvAddCurrentTaskToDelayedList))
@@ -5037,11 +5036,11 @@ Local Symbols
 <P><STRONG><a name="[255]"></a>prvProcessTimerOrBlockTask</STRONG> (Thumb, 102 bytes, Stack size 24 bytes, timers.o(i.prvProcessTimerOrBlockTask))
 <BR><BR>[Stack]<UL><LI>Max Depth = 224<LI>Call Chain = prvProcessTimerOrBlockTask &rArr; prvSampleTimeNow &rArr; prvSwitchTimerLists &rArr; xTimerGenericCommand &rArr; xQueueGenericSend &rArr; vTaskPlaceOnEventList &rArr; prvAddCurrentTaskToDelayedList &rArr; vListInsert
 </UL>
-<BR>[Calls]<UL><LI><a href="#[258]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vQueueWaitForMessageRestricted
-<LI><a href="#[257]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xTaskResumeAll
+<BR>[Calls]<UL><LI><a href="#[257]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xTaskResumeAll
 <LI><a href="#[256]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskSuspendAll
 <LI><a href="#[253]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvSampleTimeNow
 <LI><a href="#[250]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvProcessExpiredTimer
+<LI><a href="#[258]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vQueueWaitForMessageRestricted
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvTimerTask
 </UL>
