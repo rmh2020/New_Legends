@@ -94,7 +94,8 @@
 //向后转头180 按键
 #define TURN_180_KEYBOARD KEY_PRESSED_OFFSET_V
 //转头云台速度
-#define TURN_SPEED    0.004f  
+#define PITCH_TURN_SPEED    0.002f 
+#define YAW_TURN_SPEED    0.002f  
 //遥控器输入死区，因为遥控器存在差异，摇杆在中间，其值不一定为零
 #define RC_DEADBAND   10
 
@@ -163,15 +164,15 @@
 #define YAW_OFFSET        6506  //编码器
 #define PITCH_OFFSET      4000 //编码器
 
-#define MIN_YAW         -2*PI
-#define MAX_YAW         2*PI
+#define MIN_YAW         -2.5f
+#define MAX_YAW         2.5f
 
-#define MIN_PITCH      -2.0f
-#define MAX_PITCH      3.0f
+#define MIN_PITCH      -2.32f
+#define MAX_PITCH      2.78f
 
 
-#define MIN_ABSOULATE_YAW     -PI
-#define MAX_ABSOULATE_YAW     PI    
+#define MIN_ABSOULATE_YAW     -1.73f
+#define MAX_ABSOULATE_YAW     2.78f   
 
 #define MIN_ABSOULATE_PITCH      -2.0f
 #define MAX_ABSOULATE_PITCH       3.0f
@@ -185,7 +186,7 @@
 
 //旋转方向
 #define CCW 0  //逆时针
-#define CW 1   //顺时针
+#define CW 1  //顺时针
 
 
 #define GIMBAL_ACCEL_YAW_NUM 0.002f
