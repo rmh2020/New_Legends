@@ -5,6 +5,9 @@
 
 #include "protocol.h"
 
+#define RED   0
+#define BLUE  1
+
 typedef enum
 {
     RED_HERO        = 1,
@@ -87,35 +90,47 @@ typedef __packed struct
 } ext_referee_warning_t;
 typedef __packed struct //0x0201
 {
-    uint8_t robot_id;
-    uint8_t robot_level;
-    uint16_t remain_HP;
-    uint16_t max_HP;
-    uint16_t shooter_heat0_cooling_rate;
-    uint16_t shooter_heat0_cooling_limit;
-    uint16_t shooter_heat1_cooling_rate;
-    uint16_t shooter_heat1_cooling_limit;
-    uint8_t mains_power_gimbal_output : 1;
-    uint8_t mains_power_chassis_output : 1;
+    uint8_t robot_id; 
+    uint8_t robot_level; 
+    uint16_t remain_HP; 
+    uint16_t max_HP; 
+
+    uint16_t shooter_id1_17mm_cooling_rate;
+    uint16_t shooter_id1_17mm_cooling_limit;
+    uint16_t shooter_id1_17mm_speed_limit;
+
+    uint16_t shooter_id2_17mm_cooling_rate; 
+    uint16_t shooter_id2_17mm_cooling_limit;
+    uint16_t shooter_id2_17mm_speed_limit;
+
+    uint16_t shooter_id1_42mm_cooling_rate; 
+    uint16_t shooter_id1_42mm_cooling_limit;
+    uint16_t shooter_id1_42mm_speed_limit;
+
+    uint16_t chassis_power_limit; 
+    uint8_t mains_power_gimbal_output : 1; 
+    uint8_t mains_power_chassis_output : 1; 
     uint8_t mains_power_shooter_output : 1;
+
 } ext_game_robot_state_t;
 
 typedef __packed struct //0x0202
 {
-    uint16_t chassis_volt;
-    uint16_t chassis_current;
-    float chassis_power;
-    uint16_t chassis_power_buffer;
-    uint16_t shooter_heat0;
-    uint16_t shooter_heat1;
+    uint16_t chassis_volt;        //底盘输出电压
+    uint16_t chassis_current;     //底盘输出电流
+    fp32 chassis_power;          //底盘输出功率
+    uint16_t chassis_power_buffer; //底盘功率缓冲
+    uint16_t shooter_id1_17mm_cooling_heat;  //1号17mm 枪口热量
+    uint16_t shooter_id2_17mm_cooling_heat;  //2号17mm枪口热量
+    uint16_t shooter_id1_42mm_cooling_heat;  //42mm 枪口热量
 } ext_power_heat_data_t;
 
 typedef __packed struct //0x0203
 {
-    float x;
-    float y;
-    float z;
-    float yaw;
+    fp32 x;
+    fp32 y;
+    fp32 z;
+    fp32 yaw;
 } ext_game_robot_pos_t;
 
 typedef __packed struct //0x0204
@@ -137,13 +152,17 @@ typedef __packed struct //0x0206
 
 typedef __packed struct //0x0207
 {
-    uint8_t bullet_type;
-    uint8_t bullet_freq;
-    float bullet_speed;
+    uint8_t bullet_type;  //子弹类型: 1：17mm弹丸 2：42mm弹丸
+    uint8_t shooter_id;  //发射机构ID： 1：1号17mm发射机构 2：2号17mm发射机构 3：42mm 发射机构
+    uint8_t bullet_freq; //子弹射频 单位 Hz
+    fp32 bullet_speed;  //子弹射速 单位 m/s
 } ext_shoot_data_t;
+
 typedef __packed struct
 {
-    uint8_t bullet_remaining_num;
+    uint16_t bullet_remaining_num_17mm; //17mm子弹剩余发射数目 
+    uint16_t bullet_remaining_num_42mm; // 42mm子弹剩余发射数目
+    uint16_t coin_remaining_num;        //剩余金币数量
 } ext_bullet_remaining_t;
 typedef __packed struct //0x0301
 {
@@ -156,9 +175,9 @@ typedef __packed struct //0x0301
 
 typedef __packed struct
 {
-    float data1;
-    float data2;
-    float data3;
+    fp32 data1;
+    fp32 data2;
+    fp32 data3;
     uint8_t data4;
 } custom_data_t;
 
@@ -174,7 +193,6 @@ typedef __packed struct
 } ext_download_stream_data_t;
 
 
-
 extern void init_referee_struct_data(void);
 extern void referee_data_solve(uint8_t *frame);
 
@@ -182,6 +200,25 @@ extern void get_chassis_power_and_buffer(fp32 *power, fp32 *buffer);
 
 extern uint8_t get_robot_id(void);
 
-extern void get_shoot_heat0_limit_and_heat0(uint16_t *heat0_limit, uint16_t *heat0);
-extern void get_shoot_heat1_limit_and_heat1(uint16_t *heat1_limit, uint16_t *heat1);
+
+//17mm枪口热量上限, 17mm枪口实时热量 默认ID1
+void get_shooter_id1_17mm_cooling_limit_and_heat(uint16_t *id1_17mm_cooling_limit, uint16_t *id1_17mm_cooling_heat);
+//17mm枪口枪口射速上限,17mm实时射速 默认ID1
+void get_shooter_id1_17mm_speed_limit_and_bullet_speed(uint16_t *id1_17mm_speed_limit, fp32 *bullet_speed);
+//17mm枪口热量冷却 默认ID1
+void get_shooter_id1_17mm_cooling_rate(uint16_t *id1_17mm_cooling_rate);
+
+
+//42mm枪口热量上限, 42mm枪口实时热量
+void get_shooter_id1_42mm_cooling_limit_and_heat(uint16_t *id1_42mm_cooling_limit, uint16_t *id1_42mm_cooling_heat);
+//42mm枪口枪口射速上限,42mm实时射速
+void get_shooter_id1_42mm_speed_limit_and_bullet_speed(uint16_t *id1_42mm_speed_limit, uint16_t *bullet_speed);
+//42mm枪口热量冷却
+void get_shooter_id1_42mm_cooling_rate(uint16_t *id1_42mm_cooling_rate);;
+
+
+extern void determine_ID(void);
+extern bool_t is_red_or_blue(void);
+
+extern bool_t if_hit(void);
 #endif

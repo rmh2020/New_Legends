@@ -38,6 +38,10 @@
 #include "usb_task.h"
 #include "voltage_task.h"
 #include "servo_task.h"
+#include "ui_task.h"
+#include "super_cap_task.h"
+#include "software_reset_task.h"
+#include "shoot_task.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,6 +58,11 @@ osThreadId referee_usart_task_handle;
 osThreadId usb_task_handle;
 osThreadId battery_voltage_handle;
 osThreadId servo_task_handle;
+osThreadId ui_task_handle;
+osThreadId super_cap_task_handle;
+osThreadId software_reset_task_handle;
+osThreadId shoot_task_handle;
+
 
 
 /* USER CODE END PTD */
@@ -161,20 +170,20 @@ void MX_FREERTOS_Init(void) {
     osThreadDef(gimbalTask, gimbal_task, osPriorityHigh, 0, 512);
     gimbalTaskHandle = osThreadCreate(osThread(gimbalTask), NULL);
 
+    osThreadDef(ShootTask, shoot_task, osPriorityHigh, 0, 512);
+    shoot_task_handle = osThreadCreate(osThread(ShootTask), NULL);
+
     osThreadDef(imuTask, INS_task, osPriorityRealtime, 0, 1024);
     imuTaskHandle = osThreadCreate(osThread(imuTask), NULL);
 
     osThreadDef(led, led_RGB_flow_task, osPriorityNormal, 0, 256);
     led_RGB_flow_handle = osThreadCreate(osThread(led), NULL);
 
-
     osThreadDef(OLED, oled_task, osPriorityLow, 0, 256);
     oled_handle = osThreadCreate(osThread(OLED), NULL);
 
-
     osThreadDef(REFEREE, referee_usart_task, osPriorityNormal, 0, 128);
     referee_usart_task_handle = osThreadCreate(osThread(REFEREE), NULL);
-
 
     osThreadDef(USBTask, usb_task, osPriorityNormal, 0, 128);
     usb_task_handle = osThreadCreate(osThread(USBTask), NULL);
@@ -182,11 +191,19 @@ void MX_FREERTOS_Init(void) {
     osThreadDef(BATTERY_VOLTAGE, battery_voltage_task, osPriorityNormal, 0, 128);
     battery_voltage_handle = osThreadCreate(osThread(BATTERY_VOLTAGE), NULL);
 
-    osThreadDef(SERVO, servo_task, osPriorityNormal, 0, 128);
+    osThreadDef(SERVO, servo_task, osPriorityHigh, 0, 256);
     servo_task_handle = osThreadCreate(osThread(SERVO), NULL);
 
+    osThreadDef(UI, ui_task, osPriorityNormal, 0, 512);
+    ui_task_handle = osThreadCreate(osThread(UI), NULL);
 
+    // osThreadDef(SIPER_CAP, super_cap_task, osPriorityNormal, 0, 128);
+    // super_cap_task_handle = osThreadCreate(osThread(SIPER_CAP), NULL);
 
+    // osThreadDef(SOTFWARE_RESET, software_reset_task, osPriorityNormal, 0, 128);
+    // software_reset_task_handle = osThreadCreate(osThread(SOTFWARE_RESET), NULL);
+ 
+ 
   /* USER CODE END RTOS_THREADS */
 
 }

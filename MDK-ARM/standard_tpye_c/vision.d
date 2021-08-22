@@ -50,3 +50,5 @@ standard_tpye_c\vision.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_
 standard_tpye_c\vision.o: ..\application\remote_control.h
 standard_tpye_c\vision.o: ..\bsp\boards\bsp_rc.h
 standard_tpye_c\vision.o: D:\EnglishPath\MDK5\ARM\ARMCC\Bin\..\include\stdio.h
+standard_tpye_c\vision.o: ..\application\referee.h
+standard_tpye_c\vision.o: ..\application\protocol\protocol.h

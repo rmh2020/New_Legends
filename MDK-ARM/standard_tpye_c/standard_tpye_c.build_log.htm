@@ -22,12 +22,25 @@ Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
 E:\file\competition\RM\code\code_reconsitut\New_Legends\MDK-ARM\standard_robot.uvprojx
-Project File Date:  02/10/2021
+Project File Date:  08/10/2021
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 0 Warning(s).
+compiling shoot_task.c...
+..\application\gimbal_task.h(336): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+  extern void software_reset();
+..\application\shoot_task.h(159): warning:  #381-D: extra ";" ignored
+      uint16_t shoot_last_key_v;;
+..\application\shoot_task.c(380): warning:  #223-D: function "abs" declared implicitly
+      if(shoot_control.shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed) || abs(shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[RIGHT].require_speed)))
+..\application\shoot_task.c(527): warning:  #1-D: last line of file ends without a newline
+  }
+..\application\shoot_task.c: 4 warnings, 0 errors
+linking...
+Program Size: Code=114192 RO-data=14768 RW-data=1440 ZI-data=59272  
+FromELF: creating hex file...
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 4 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -45,7 +58,7 @@ Package Vendor: ARM
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.0.1
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

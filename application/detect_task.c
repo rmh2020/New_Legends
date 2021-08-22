@@ -12,23 +12,7 @@
   *
   @verbatim
   ==============================================================================
-    add a sensor 
-    1. in detect_task.h, add the sensor name at the end of errorList,like
-    enum errorList
-    {
-        ...
-        XXX_TOE,    //new sensor
-        ERROR_LIST_LENGHT,
-    };
-    2.in detect_init function, add the offlineTime, onlinetime, priority params,like
-        uint16_t set_item[ERROR_LIST_LENGHT][3] =
-        {
-            ...
-            {n,n,n}, //XX_TOE
-        };
-    3. if XXX_TOE has data_is_error_fun ,solve_lost_fun,solve_data_error_fun function, 
-        please assign to function pointer.
-    4. when XXX_TOE sensor data come, add the function detect_hook(XXX_TOE) function.
+    
     如果要添加一个新设备
     1.第一步在detect_task.h，添加设备名字在errorList的最后，像
     enum errorList
@@ -54,11 +38,7 @@
 #include "cmsis_os.h"
 
 
-/**
-  * @brief          init error_list, assign  offline_time, online_time, priority.
-  * @param[in]      time: system time
-  * @retval         none
-  */
+
 /**
   * @brief          初始化error_list,赋值 offline_time, online_time, priority
   * @param[in]      time:系统时间
@@ -264,6 +244,8 @@ static void detect_init(uint32_t time)
             {10, 10, 10},   //motor2
             {10, 10, 9},    //motor3
             {10, 10, 8},    //motor4
+            {10, 10, 7},    //left_fric
+            {10, 10, 6},    //right_fric
             {2, 3, 14},     //yaw
             {2, 3, 13},     //pitch
             {10, 10, 12},   //trigger

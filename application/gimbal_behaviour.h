@@ -19,36 +19,6 @@
   *
   @verbatim
   ==============================================================================
-    add a gimbal behaviour mode
-    1. in gimbal_behaviour.h , add a new behaviour name in gimbal_behaviour_e
-    erum
-    {  
-        ...
-        ...
-        GIMBAL_XXX_XXX, // new add
-    }gimbal_behaviour_e,
-    2. implement new function. gimbal_xxx_xxx_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
-        "yaw, pitch" param is gimbal movement contorl input. 
-        first param: 'yaw' usually means  yaw axis move,usaully means increment angle.
-            positive value means counterclockwise move, negative value means clockwise move.
-        second param: 'pitch' usually means pitch axis move,usaully means increment angle.
-            positive value means counterclockwise move, negative value means clockwise move.
-
-        in this new function, you can assign set-point to "yaw" and "pitch",as your wish
-    3.  in "gimbal_behavour_set" function, add new logical judgement to assign GIMBAL_XXX_XXX to  "gimbal_behaviour" variable,
-        and in the last of the "gimbal_behaviour_mode_set" function, add "else if(gimbal_behaviour == GIMBAL_XXX_XXX)" 
-        choose a gimbal control mode.
-        four mode:
-        GIMBAL_MOTOR_RAW : will use 'yaw' and 'pitch' as motor current set,  derectly sent to can bus.
-        GIMBAL_MOTOR_ENCONDE : 'yaw' and 'pitch' are angle increment,  control enconde relative angle.
-        GIMBAL_MOTOR_GYRO : 'yaw' and 'pitch' are angle increment,  control gyro absolute angle.
-    4. in the last of "gimbal_behaviour_control_set" function, add
-        else if(gimbal_behaviour == GIMBAL_XXX_XXX)
-        {
-            gimbal_xxx_xxx_control(&rc_add_yaw, &rc_add_pit, gimbal_control_set);
-        }
-
-        
     如果要添加一个新的行为模式
     1.首先，在gimbal_behaviour.h文件中， 添加一个新行为名字在 gimbal_behaviour_e
     erum
@@ -83,23 +53,33 @@
 #include "struct_typedef.h"
 
 #include "gimbal_task.h"
+
+
 typedef enum
 {
-  GIMBAL_ZERO_FORCE = 0, 
-  GIMBAL_INIT,           
-  GIMBAL_CALI,           
-  GIMBAL_ABSOLUTE_ANGLE, 
-  GIMBAL_RELATIVE_ANGLE, 
-  GIMBAL_MOTIONLESS,  
-  GIMBAL_AUTO   
+  GIMBAL_ZERO_FORCE = 0,             //无力模式
+  GIMBAL_INIT,                       //初始化模式
+  GIMBAL_CALI,                      //校准模式
+  GIMBAL_ABSOLUTE_ANGLE,            //云台陀螺仪绝对角度控制
+  GIMBAL_RELATIVE_ANGLE,            //云台电机编码值相对角度控制
+  GIMBAL_MOTIONLESS,                //云台在遥控器无输入一段时间后保持不动，避免陀螺仪漂移
+
 } gimbal_behaviour_e;
 
-/**
-  * @brief          the function is called by gimbal_set_mode function in gimbal_task.c
-  *                 the function set gimbal_behaviour variable, and set motor mode.
-  * @param[in]      gimbal_mode_set: gimbal data
-  * @retval         none
-  */
+
+
+
+//云台行为状态机
+extern gimbal_behaviour_e gimbal_behaviour;
+extern gimbal_behaviour_e last_gimbal_behaviour;
+
+//自瞄开关
+extern  bool_t auto_switch;
+
+//云台转头开关
+extern uint8_t gimbal_turn_switch;
+  
+
 /**
   * @brief          被gimbal_set_mode函数调用在gimbal_task.c,云台行为状态机以及电机状态机设置
   * @param[out]     gimbal_mode_set: 云台数据指针
@@ -108,14 +88,7 @@ typedef enum
 
 extern void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set);
 
-/**
-  * @brief          the function is called by gimbal_set_contorl function in gimbal_task.c
-  *                 accoring to the gimbal_behaviour variable, call the corresponding function
-  * @param[out]     add_yaw:yaw axis increment angle, unit rad
-  * @param[out]     add_pitch:pitch axis increment angle,unit rad
-  * @param[in]      gimbal_mode_set: gimbal data
-  * @retval         none
-  */
+
 /**
   * @brief          云台行为控制，根据不同行为采用不同控制函数
   * @param[out]     add_yaw:设置的yaw角度增加值，单位 rad
@@ -125,11 +98,7 @@ extern void gimbal_behaviour_mode_set(gimbal_control_t *gimbal_mode_set);
   */
 extern void gimbal_behaviour_control_set(fp32 *add_yaw, fp32 *add_pitch, gimbal_control_t *gimbal_control_set);
 
-/**
-  * @brief          in some gimbal mode, need chassis keep no move
-  * @param[in]      none
-  * @retval         1: no move 0:normal
-  */
+
 /**
   * @brief          云台在某些行为下，需要底盘不动
   * @param[in]      none
@@ -138,11 +107,7 @@ extern void gimbal_behaviour_control_set(fp32 *add_yaw, fp32 *add_pitch, gimbal_
 
 extern bool_t gimbal_cmd_to_chassis_stop(void);
 
-/**
-  * @brief          in some gimbal mode, need shoot keep no move
-  * @param[in]      none
-  * @retval         1: no move 0:normal
-  */
+
 /**
   * @brief          云台在某些行为下，需要射击停止
   * @param[in]      none

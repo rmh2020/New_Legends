@@ -68,7 +68,6 @@ void referee_usart_task(void const * argument)
 
     while(1)
     {
-
         referee_unpack_fifo_data();
         osDelay(10);
     }

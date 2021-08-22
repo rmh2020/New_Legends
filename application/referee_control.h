@@ -1,6 +1,6 @@
 /**
   ****************************(C) COPYRIGHT 2019 DJI****************************
-  * @file       chassis_power_control.c/h
+  * @file       referee_control.c/h
   * @brief      chassis power control.底盘功率控制
   * @note       this is only controling 80 w power, mainly limit motor current set.
   *             if power limit is 40w, reduce the value JUDGE_TOTAL_CURRENT_LIMIT 
@@ -19,21 +19,39 @@
   @endverbatim
   ****************************(C) COPYRIGHT 2019 DJI****************************
   */
-#ifndef CHASSIS_POWER_CONTROL_H
-#define CHASSIS_POWER_CONTROL_H
+	
+#ifndef REFEREE_CONTROL_H
+#define REFEREE_CONTROL_H
+
+
 #include "chassis_task.h"
+#include "shoot_task.h"
+
+
 #include "main.h"
 
-/**
-  * @brief          limit the power, mainly limit motor current
-  * @param[in]      chassis_power_control: chassis data 
-  * @retval         none
-  */
 /**
   * @brief          限制功率，主要限制电机电流
   * @param[in]      chassis_power_control: 底盘数据
   * @retval         none
   */
 extern void chassis_power_control(chassis_move_t *chassis_power_control);
+
+/**
+  * @brief          限制17mm发射机构射速和射频，主要限制电机电流
+  * @param[in]      shoot_heat0_speed_and_cooling_control: 发送机构数据
+  * @retval         none
+  */
+extern void shoot_heat0_speed_and_cooling_control(shoot_control_t *shoot_heat0_speed_and_cooling_control);
+
+//通过读取裁判数据,直接修改射速和射频等级
+//射速等级  摩擦电机
+extern fp32 shoot_fric_grade[4];
+
+//射频等级 拨弹电机
+extern fp32 shoot_grigger_grade[6];
+
+
+
 
 #endif

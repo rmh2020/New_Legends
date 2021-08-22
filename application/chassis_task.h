@@ -22,7 +22,6 @@
 #include "CAN_receive.h"
 #include "gimbal_task.h"
 #include "pid.h"
-#include "remote_control.h"
 #include "user_lib.h"
 
 //in the beginning of task ,wait a time
@@ -79,12 +78,15 @@
 //chassis control frequence, no use now.
 //底盘任务控制频率，尚未使用这个宏
 #define CHASSIS_CONTROL_FREQUENCE 500.0f
-//chassis 3508 max motor control current
 //底盘3508最大can发送电流值
 #define MAX_MOTOR_CAN_CURRENT 16000.0f
 //press the key, chassis will swing
 //底盘摇摆按键
 #define SWING_KEY KEY_PRESSED_OFFSET_CTRL
+//底盘小陀螺按键
+#define TOP_KEY KEY_PRESSED_OFFSET_F
+
+
 //chassi forward, back, left, right key
 //底盘前后左右控制按键
 #define CHASSIS_FRONT_KEY KEY_PRESSED_OFFSET_W
@@ -97,47 +99,87 @@
 #define M3508_MOTOR_RPM_TO_VECTOR 0.000415809748903494517209f
 #define CHASSIS_MOTOR_RPM_TO_VECTOR_SEN M3508_MOTOR_RPM_TO_VECTOR
 
-//single chassis motor max speed
 //单个底盘电机最大速度
-#define MAX_WHEEL_SPEED 4.0f
-//chassis forward or back max speed
+#define MAX_WHEEL_SPEED 4.0f   //4
 //底盘运动过程最大前进速度
-#define NORMAL_MAX_CHASSIS_SPEED_X 2.0f
-//chassis left or right max speed
+#define NORMAL_MAX_CHASSIS_SPEED_X 2.5f  //2.0
 //底盘运动过程最大平移速度
-#define NORMAL_MAX_CHASSIS_SPEED_Y 1.5f
+#define NORMAL_MAX_CHASSIS_SPEED_Y 1.5f  //1.5
 
 #define CHASSIS_WZ_SET_SCALE 0.1f
 
-//when chassis is not set to move, swing max angle
 //摇摆原地不动摇摆最大角度(rad)
-#define SWING_NO_MOVE_ANGLE 0.7f
-//when chassis is set to move, swing max angle
+#define SWING_NO_MOVE_ANGLE 0.7f  //0.7
 //摇摆过程底盘运动最大角度(rad)
 #define SWING_MOVE_ANGLE 0.31415926535897932384626433832795f
 
-//原地旋转小陀螺模式下Z轴转速
-#define TOP_WZ_ANGLE_STAND 2.0f
+
+
+//原地旋转小陀螺下Z轴转速
+#define TOP_WZ_ANGLE_STAND 1.5f 
 //移动状态下小陀螺转速
-#define TOP_WZ_ANGLE_MOVE 0.8f
+#define TOP_WZ_ANGLE_MOVE 0.2f
 
 
 
 //chassis motor speed PID
 //底盘电机速度环PID
-#define M3505_MOTOR_SPEED_PID_KP 15000.0f
-#define M3505_MOTOR_SPEED_PID_KI 10.0f
-#define M3505_MOTOR_SPEED_PID_KD 0.0f
-#define M3505_MOTOR_SPEED_PID_MAX_OUT MAX_MOTOR_CAN_CURRENT
+#define M3505_MOTOR_SPEED_PID_KP 6000.0f
+#define M3505_MOTOR_SPEED_PID_KI 0.0f
+#define M3505_MOTOR_SPEED_PID_KD 2.0f
+#define M3505_MOTOR_SPEED_PID_MAX_OUT  6000.0f
 #define M3505_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
 
 //chassis follow angle PID
 //底盘旋转跟随PID
-#define CHASSIS_FOLLOW_GIMBAL_PID_KP 40.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_KP 30.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.0f
-#define CHASSIS_FOLLOW_GIMBAL_PID_KD 0.0f
+#define CHASSIS_FOLLOW_GIMBAL_PID_KD 2.0f
 #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 6.0f
-#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.2f
+#define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.0f
+
+
+
+// //老步兵PID
+// //chassis motor speed PID
+// //底盘电机速度环PID
+// #define M3505_MOTOR_SPEED_PID_KP 6000.0f
+// #define M3505_MOTOR_SPEED_PID_KI 6.0f
+// #define M3505_MOTOR_SPEED_PID_KD 0.0f
+// #define M3505_MOTOR_SPEED_PID_MAX_OUT  16000.0f
+// #define M3505_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
+
+// //chassis follow angle PID
+// //底盘旋转跟随PID
+// #define CHASSIS_FOLLOW_GIMBAL_PID_KP 15.0f
+// #define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.0f
+// #define CHASSIS_FOLLOW_GIMBAL_PID_KD 0.01f
+// #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 6.0f
+// #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.2f
+
+
+
+
+// //ZKJ
+// //chassis motor speed PID
+// //底盘电机速度环PID
+// #define M3505_MOTOR_SPEED_PID_KP 5000.0f
+// #define M3505_MOTOR_SPEED_PID_KI 4.0f
+// #define M3505_MOTOR_SPEED_PID_KD 1.0f
+// #define M3505_MOTOR_SPEED_PID_MAX_OUT  6000.0f
+// #define M3505_MOTOR_SPEED_PID_MAX_IOUT 2000.0f
+
+// //chassis follow angle PID
+// //底盘旋转跟随PID
+// #define CHASSIS_FOLLOW_GIMBAL_PID_KP 10.0f
+// #define CHASSIS_FOLLOW_GIMBAL_PID_KI 0.0f
+// #define CHASSIS_FOLLOW_GIMBAL_PID_KD 0.5f
+// #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_OUT 10.0f
+// #define CHASSIS_FOLLOW_GIMBAL_PID_MAX_IOUT 0.2f
+
+
+
+
 
 typedef enum
 {
@@ -160,6 +202,8 @@ typedef struct
 typedef struct
 {
   const RC_ctrl_t *chassis_RC;               //底盘使用的遥控器指针, the point to remote control
+  uint16_t chassis_last_key_v;               //记录上一次键盘值
+ 
   const gimbal_motor_t *chassis_yaw_motor;   //will use the relative angle of yaw gimbal motor to calculate the euler angle.底盘使用到yaw云台电机的相对角度来计算底盘的欧拉角.
   const gimbal_motor_t *chassis_pitch_motor; //will use the relative angle of pitch gimbal motor to calculate the euler angle.底盘使用到pitch云台电机的相对角度来计算底盘的欧拉角
   const fp32 *chassis_INS_angle;             //the point to the euler angle of gyro sensor.获取陀螺仪解算出的欧拉角指针
@@ -180,8 +224,9 @@ typedef struct
   fp32 wz_set;                      //chassis set rotation speed,positive means counterclockwise,unit rad/s.底盘设定旋转角速度，逆时针为正 单位 rad/s
   fp32 chassis_relative_angle;      //the relative angle between chassis and gimbal.底盘与云台的相对角度，单位 rad
   fp32 chassis_relative_angle_set;  //the set relative angle.设置相对云台控制角度
-  fp32 chassis_yaw_set;             
-
+  fp32 chassis_yaw_set; 
+              
+  fp32 max_wheel_speed; //单个电机最大旋转速度
   fp32 vx_max_speed;  //max forward speed, unit m/s.前进方向最大速度 单位m/s
   fp32 vx_min_speed;  //max backward speed, unit m/s.后退方向最大速度 单位m/s
   fp32 vy_max_speed;  //max letf speed, unit m/s.左方向最大速度 单位m/s
@@ -192,11 +237,9 @@ typedef struct
 
 } chassis_move_t;
 
-/**
-  * @brief          chassis task, osDelay CHASSIS_CONTROL_TIME_MS (2ms) 
-  * @param[in]      pvParameters: null
-  * @retval         none
-  */
+//底盘运动数据
+extern chassis_move_t chassis_move;
+
 /**
   * @brief          底盘任务，间隔 CHASSIS_CONTROL_TIME_MS 2ms
   * @param[in]      pvParameters: 空
@@ -204,14 +247,7 @@ typedef struct
   */
 extern void chassis_task(void const *pvParameters);
 
-/**
-  * @brief          accroding to the channel value of remote control, calculate chassis vertical and horizontal speed set-point
-  *                 
-  * @param[out]     vx_set: vertical speed set-point
-  * @param[out]     vy_set: horizontal speed set-point
-  * @param[out]     chassis_move_rc_to_vector: "chassis_move" valiable point
-  * @retval         none
-  */
+
 /**
   * @brief          根据遥控器通道值，计算纵向和横移速度
   *                 

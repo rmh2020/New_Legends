@@ -2,6 +2,7 @@
 #include "remote_control.h"
 #include "struct_typedef.h"
 #include "stdio.h"
+#include "referee.h"
 
 extern UART_HandleTypeDef huart1;
 extern DMA_HandleTypeDef hdma_usart1_rx;
@@ -29,8 +30,8 @@ uint8_t Attack_Color_Choose = ATTACK_NONE;  //默认不识别
 //打符是否换装甲了
 uint8_t Vision_Armor = FALSE;
 
-//视觉是否发了新数据,FALSE没有,TRUE发了新的
-uint8_t Vision_Get_New_Data = FALSE;
+//是否识别到装甲板
+uint8_t if_identify_target = FALSE;
 
 
 //角度补偿,发送给视觉
@@ -56,30 +57,26 @@ void vision_read_data(uint8_t *ReadFormUart)
 {
 				
 	//判断帧头数据是否为0xA5
-	if(ReadFormUart[0] == VISION_SOF)
+	if(ReadFormUart[0] == VISION_BEGIN)
 	{
-		//帧头CRC8校验
-		if(get_CRC8_check_sum( ReadFormUart, VISION_LEN_HEADER ) == TRUE)
+		//判断帧头数据是否为0xff  
+		if(ReadFormUart[17] == VISION_END)
 		{
-			//帧尾CRC16校验
-			if(get_CRC16_check_sum( ReadFormUart, VISION_LEN_PACKED ) == TRUE)
-			{
-				//接收数据拷贝
-				memcpy( &VisionRecvData, ReadFormUart, VISION_LEN_PACKED);	
-				Vision_Get_New_Data = TRUE;//标记视觉数据更新了
+
+		//接收数据拷贝
+		memcpy( &VisionRecvData, ReadFormUart, VISION_LEN_PACKED);	
+		
+    if(VisionRecvData.identify_target == TRUE)
+      if_identify_target = TRUE; // 识别到装甲板
+    else
+      if_identify_target = FALSE; // 未识别到装甲板
+
+
 				
-				//帧计算
-				Vision_Time_Test[NOW] = xTaskGetTickCount();
-				Vision_Ping = Vision_Time_Test[NOW] - Vision_Time_Test[LAST];//计算时间间隔
-				Vision_Time_Test[LAST] = Vision_Time_Test[NOW];
-				// if(GIMBAL_IfBuffHit() == TRUE && GIMBAL_IfManulHit() == FALSE)//标记打符打中了，换装甲了
-				// {
-				// 	if(VisionRecvData.identify_buff == 2)//发2说明换装甲板了
-				// 	{
-				// 		Vision_Armor = TRUE;//发2换装甲
-				// 	}
-				// }
-			}
+		//帧计算
+		Vision_Time_Test[NOW] = xTaskGetTickCount();
+		Vision_Ping = Vision_Time_Test[NOW] - Vision_Time_Test[LAST];//计算时间间隔
+		Vision_Time_Test[LAST] = Vision_Time_Test[NOW];
 		}
 	}
 
@@ -97,64 +94,38 @@ void vision_read_data(uint8_t *ReadFormUart)
   *				CmdID   0x03   小符
   *				CmdID   0x04   大符
   */
-uint8_t vision_send_pack[50] = {0};//大于22就行
+uint8_t vision_send_pack[50] = {0};//大于18就行
+uint8_t CmdID = 0;
 void vision_send_data(uint8_t CmdID)
 {
 	int i;    //循环发送次数
+	uint16_t id1_17mm_speed_limit;
+	uint16_t bullet_speed;
+	//get_shooter_id1_17mm_speed_limit_and_bullet_speed(&id1_17mm_speed_limit, &bullet_speed);	
 
-	VisionSendHeader.SOF = VISION_SOF;
-	VisionSendHeader.CmdID = CmdID;//对视觉来说最重要的数据
+	VisionSendData.BEGIN = VISION_BEGIN;
 	
-	//写入帧头
-	memcpy( vision_send_pack, &VisionSendHeader, VISION_LEN_HEADER );
+	VisionSendData.CmdID  = CmdID;
+	VisionSendData.speed  = 3;
 	
-	//帧头CRC8校验协议
-	append_CRC8_check_sum( vision_send_pack, VISION_LEN_HEADER );
+	VisionSendData.END    = VISION_END;
+
 	
-	//中间数据不用管,视觉用不到,用到了也是后面自瞄自动开火,用到角度补偿数据
-	VisionSendData.pitch_angle = 0.f;
-	VisionSendData.yaw_angle   = 0.f;
-	VisionSendData.distance    = 999.99f;
-	// if( GIMBAL_AUTO_PITCH_SB() == TRUE )
-	// {
-	// 	VisionSendData.lock_sentry = 1;//识别哨兵，发1
-	// }
-	// else
-	// {
-	// 	VisionSendData.lock_sentry = 0;//不在识别哨兵，发0
-	// }
+	memcpy(vision_send_pack, &VisionSendData, 4);
 	
-	// if(GIMBAL_If_Base() == TRUE)
-	// {
-	// 	VisionSendData.base = 1;//吊射基地，发1
-	// }
-	// else
-	// {
-	// 	VisionSendData.base = 0;//不在吊射，发0
-	// }
-	
-	VisionSendData.blank_a = 0;
-	VisionSendData.blank_b = 0;
-	VisionSendData.blank_c = 0;
-	memcpy( vision_send_pack + VISION_LEN_HEADER, &VisionSendData, VISION_LEN_DATA);
-	
-	//帧尾CRC16校验协议
-	append_CRC16_check_sum( vision_send_pack, VISION_LEN_PACKED );
-	
-	// //将打包好的数据通过串口移位发送到裁判系统
-	// for (i = 0; i < VISION_LEN_PACKED; i++)
-	// {
-	// 	Uart7_SendChar( vision_send_pack[i] );
-	// }
-	
+  
+  //将打包好的数据通过串口移位发送到西奥迪男
+  HAL_UART_Transmit(&huart1, vision_send_pack, 4, 0xFFF);
+  
+
 	memset(vision_send_pack, 0, 50);
 }
 
 
 void vision_error_angle(float *yaw_angle_error, float *pitch_angle_error)
 {
-	*yaw_angle_error = VisionRecvData.yaw_angle + Vision_Comps_Yaw * VisionRecvData.distance/100;
-	*pitch_angle_error = VisionRecvData.pitch_angle + Vision_Comps_Pitch * VisionRecvData.distance/100;
+	*yaw_angle_error = VisionRecvData.yaw_angle / PI;
+	*pitch_angle_error = VisionRecvData.pitch_angle / PI;
 	
 	if(VisionRecvData.yaw_angle == 0)
 	{
@@ -164,33 +135,20 @@ void vision_error_angle(float *yaw_angle_error, float *pitch_angle_error)
 	{
 		*pitch_angle_error = 0;
 	}
-	
-
 }
-
 
 
 /**
-  * @brief  判断视觉数据更新了吗
+  * @brief  判断是否识别到装甲板
   * @param  void
-  * @retval TRUE更新了   FALSE没更新
-  * @attention  为自瞄做准备,串口空闲中断每触发一次且通过校验,则Vision_Get_New_Data置TRUE
+  * @retval TRUE识别到   FALSE未识别到
+  * @attention  为自瞄做准备
   */
-bool vision_if_update(void)
+bool_t vision_if_find_target(void)
 {
-	return Vision_Get_New_Data;
+	return if_identify_target;
 }
 
-/**
-  * @brief  视觉数据更新标志位手动置0(false)
-  * @param  void
-  * @retval void
-  * @attention  记得要清零,在哪清零自己选,调用这个函数就行
-  */
-void vision_clean_update_flag(void)
-{
-	Vision_Get_New_Data = FALSE;
-}
 
 /**
   * @brief  判断换装甲板了吗
@@ -198,7 +156,7 @@ void vision_clean_update_flag(void)
   * @retval TRUE换了   FALSE没换
   * @attention  为自动打符做准备,串口空闲中断每触发一次且通过校验,则Vision_Armor置TRUE
   */
-bool vision_if_armor(void)
+bool_t vision_if_armor(void)
 {
 	return Vision_Armor;
 }
@@ -217,8 +175,7 @@ void vision_clean_ammorflag(void)
 
 
 
-
-
+//视觉接收中断
 void USART1_IRQHandler(void)
 {
     static volatile uint8_t res;
@@ -254,3 +211,6 @@ void USART1_IRQHandler(void)
         }
     }
 }
+
+
+  

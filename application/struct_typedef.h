@@ -15,10 +15,12 @@ typedef unsigned long long uint64_t;
 typedef unsigned char bool_t;
 typedef float fp32;
 typedef double fp64;
-typedef unsigned char bool;
+
 
 #define FALSE 0
 #define TRUE  1
+
+#define PI                          3.1415926f
 
 void Vision_Read_Data(uint8_t *ReadFormUart7);
 

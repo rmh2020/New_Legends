@@ -31,51 +31,44 @@
 #include "CAN_receive.h"
 #include "pid.h"
 #include "remote_control.h"
-//pitch speed close-loop PID params, max out and max iout
 //pitch 速度环 PID参数以及 PID最大输出，积分输出
-#define PITCH_SPEED_PID_KP        2900.0f
+#define PITCH_SPEED_PID_KP        2000.0f  //2900
 #define PITCH_SPEED_PID_KI        0.0f
-#define PITCH_SPEED_PID_KD        0.0f
+#define PITCH_SPEED_PID_KD        0.4f
 #define PITCH_SPEED_PID_MAX_OUT   30000.0f
 #define PITCH_SPEED_PID_MAX_IOUT  10000.0f
 
-//yaw speed close-loop PID params, max out and max iout
 //yaw 速度环 PID参数以及 PID最大输出，积分输出
-#define YAW_SPEED_PID_KP        3600.0f
+#define YAW_SPEED_PID_KP        1000.0f  //1800
 #define YAW_SPEED_PID_KI        0.0f   //20
 #define YAW_SPEED_PID_KD        0.0f
 #define YAW_SPEED_PID_MAX_OUT   30000.0f
 #define YAW_SPEED_PID_MAX_IOUT  5000.0f
 
-//pitch gyro angle close-loop PID params, max out and max iout
 //pitch 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define PITCH_GYRO_ABSOLUTE_PID_KP 2.0f   //15
+#define PITCH_GYRO_ABSOLUTE_PID_KP 13.0f   //15
 #define PITCH_GYRO_ABSOLUTE_PID_KI 0.0f
-#define PITCH_GYRO_ABSOLUTE_PID_KD 0.0f
-
-#define PITCH_GYRO_ABSOLUTE_PID_MAX_OUT 10.0f
+#define PITCH_GYRO_ABSOLUTE_PID_KD 0.1f
+#define PITCH_GYRO_ABSOLUTE_PID_MAX_OUT 6.0f
 #define PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT 0.0f
 
-//yaw gyro angle close-loop PID params, max out and max iout
 //yaw 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define YAW_GYRO_ABSOLUTE_PID_KP        2.0f  //26
+#define YAW_GYRO_ABSOLUTE_PID_KP        4.0f  //26
 #define YAW_GYRO_ABSOLUTE_PID_KI        0.0f
 #define YAW_GYRO_ABSOLUTE_PID_KD        0.0f
-#define YAW_GYRO_ABSOLUTE_PID_MAX_OUT   10.0f
+#define YAW_GYRO_ABSOLUTE_PID_MAX_OUT   4.0f
 #define YAW_GYRO_ABSOLUTE_PID_MAX_IOUT  0.0f
 
-//pitch encode angle close-loop PID params, max out and max iout
 //pitch 角度环 角度由编码器 PID参数以及 PID最大输出，积分输出
-#define PITCH_ENCODE_RELATIVE_PID_KP 1.0f  //15
-#define PITCH_ENCODE_RELATIVE_PID_KI 0.00f
+#define PITCH_ENCODE_RELATIVE_PID_KP 15.0f  //15
+#define PITCH_ENCODE_RELATIVE_PID_KI 0.0f
 #define PITCH_ENCODE_RELATIVE_PID_KD 0.0f
 
 #define PITCH_ENCODE_RELATIVE_PID_MAX_OUT 10.0f
 #define PITCH_ENCODE_RELATIVE_PID_MAX_IOUT 0.0f
 
-//yaw encode angle close-loop PID params, max out and max iout
 //yaw 角度环 角度由编码器 PID参数以及 PID最大输出，积分输出
-#define YAW_ENCODE_RELATIVE_PID_KP        1.0f  //8
+#define YAW_ENCODE_RELATIVE_PID_KP        8.0f  //8
 #define YAW_ENCODE_RELATIVE_PID_KI        0.0f
 #define YAW_ENCODE_RELATIVE_PID_KD        0.0f
 #define YAW_ENCODE_RELATIVE_PID_MAX_OUT   10.0f
@@ -89,24 +82,25 @@
 #define PITCH_CHANNEL 1
 #define GIMBAL_MODE_CHANNEL 0
 
-//turn 180°
-//掉头180 按键
-#define TURN_KEYBOARD KEY_PRESSED_OFFSET_F
-//turn speed
-//掉头云台速度
-#define TURN_SPEED    0.04f
-//测试按键尚未使用
-#define TEST_KEYBOARD KEY_PRESSED_OFFSET_R
-//rocker value deadband
+//向左转头90度 按键
+#define TURN_L_90_KEYBOARD KEY_PRESSED_OFFSET_Q
+//向右转头90度 按键
+#define TURN_R_90_KEYBOARD KEY_PRESSED_OFFSET_E
+//向后转头180 按键
+#define TURN_180_KEYBOARD KEY_PRESSED_OFFSET_V
+//转头云台速度
+#define TURN_SPEED    0.004f  
 //遥控器输入死区，因为遥控器存在差异，摇杆在中间，其值不一定为零
 #define RC_DEADBAND   10
 
 
-#define YAW_RC_SEN    -0.000005f  //0.000005f
-#define PITCH_RC_SEN  -0.000006f //0.005
+//云台 遥控器速度
+#define YAW_RC_SEN    -0.000005f  
+#define PITCH_RC_SEN  0.000006f 
 
-#define YAW_MOUSE_SEN   0.00005f
-#define PITCH_MOUSE_SEN 0.00015f
+//云台 鼠标速度
+#define YAW_MOUSE_SEN   0.00003f
+#define PITCH_MOUSE_SEN -0.00004f
 
 #define YAW_ENCODE_SEN    0.01f
 #define PITCH_ENCODE_SEN  0.01f
@@ -117,23 +111,25 @@
 //云台测试模式 宏定义 0 为不使用测试模式
 #define GIMBAL_TEST_MODE 1
 
-#define PITCH_TURN  1
+#define PITCH_TURN  0
 #define YAW_TURN    0
 
 //电机码盘值最大以及中值
 #define HALF_ECD_RANGE  4096
 #define ECD_RANGE       8191
 //云台初始化回中值，允许的误差,并且在误差范围内停止一段时间以及最大时间6s后解除初始化状态，
-#define GIMBAL_INIT_ANGLE_ERROR     0.1f
+#define GIMBAL_INIT_ANGLE_ERROR     0.1f  //0.05
 #define GIMBAL_INIT_STOP_TIME       100
 #define GIMBAL_INIT_TIME            6000
 #define GIMBAL_CALI_REDUNDANT_ANGLE 0.1f
 //云台初始化回中值的速度以及控制到的角度
 #define GIMBAL_INIT_PITCH_SPEED     0.004f
-#define GIMBAL_INIT_YAW_SPEED       0.005f
+#define GIMBAL_INIT_YAW_SPEED       0.002f  //0.005
 
 #define INIT_YAW_SET    0.0f
 #define INIT_PITCH_SET  0.0f
+
+#define CHASSIS_COORD_CHANGE 0.0f  //底盘坐标变换
 
 
 //云台校准中值的时候，发送原始电流值，以及堵转时间，通过陀螺仪判断堵转
@@ -157,19 +153,26 @@
 #ifndef MOTOR_ECD_TO_RAD
 #define MOTOR_ECD_TO_RAD 0.000766990394f //      2*  PI  /8192
 
-//限幅 需要自己手动校准
-#define PI             3.1415926f
-#define MID_YAW         0.0f
-#define MIN_YAW        -2*PI
-#define MAX_YAW         2*PI
-#define MID_PITCH       0.0f
-#define MIN_PITCH      -0.3*PI
-#define MAX_PITCH       0.2*PI
 
+//限幅 需要自己手动校准  
+#define YAW_OFFSET        6506  //编码器
+#define PITCH_OFFSET      3493 //编码器
+
+#define MIN_YAW         -2*PI
+#define MAX_YAW         2*PI
+
+#define MIN_PITCH      -2.0f
+#define MAX_PITCH      2.8f
+
+
+#define MIN_ABSOULATE_YAW     -PI
+#define MAX_ABSOULATE_YAW     PI    
+
+#define MIN_ABSOULATE_PITCH      -2.0f
+#define MAX_ABSOULATE_PITCH       2.8f
 
 #define GIMBAL_ACCEL_YAW_NUM 0.002f
 #define GIMBAL_ACCEL_PITCH_NUM 0.002f
-
 
 
 
@@ -214,6 +217,10 @@ typedef struct
     fp32 max_relative_angle; //rad
     fp32 min_relative_angle; //rad
     fp32 mid_relative_angle; //rad
+ 
+    fp32 max_absolute_angle; //rad
+    fp32 min_absolute_angle; //rad
+    fp32 mid_absolute_angle; //rad
 
     fp32 relative_angle;     //rad
     fp32 relative_angle_set; //rad
@@ -244,6 +251,7 @@ typedef struct
 typedef struct
 {
     const RC_ctrl_t *gimbal_rc_ctrl;
+    const RC_ctrl_t *last_gimbal_rc_ctrl;
     const fp32 *gimbal_INT_angle_point;
     const fp32 *gimbal_INT_gyro_point;
     gimbal_motor_t gimbal_yaw_motor;
@@ -251,11 +259,9 @@ typedef struct
     gimbal_step_cali_t gimbal_cali;
 } gimbal_control_t;
 
-/**
-  * @brief          return yaw motor data point
-  * @param[in]      none
-  * @retval         yaw motor data point
-  */
+extern gimbal_control_t gimbal_control;
+
+
 /**
   * @brief          返回yaw 电机数据指针
   * @param[in]      none
@@ -263,11 +269,7 @@ typedef struct
   */
 extern const gimbal_motor_t *get_yaw_motor_point(void);
 
-/**
-  * @brief          return pitch motor data point
-  * @param[in]      none
-  * @retval         pitch motor data point
-  */
+
 /**
   * @brief          返回pitch 电机数据指针
   * @param[in]      none
@@ -275,11 +277,7 @@ extern const gimbal_motor_t *get_yaw_motor_point(void);
   */
 extern const gimbal_motor_t *get_pitch_motor_point(void);
 
-/**
-  * @brief          gimbal task, osDelay GIMBAL_CONTROL_TIME (1ms) 
-  * @param[in]      pvParameters: null
-  * @retval         none
-  */
+
 /**
   * @brief          云台任务，间隔 GIMBAL_CONTROL_TIME 1ms
   * @param[in]      pvParameters: 空
@@ -288,16 +286,6 @@ extern const gimbal_motor_t *get_pitch_motor_point(void);
 
 extern void gimbal_task(void const *pvParameters);
 
-/**
-  * @brief          gimbal cali calculate, return motor offset encode, max and min relative angle
-  * @param[out]     yaw_offse:yaw middle place encode
-  * @param[out]     pitch_offset:pitch place encode
-  * @param[out]     max_yaw:yaw max relative angle
-  * @param[out]     min_yaw:yaw min relative angle
-  * @param[out]     max_yaw:pitch max relative angle
-  * @param[out]     min_yaw:pitch min relative angle
-  * @retval         none
-  */
 /**
   * @brief          云台校准计算，将校准记录的中值,最大 最小值返回
   * @param[out]     yaw 中值 指针
@@ -311,16 +299,7 @@ extern void gimbal_task(void const *pvParameters);
   */
 extern bool_t cmd_cali_gimbal_hook(uint16_t *yaw_offset, uint16_t *pitch_offset, fp32 *max_yaw, fp32 *min_yaw, fp32 *max_pitch, fp32 *min_pitch);
 
-/**
-  * @brief          gimbal cali data, set motor offset encode, max and min relative angle
-  * @param[in]      yaw_offse:yaw middle place encode
-  * @param[in]      pitch_offset:pitch place encode
-  * @param[in]      max_yaw:yaw max relative angle
-  * @param[in]      min_yaw:yaw min relative angle
-  * @param[in]      max_yaw:pitch max relative angle
-  * @param[in]      min_yaw:pitch min relative angle
-  * @retval         none
-  */
+
 /**
   * @brief          云台校准设置，将校准的云台中值以及最小最大机械相对角度
   * @param[in]      yaw_offse:yaw 中值
@@ -333,4 +312,28 @@ extern bool_t cmd_cali_gimbal_hook(uint16_t *yaw_offset, uint16_t *pitch_offset,
   * @waring         这个函数使用到gimbal_control 静态变量导致函数不适用以上通用指针复用
   */
 extern void set_cali_gimbal_hook(const uint16_t yaw_offset, const uint16_t pitch_offset, const fp32 max_yaw, const fp32 min_yaw, const fp32 max_pitch, const fp32 min_pitch);
+
+
+/**
+  * @brief          手动设置云台编码器中值，最小最大机械相对角度
+  * @param[in]      yaw_offse:yaw 中值
+  * @param[in]      pitch_offset:pitch 中值
+  * @param[in]      max_yaw:max_yaw:yaw 最大相对角度
+  * @param[in]      min_yaw:yaw 最小相对角度
+  * @param[in]      max_yaw:pitch 最大相对角度
+  * @param[in]      min_yaw:pitch 最小相对角度
+  * @retval         返回空
+  * @waring         这个函数使用到gimbal_control 静态变量导致函数不适用以上通用指针复用
+  */
+extern void set_hand_operator_gimbal_hook(const uint16_t yaw_offset, const uint16_t pitch_offset, const fp32 max_yaw, const fp32 min_yaw, const fp32 max_pitch, const fp32 min_pitch);
+
+/**
+  * @brief          通过按键,进行重启
+  * @param[in]    
+  * @retval         返回空
+  * @waring         
+  */
+extern void software_reset();
+
+
 #endif

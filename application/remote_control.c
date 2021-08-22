@@ -29,6 +29,7 @@
 
 
 
+
 //遥控器出错数据上限
 #define RC_CHANNAL_ERROR_VALUE 700
 
@@ -54,9 +55,14 @@ static void sbus_to_rc(volatile const uint8_t *sbus_buf, RC_ctrl_t *rc_ctrl);
 
 //remote control data 
 //遥控器控制变量
-RC_ctrl_t rc_ctrl;
+RC_ctrl_t rc_ctrl; 
+RC_ctrl_t last_rc_ctrl;
+
+uint16_t rc_ctrl_updata = 0;
+
 //接收原始数据，为18个字节，给了36个字节长度，防止DMA传输越界
 static uint8_t sbus_rx_buf[2][SBUS_RX_BUF_NUM];
+
 
 
 /**
@@ -86,6 +92,16 @@ void remote_control_init(void)
 const RC_ctrl_t *get_remote_control_point(void)
 {
     return &rc_ctrl;
+}
+
+/**
+  * @brief          获取上一次遥控器数据指针
+  * @param[in]      none
+  * @retval         遥控器数据指针
+  */
+const RC_ctrl_t *get_last_remote_control_point(void)
+{
+    return &last_rc_ctrl;
 }
 
 //判断遥控器数据是否出错，
@@ -237,12 +253,7 @@ static int16_t RC_abs(int16_t value)
         return -value;
     }
 }
-/**
-  * @brief          remote control protocol resolution
-  * @param[in]      sbus_buf: raw data point
-  * @param[out]     rc_ctrl: remote control data struct point
-  * @retval         none
-  */
+
 /**
   * @brief          遥控器协议解析
   * @param[in]      sbus_buf: 原生数据指针
@@ -256,6 +267,17 @@ static void sbus_to_rc(volatile const uint8_t *sbus_buf, RC_ctrl_t *rc_ctrl)
         return;
     }
 
+    // if (rc_ctrl_updata >= 50)
+    // {
+    //     if(rc_ctrl_updata==50)
+    //         last_rc_ctrl = *rc_ctrl;             //当遥控器有输入时保留上一次数据
+    //     rc_ctrl_updata++;
+    //     if(rc_ctrl_updata >= 100)
+    //      rc_ctrl_updata = 0;
+    // }
+    // else
+    //     rc_ctrl_updata ++;
+      
     rc_ctrl->rc.ch[0] = (sbus_buf[0] | (sbus_buf[1] << 8)) & 0x07ff;        //!< Channel 0
     rc_ctrl->rc.ch[1] = ((sbus_buf[1] >> 3) | (sbus_buf[2] << 5)) & 0x07ff; //!< Channel 1
     rc_ctrl->rc.ch[2] = ((sbus_buf[2] >> 6) | (sbus_buf[3] << 2) |          //!< Channel 2
@@ -276,6 +298,8 @@ static void sbus_to_rc(volatile const uint8_t *sbus_buf, RC_ctrl_t *rc_ctrl)
     rc_ctrl->rc.ch[2] -= RC_CH_VALUE_OFFSET;
     rc_ctrl->rc.ch[3] -= RC_CH_VALUE_OFFSET;
     rc_ctrl->rc.ch[4] -= RC_CH_VALUE_OFFSET;
+
+    
 }
 
 /**

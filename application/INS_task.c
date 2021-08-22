@@ -156,7 +156,7 @@ static fp32 INS_gyro[3] = {0.0f, 0.0f, 0.0f};
 static fp32 INS_accel[3] = {0.0f, 0.0f, 0.0f};
 static fp32 INS_mag[3] = {0.0f, 0.0f, 0.0f};
 static fp32 INS_quat[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-fp32 INS_angle[3] = {0.0f, 0.0f, 0.0f};      //euler angle, unit rad.欧拉角 单位 rad
+fp32 INS_angle[3] = {0.0f, 0.0f, 0.0f};      //euler angle, unit rad.欧拉角 单位 rad yaw pitch roll
 
 
 
@@ -177,6 +177,12 @@ void INS_task(void const *pvParameters)
 {
     //wait a time
     osDelay(INS_TASK_INIT_TIME);
+
+    while(gimbal_cmd_to_chassis_stop())
+    {
+      osDelay(100);
+    }
+     
     while(BMI088_init())
     {
         osDelay(100);
@@ -222,9 +228,9 @@ void INS_task(void const *pvParameters)
         }
 
 
-        if(gyro_update_flag & (1 << IMU_UPDATE_SHFITS))
+        if(gyro_update_flag & (1 << IMU_NOTIFY_SHFITS))
         {
-            gyro_update_flag &= ~(1 << IMU_UPDATE_SHFITS);
+            gyro_update_flag &= ~(1 << IMU_NOTIFY_SHFITS);
             BMI088_gyro_read_over(gyro_dma_rx_buf + BMI088_GYRO_RX_BUF_DATA_OFFSET, bmi088_real_data.gyro);
         }
 
@@ -265,7 +271,7 @@ void INS_task(void const *pvParameters)
 
 
         AHRS_update(INS_quat, timing_time, INS_gyro, accel_fliter_3, INS_mag);
-        get_angle(INS_quat, INS_angle + INS_YAW_ADDRESS_OFFSET, INS_angle + INS_PITCH_ADDRESS_OFFSET, INS_angle + INS_ROLL_ADDRESS_OFFSET);
+        get_angle(INS_quat, INS_angle + INS_YAW_ADDRESS_OFFSET, INS_angle + INS_ROLL_ADDRESS_OFFSET, INS_angle + INS_PITCH_ADDRESS_OFFSET);
 
 
         //because no use ist8310 and save time, no use
@@ -282,16 +288,6 @@ void INS_task(void const *pvParameters)
 
 
 
-/**
-  * @brief          rotate the gyro, accel and mag, and calculate the zero drift, because sensors have 
-  *                 different install derection.
-  * @param[out]     gyro: after plus zero drift and rotate
-  * @param[out]     accel: after plus zero drift and rotate
-  * @param[out]     mag: after plus zero drift and rotate
-  * @param[in]      bmi088: gyro and accel data
-  * @param[in]      ist8310: mag data
-  * @retval         none
-  */
 /**
   * @brief          旋转陀螺仪,加速度计和磁力计,并计算零漂,因为设备有不同安装方式
   * @param[out]     gyro: 加上零漂和旋转
@@ -646,6 +642,8 @@ void DMA2_Stream2_IRQHandler(void)
 
         if(gyro_update_flag & (1 << IMU_UPDATE_SHFITS))
         {
+            gyro_update_flag &= ~(1 << IMU_UPDATE_SHFITS);
+            gyro_update_flag |= (1 << IMU_NOTIFY_SHFITS);
             __HAL_GPIO_EXTI_GENERATE_SWIT(GPIO_PIN_0);
         }
     }
