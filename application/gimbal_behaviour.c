@@ -140,15 +140,7 @@
   */
 static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set);
 
-/**
-  * @brief          when gimbal behaviour mode is GIMBAL_ZERO_FORCE, the function is called
-  *                 and gimbal control mode is raw. The raw mode means set value
-  *                 will be sent to CAN bus derectly, and the function will set all zero.
-  * @param[out]     yaw: yaw motor current set, it will be sent to CAN bus derectly.
-  * @param[out]     pitch: pitch motor current set, it will be sent to CAN bus derectly.
-  * @param[in]      gimbal_control_set: gimbal data
-  * @retval         none
-  */
+
 /**
   * @brief          当云台行为模式是GIMBAL_ZERO_FORCE, 这个函数会被调用,云台控制模式是raw模式.原始模式意味着
   *                 设定值会直接发送到CAN总线上,这个函数将会设置所有为0.
@@ -160,15 +152,6 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set);
 static void gimbal_zero_force_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
 
 /**
-  * @brief          when gimbal behaviour mode is GIMBAL_INIT, the function is called
-  *                 and gimbal control mode is gyro mode. gimbal will lift the pitch axis
-  *                 and rotate yaw axis.
-  * @param[out]     yaw: yaw motor relative angle increment, unit rad.
-  * @param[out]     pitch: pitch motor absolute angle increment, unit rad.
-  * @param[in]      gimbal_control_set: gimbal data
-  * @retval         none
-  */
-/**
   * @brief          云台初始化控制，电机是陀螺仪角度控制，云台先抬起pitch轴，后旋转yaw轴
   * @param[out]     yaw轴角度控制，为角度的增量 单位 rad
   * @param[out]     pitch轴角度控制，为角度的增量 单位 rad
@@ -177,16 +160,6 @@ static void gimbal_zero_force_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *
   */
 static void gimbal_init_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
 
-/**
-  * @brief          when gimbal behaviour mode is GIMBAL_CALI, the function is called
-  *                 and gimbal control mode is raw mode. gimbal will lift the pitch axis, 
-  *                 and then put down the pitch axis, and rotate yaw axis counterclockwise,
-  *                 and rotate yaw axis clockwise.
-  * @param[out]     yaw: yaw motor current set, will be sent to CAN bus decretly
-  * @param[out]     pitch: pitch motor current set, will be sent to CAN bus decretly
-  * @param[in]      gimbal_control_set: gimbal data
-  * @retval         none
-  */
 /**
   * @brief          云台校准控制，电机是raw控制，云台先抬起pitch，放下pitch，在正转yaw，最后反转yaw，记录当时的角度和编码值
   * @author         RM
@@ -257,12 +230,7 @@ uint8_t gimbal_turn_switch = 0;         //云台转头开关
 
 
 
-/**
-  * @brief          the function is called by gimbal_set_mode function in gimbal_task.c
-  *                 the function set gimbal_behaviour variable, and set motor mode.
-  * @param[in]      gimbal_mode_set: gimbal data
-  * @retval         none
-  */
+
 /**
   * @brief          被gimbal_set_mode函数调用在gimbal_task.c,云台行为状态机以及电机状态机设置
   * @param[out]     gimbal_mode_set: 云台数据指针

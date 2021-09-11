@@ -46,14 +46,14 @@
 #define YAW_SPEED_PID_MAX_IOUT  5000.0f
 
 //pitch 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define PITCH_GYRO_ABSOLUTE_PID_KP 13.0f   //15
+#define PITCH_GYRO_ABSOLUTE_PID_KP 10.0f   //15
 #define PITCH_GYRO_ABSOLUTE_PID_KI 0.0f
 #define PITCH_GYRO_ABSOLUTE_PID_KD 0.1f
 #define PITCH_GYRO_ABSOLUTE_PID_MAX_OUT 6.0f
 #define PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT 0.0f
 
 //yaw 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define YAW_GYRO_ABSOLUTE_PID_KP        4.0f  //26
+#define YAW_GYRO_ABSOLUTE_PID_KP        4.5f  //26
 #define YAW_GYRO_ABSOLUTE_PID_KI        0.0f
 #define YAW_GYRO_ABSOLUTE_PID_KD        0.0f
 #define YAW_GYRO_ABSOLUTE_PID_MAX_OUT   4.0f
@@ -111,8 +111,9 @@
 //云台测试模式 宏定义 0 为不使用测试模式
 #define GIMBAL_TEST_MODE 1
 
+//电机正反转 默认正装0
 #define PITCH_TURN  0
-#define YAW_TURN    0
+#define YAW_TURN    1
 
 //电机码盘值最大以及中值
 #define HALF_ECD_RANGE  4096
@@ -155,21 +156,21 @@
 
 
 //限幅 需要自己手动校准  
-#define YAW_OFFSET        6506  //编码器
-#define PITCH_OFFSET      3493 //编码器
+#define YAW_OFFSET        1450  //编码器
+#define PITCH_OFFSET      610 //编码器
 
-#define MIN_YAW         -2*PI
-#define MAX_YAW         2*PI
+#define MIN_YAW         -PI
+#define MAX_YAW         PI
 
-#define MIN_PITCH      -2.0f
-#define MAX_PITCH      2.8f
+#define MIN_PITCH      -0.36f
+#define MAX_PITCH      0.36f
 
 
 #define MIN_ABSOULATE_YAW     -PI
 #define MAX_ABSOULATE_YAW     PI    
 
-#define MIN_ABSOULATE_PITCH      -2.0f
-#define MAX_ABSOULATE_PITCH       2.8f
+#define MIN_ABSOULATE_PITCH     -0.36f
+#define MAX_ABSOULATE_PITCH      0.36f
 
 #define GIMBAL_ACCEL_YAW_NUM 0.002f
 #define GIMBAL_ACCEL_PITCH_NUM 0.002f

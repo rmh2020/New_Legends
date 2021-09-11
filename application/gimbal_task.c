@@ -173,7 +173,7 @@ static void gimbal_relative_angle_limit(gimbal_motor_t *gimbal_motor, fp32 add);
   */
 static void gimbal_PID_init(gimbal_PID_t *pid, fp32 maxout, fp32 intergral_limit, fp32 kp, fp32 ki, fp32 kd);
 
-
+    
 /**
   * @brief          云台PID清除，清除pid的out,iout
   * @param[out]     pid_clear:"gimbal_control"变量指针.
@@ -413,7 +413,7 @@ static void calc_gimbal_cali(const gimbal_step_cali_t *gimbal_cali, uint16_t *ya
 
     if (temp_ecd < 0)
     {
-        temp_ecd += ecd_range;
+        temp_ecd += ECD_RANGE;
     }
     temp_ecd = gimbal_cali->max_yaw_ecd + (temp_ecd / 2);
 

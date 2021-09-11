@@ -81,6 +81,7 @@ Developing
 视觉串口线: C板UART2  RX TXV G V
 
 CAN1: L H
+
 CAN2: V G H L
 
 底盘电机：can2  ID 为1 2 3 4 右前，左前，左后，右后
