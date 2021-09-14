@@ -39,7 +39,7 @@
 #define PITCH_SPEED_PID_MAX_IOUT  10000.0f
 
 //yaw 速度环 PID参数以及 PID最大输出，积分输出
-#define YAW_SPEED_PID_KP        1000.0f  //1800
+#define YAW_SPEED_PID_KP        4000.0f  //1800
 #define YAW_SPEED_PID_KI        0.0f   //20
 #define YAW_SPEED_PID_KD        0.0f
 #define YAW_SPEED_PID_MAX_OUT   30000.0f
@@ -53,14 +53,14 @@
 #define PITCH_GYRO_ABSOLUTE_PID_MAX_IOUT 0.0f
 
 //yaw 角度环 角度由陀螺仪解算 PID参数以及 PID最大输出，积分输出
-#define YAW_GYRO_ABSOLUTE_PID_KP        4.5f  //26
+#define YAW_GYRO_ABSOLUTE_PID_KP        2.0f  //26
 #define YAW_GYRO_ABSOLUTE_PID_KI        0.0f
 #define YAW_GYRO_ABSOLUTE_PID_KD        0.0f
 #define YAW_GYRO_ABSOLUTE_PID_MAX_OUT   4.0f
 #define YAW_GYRO_ABSOLUTE_PID_MAX_IOUT  0.0f
 
 //pitch 角度环 角度由编码器 PID参数以及 PID最大输出，积分输出
-#define PITCH_ENCODE_RELATIVE_PID_KP 15.0f  //15
+#define PITCH_ENCODE_RELATIVE_PID_KP 2.0f  //15
 #define PITCH_ENCODE_RELATIVE_PID_KI 0.0f
 #define PITCH_ENCODE_RELATIVE_PID_KD 0.0f
 
@@ -156,21 +156,21 @@
 
 
 //限幅 需要自己手动校准  
-#define YAW_OFFSET        1450  //编码器
-#define PITCH_OFFSET      610 //编码器
+#define YAW_OFFSET        6051  //编码器
+#define PITCH_OFFSET      397 //编码器
 
-#define MIN_YAW         -PI
-#define MAX_YAW         PI
+#define MIN_YAW         -3.0f
+#define MAX_YAW         3.0f
 
-#define MIN_PITCH      -0.36f
-#define MAX_PITCH      0.36f
+#define MIN_PITCH      -0.28f
+#define MAX_PITCH      0.48f
 
 
-#define MIN_ABSOULATE_YAW     -PI
-#define MAX_ABSOULATE_YAW     PI    
+#define MIN_ABSOULATE_YAW     -3.0f
+#define MAX_ABSOULATE_YAW     3.0f    
 
-#define MIN_ABSOULATE_PITCH     -0.36f
-#define MAX_ABSOULATE_PITCH      0.36f
+#define MIN_ABSOULATE_PITCH      -0.28f
+#define MAX_ABSOULATE_PITCH      0.48f
 
 #define GIMBAL_ACCEL_YAW_NUM 0.002f
 #define GIMBAL_ACCEL_PITCH_NUM 0.002f
