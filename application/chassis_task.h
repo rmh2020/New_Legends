@@ -95,13 +95,6 @@
 #define NO_MOVE 2
 
 
-//巡逻下的速度参数
-#define AUTO_PARA 1.3
-
-#define CHASSIS_SPEED_LOW 0
-#define CHASSIS_SPEED_NORMAL 1
-#define CHASSIS_SPEED_HIGH 2
-
 typedef enum
 {
   CHASSIS_VECTOR_NO_FOLLOW_YAW,       //chassis will have rotation speed control. 底盘有旋转速度控制

@@ -3,62 +3,44 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Tool Versions:</h2>
-IDE-Version: ¦ÌVision V5.35.0.0
-Copyright (C) 2021 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: 1 1, 1, LIC=WHYH9-4Y5A1-63RMB-2M98J-M83H8-QXFF6
+IDE-Version: ¦ÌVision V5.23.0.0
+Copyright (C) 2017 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: keil FUN, keil, LIC=76F5U-SUTL7-566Q2-9UEK2-9VMYK-361B6
  
 Tool Versions:
-Toolchain:       MDK-ARM Plus  Version: 5.35.0.2
-Toolchain Path:  D:\keil\ARM\ARMCC\Bin
-C Compiler:      Armcc.exe V5.06 update 7 (build 960)
-Assembler:       Armasm.exe V5.06 update 7 (build 960)
-Linker/Locator:  ArmLink.exe V5.06 update 7 (build 960)
-Library Manager: ArmAr.exe V5.06 update 7 (build 960)
-Hex Converter:   FromElf.exe V5.06 update 7 (build 960)
-CPU DLL:         SARMCM3.DLL V5.35.0.2
-Dialog DLL:      DCM.DLL V1.17.3.0
-Target DLL:      CMSIS_AGDI.dll V1.33.0.0
-Dialog DLL:      TCM.DLL V1.53.0.0
+Toolchain:       MDK-ARM Plus  Version: 5.23
+Toolchain Path:  D:\EnglishPath\MDK5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 4 (build 422)
+Assembler:       Armasm.exe V5.06 update 4 (build 422)
+Linker/Locator:  ArmLink.exe V5.06 update 4 (build 422)
+Library Manager: ArmAr.exe V5.06 update 4 (build 422)
+Hex Converter:   FromElf.exe V5.06 update 4 (build 422)
+CPU DLL:         SARMCM3.DLL V5.23
+Dialog DLL:      DCM.DLL V1.15.0.0
+Target DLL:      CMSIS_AGDI.dll V1.27.5.0
+Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
-D:\github\shao bing\MDK-ARM\standard_robot.uvprojx
-Project File Date:  08/19/2021
+E:\file\competition\RM\code\code_reconsitut\New_Legends\MDK-ARM\standard_robot.uvprojx
+Project File Date:  07/27/2021
 
 <h2>Output:</h2>
-*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\keil\ARM\ARMCC\Bin'
-Build target 'standard_robot'
-compiling calibrate_task.c...
-..\application\can_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
-  extern const motor_measure_t *get_chassis_motor_measure_point();
-..\application\gimbal_task.h(364): warning:  #1295-D: Deprecated declaration software_reset - give arg types
-  extern void software_reset();
-..\application\calibrate_task.c: 2 warnings, 0 errors
+*** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\EnglishPath\MDK5\ARM\ARMCC\Bin'
+Rebuild target 'standard_robot'
+assembling startup_stm32f407xx.s...
+compiling crc.c...
+compiling can.c...
+compiling dma.c...
+compiling adc.c...
 compiling freertos.c...
 ..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
   extern const motor_measure_t *get_chassis_motor_measure_point();
-..\application\gimbal_task.h(364): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+..\application\gimbal_task.h(363): warning:  #1295-D: Deprecated declaration software_reset - give arg types
   extern void software_reset();
 ..\application\software_reset_task.h(33): warning:  #1-D: last line of file ends without a newline
   #endif
 ../Src/freertos.c: 3 warnings, 0 errors
-compiling referee_control.c...
-..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
-  extern const motor_measure_t *get_chassis_motor_measure_point();
-..\application\gimbal_task.h(364): warning:  #1295-D: Deprecated declaration software_reset - give arg types
-  extern void software_reset();
-..\application\referee_control.c(61): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  fp32 shoot_grigger_grade[6] = {0, 5.0f*GRIGGER_SPEED_TO_RADIO, 10.0f*GRIGGER_SPEED_TO_RADIO, 15.0f*GRIGGER_SPEED_TO_RADIO, 28.0f*GRIGGER_SPEED_TO_RADIO, 40.0f*GRIGGER_SPEED_TO_RADIO};
-..\application\referee_control.c(61): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  fp32 shoot_grigger_grade[6] = {0, 5.0f*GRIGGER_SPEED_TO_RADIO, 10.0f*GRIGGER_SPEED_TO_RADIO, 15.0f*GRIGGER_SPEED_TO_RADIO, 28.0f*GRIGGER_SPEED_TO_RADIO, 40.0f*GRIGGER_SPEED_TO_RADIO};
-..\application\referee_control.c(61): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  fp32 shoot_grigger_grade[6] = {0, 5.0f*GRIGGER_SPEED_TO_RADIO, 10.0f*GRIGGER_SPEED_TO_RADIO, 15.0f*GRIGGER_SPEED_TO_RADIO, 28.0f*GRIGGER_SPEED_TO_RADIO, 40.0f*GRIGGER_SPEED_TO_RADIO};
-..\application\referee_control.c(61): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  fp32 shoot_grigger_grade[6] = {0, 5.0f*GRIGGER_SPEED_TO_RADIO, 10.0f*GRIGGER_SPEED_TO_RADIO, 15.0f*GRIGGER_SPEED_TO_RADIO, 28.0f*GRIGGER_SPEED_TO_RADIO, 40.0f*GRIGGER_SPEED_TO_RADIO};
-..\application\referee_control.c(61): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  fp32 shoot_grigger_grade[6] = {0, 5.0f*GRIGGER_SPEED_TO_RADIO, 10.0f*GRIGGER_SPEED_TO_RADIO, 15.0f*GRIGGER_SPEED_TO_RADIO, 28.0f*GRIGGER_SPEED_TO_RADIO, 40.0f*GRIGGER_SPEED_TO_RADIO};
-..\application\referee_control.c(217): warning:  #1-D: last line of file ends without a newline
-  }
-..\application\referee_control.c: 8 warnings, 0 errors
+compiling gpio.c...
 compiling main.c...
 ..\application\vision.h(142): warning:  #1295-D: Deprecated declaration vision_if_find_target - give arg types
   bool_t vision_if_find_target();
@@ -66,45 +48,139 @@ compiling main.c...
   #endif
 ..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
   extern const motor_measure_t *get_chassis_motor_measure_point();
-..\application\gimbal_task.h(364): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+..\application\gimbal_task.h(363): warning:  #1295-D: Deprecated declaration software_reset - give arg types
   extern void software_reset();
 ../Src/main.c(151): warning:  #223-D: function "vision_init" declared implicitly
       vision_init();
 ../Src/main.c: 5 warnings, 0 errors
+compiling i2c.c...
+compiling rtc.c...
+compiling spi.c...
+compiling rng.c...
+compiling tim.c...
+compiling usb_device.c...
+compiling usart.c...
+compiling usbd_desc.c...
+compiling usbd_conf.c...
+compiling stm32f4xx_it.c...
+../Src/stm32f4xx_it.c(174): warning:  #223-D: function "xPortSysTickHandler" declared implicitly
+    xPortSysTickHandler();
+../Src/stm32f4xx_it.c: 1 warning, 0 errors
+compiling stm32f4xx_hal_msp.c...
+compiling usbd_cdc_if.c...
+compiling system_stm32f4xx.c...
+compiling bsp_buzzer.c...
+compiling bsp_adc.c...
+compiling bsp_can.c...
+compiling bsp_crc32.c...
+compiling bsp_fric.c...
+compiling bsp_delay.c...
+compiling bsp_flash.c...
+compiling bsp_i2c.c...
+compiling bsp_imu_pwm.c...
+compiling bsp_laser.c...
+compiling bsp_led.c...
+compiling bsp_rc.c...
+compiling calibrate_task.c...
+..\application\can_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
+  extern const motor_measure_t *get_chassis_motor_measure_point();
+..\application\gimbal_task.h(363): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+  extern void software_reset();
+..\application\calibrate_task.c: 2 warnings, 0 errors
+compiling bsp_rng.c...
+compiling bsp_servo_pwm.c...
+compiling bsp_usart.c...
+compiling detect_task.c...
+compiling bsp_spi.c...
+compiling chassis_behaviour.c...
+..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
+  extern const motor_measure_t *get_chassis_motor_measure_point();
+..\application\gimbal_task.h(363): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+  extern void software_reset();
+..\application\chassis_behaviour.c(314): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+              *vy_set = 
+HASSIS_MID_SPEED;
+..\application\chassis_behaviour.c(318): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+              *vy_set = 
+HASSIS_HIGH_SPEED;
+..\application\chassis_behaviour.c: 4 warnings, 0 errors
+compiling CAN_receive.c...
+..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
+  extern const motor_measure_t *get_chassis_motor_measure_point();
+..\application\CAN_receive.c(57): warning:  #177-D: variable "board_communicat_tx_message"  was declared but never referenced
+  static CAN_TxHeaderTypeDef  board_communicat_tx_message;
+..\application\CAN_receive.c(58): warning:  #177-D: variable "board_communicat_can_send_data"  was declared but never referenced
+  static uint8_t              board_communicat_can_send_data[8];
+..\application\CAN_receive.c: 3 warnings, 0 errors
+compiling chassis_task.c...
+..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
+  extern const motor_measure_t *get_chassis_motor_measure_point();
+..\application\gimbal_task.h(363): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+  extern void software_reset();
+..\application\chassis_task.c(159): warning:  #177-D: variable "i"  was declared but never referenced
+      uint8_t i;
+..\application\chassis_task.c: 3 warnings, 0 errors
 compiling gimbal_behaviour.c...
 ..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
   extern const motor_measure_t *get_chassis_motor_measure_point();
-..\application\gimbal_task.h(364): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+..\application\gimbal_task.h(363): warning:  #1295-D: Deprecated declaration software_reset - give arg types
   extern void software_reset();
 ..\application\vision.h(142): warning:  #1295-D: Deprecated declaration vision_if_find_target - give arg types
   bool_t vision_if_find_target();
 ..\application\vision.h(146): warning:  #1-D: last line of file ends without a newline
   #endif
+..\application\gimbal_behaviour.c(686): warning:  #174-D: expression has no effect
+                      gimbal_control_set->yaw_patrol_dir == 
+CW;
+..\application\gimbal_behaviour.c(716): warning:  #174-D: expression has no effect
+                      gimbal_control_set->pitch_patrol_dir == 
+CW;
 ..\application\gimbal_behaviour.c(240): warning:  #177-D: function "gimbal_auto_control"  was declared but never referenced
   static void gimbal_auto_control(fp32 *yaw, fp32 *pitch, gimbal_control_t *gimbal_control_set);
-..\application\gimbal_behaviour.c: 5 warnings, 0 errors
-compiling chassis_task.c...
+..\application\gimbal_behaviour.c: 7 warnings, 0 errors
+compiling referee_control.c...
 ..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
   extern const motor_measure_t *get_chassis_motor_measure_point();
-..\application\gimbal_task.h(364): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+..\application\gimbal_task.h(363): warning:  #1295-D: Deprecated declaration software_reset - give arg types
   extern void software_reset();
-..\application\chassis_task.c(159): warning:  #177-D: variable "i"  was declared but never referenced
-      uint8_t i;
-..\application\chassis_task.c: 3 warnings, 0 errors
-compiling chassis_behaviour.c...
-..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
-  extern const motor_measure_t *get_chassis_motor_measure_point();
-..\application\gimbal_task.h(364): warning:  #1295-D: Deprecated declaration software_reset - give arg types
-  extern void software_reset();
-..\application\chassis_behaviour.c(314): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-              *vy_set = CHASSIS_MID_SPEED;
-..\application\chassis_behaviour.c(318): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-              *vy_set = CHASSIS_HIGH_SPEED;
-..\application\chassis_behaviour.c: 4 warnings, 0 errors
+..\application\referee_control.c(61): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  fp32 shoot_grigger_grade[6] = {0, 5.0f*
+RIGGER_SPEED_TO_RADIO, 10.0f*GRIGGER_SPEED_TO_RADIO, 15.0f*GRIGGER_SPEED_TO_RADIO, 28.0f*GRIGGER_SPEED_TO_RADIO, 40.0f*GRIGGER_SPEED_TO_RADIO};
+..\application\referee_control.c(61): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  fp32 shoot_grigger_grade[6] = {0, 5.0f*
+RIGGER_SPEED_TO_RADIO, 10.0f*
+RIGGER_SPEED_TO_RADIO, 15.0f*GRIGGER_SPEED_TO_RADIO, 28.0f*GRIGGER_SPEED_TO_RADIO, 40.0f*GRIGGER_SPEED_TO_RADIO};
+..\application\referee_control.c(61): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  fp32 shoot_grigger_grade[6] = {0, 5.0f*
+RIGGER_SPEED_TO_RADIO, 10.0f*
+RIGGER_SPEED_TO_RADIO, 15.0f*
+RIGGER_SPEED_TO_RADIO, 28.0f*GRIGGER_SPEED_TO_RADIO, 40.0f*GRIGGER_SPEED_TO_RADIO};
+..\application\referee_control.c(61): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  fp32 shoot_grigger_grade[6] = {0, 5.0f*
+RIGGER_SPEED_TO_RADIO, 10.0f*
+RIGGER_SPEED_TO_RADIO, 15.0f*
+RIGGER_SPEED_TO_RADIO, 28.0f*
+RIGGER_SPEED_TO_RADIO, 40.0f*GRIGGER_SPEED_TO_RADIO};
+..\application\referee_control.c(61): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  fp32 shoot_grigger_grade[6] = {0, 5.0f*
+RIGGER_SPEED_TO_RADIO, 10.0f*
+RIGGER_SPEED_TO_RADIO, 15.0f*
+RIGGER_SPEED_TO_RADIO, 28.0f*
+RIGGER_SPEED_TO_RADIO, 40.0f*
+RIGGER_SPEED_TO_RADIO};
+..\application\referee_control.c(217): warning:  #1-D: last line of file ends without a newline
+  }
+..\application\referee_control.c: 8 warnings, 0 errors
+compiling oled_task.c...
+compiling INS_task.c...
+..\application\INS_task.c(181): warning:  #223-D: function "gimbal_cmd_to_chassis_stop" declared implicitly
+      while(gimbal_cmd_to_chassis_stop())
+..\application\INS_task.c: 1 warning, 0 errors
+compiling referee.c...
 compiling gimbal_task.c...
 ..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
   extern const motor_measure_t *get_chassis_motor_measure_point();
-..\application\gimbal_task.h(364): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+..\application\gimbal_task.h(363): warning:  #1295-D: Deprecated declaration software_reset - give arg types
   extern void software_reset();
 ..\application\vision.h(142): warning:  #1295-D: Deprecated declaration vision_if_find_target - give arg types
   bool_t vision_if_find_target();
@@ -115,49 +191,153 @@ compiling gimbal_task.c...
 ..\application\gimbal_task.c(221): warning:  #177-D: variable "shoot_can_set_current"  was declared but never referenced
   static int16_t yaw_can_set_current = 0, pitch_can_set_current = 0, shoot_can_set_current = 0;
 ..\application\gimbal_task.c: 6 warnings, 0 errors
+compiling referee_usart_task.c...
+compiling test_task.c...
+compiling usb_task.c...
+compiling voltage_task.c...
 compiling servo_task.c...
 ..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
   extern const motor_measure_t *get_chassis_motor_measure_point();
-..\application\gimbal_task.h(364): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+..\application\gimbal_task.h(363): warning:  #1295-D: Deprecated declaration software_reset - give arg types
   extern void software_reset();
 ..\application\servo_task.c: 2 warnings, 0 errors
+compiling remote_control.c...
+compiling led_flow_task.c...
+compiling RM_Cilent_UI.c...
+compiling vision.c...
+..\application\vision.h(142): warning:  #1295-D: Deprecated declaration vision_if_find_target - give arg types
+  bool_t vision_if_find_target();
+..\application\vision.h(146): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\application\vision.c(44): warning:  #223-D: function "usart1_init" declared implicitly
+      usart1_init(Vision_Buffer[0], Vision_Buffer[1], VISION_BUFFER_LEN);
+..\application\vision.c(67): warning:  #223-D: function "memcpy" declared implicitly
+  		memcpy( &VisionRecvData, ReadFormUart, VISION_LEN_PACKED);	
+..\application\vision.c(77): warning:  #223-D: function "xTaskGetTickCount" declared implicitly
+  		Vision_Time_Test[
+OW] = xTaskGetTickCount();
+..\application\vision.c(114): warning:  #223-D: function "memcpy" declared implicitly
+  	memcpy(vision_send_pack, &VisionSendData, 4);
+..\application\vision.c(121): warning:  #223-D: function "memset" declared implicitly
+  	memset(vision_send_pack, 0, 50);
+..\application\vision.c(101): warning:  #177-D: variable "i"  was declared but never referenced
+  	int i;    //å¾ªçŽ¯å‘é€æ¬¡æ•?
+..\application\vision.c(102): warning:  #177-D: variable "id1_17mm_speed_limit"  was declared but never referenced
+  	uint16_t id1_17mm_speed_limit;
+..\application\vision.c(103): warning:  #177-D: variable "bullet_speed"  was declared but never referenced
+  	uint16_t bullet_speed;
+..\application\vision.c(197): warning:  #223-D: function "memset" declared implicitly
+              memset(Vision_Buffer[0], 0, 200);    
+..\application\vision.c(209): warning:  #223-D: function "memset" declared implicitly
+  			memset(Vision_Buffer[1], 0, 200);    //å¯¹è±¡   å†…å®¹  é•¿åº¦
+..\application\vision.c(186): warning:  #550-D: variable "this_time_rx_len"  was set but never used
+          static uint16_t this_time_rx_len = 0;
+..\application\vision.c(216): warning:  #1-D: last line of file ends without a newline
+    
+..\application\vision.c: 14 warnings, 0 errors
+compiling ui_task.c...
+..\application\CAN_Receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
+  extern const motor_measure_t *get_chassis_motor_measure_point();
+..\application\ui_task.c(16): warning:  #47-D: incompatible redefinition of macro "PI"  (declared at line 23 of "..\application\struct_typedef.h")
+  #define PI 3.1415926
+..\application\ui_task.c(42): warning:  #223-D: function "vTaskDelay" declared implicitly
+  		vTaskDelay(1000);
+..\application\ui_task.c(73): warning:  #223-D: function "sin" declared implicitly
+  		Circle_Draw(&G8,"007",
+I_Graph_ADD,8,
+I_Color_Green,3,960+(int)340*sin((angle)*2*PI/360.0),540+(int)340*cos((angle)*2*PI/360.0),50);
+..\application\ui_task.c(73): warning:  #223-D: function "cos" declared implicitly
+  		Circle_Draw(&G8,"007",
+I_Graph_ADD,8,
+I_Color_Green,3,960+(int)340*sin((angle)*2*
+I/360.0),540+(int)340*cos((angle)*2*PI/360.0),50);
+..\application\ui_task.c: 5 warnings, 0 errors
+compiling ist8310driver.c...
 compiling shoot_task.c...
 ..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
   extern const motor_measure_t *get_chassis_motor_measure_point();
-..\application\gimbal_task.h(364): warning:  #1295-D: Deprecated declaration software_reset - give arg types
+..\application\gimbal_task.h(363): warning:  #1295-D: Deprecated declaration software_reset - give arg types
   extern void software_reset();
 ..\application\shoot_task.c(387): warning:  #223-D: function "abs" declared implicitly
       if(shoot_control.shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed) || abs(shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[RIGHT].require_speed)))
 ..\application\shoot_task.c(534): warning:  #1-D: last line of file ends without a newline
   }
 ..\application\shoot_task.c: 4 warnings, 0 errors
+compiling BMI088Middleware.c...
+compiling BMI088driver.c...
+compiling OLED.c...
+compiling user_lib.c...
+compiling ist8310driver_middleware.c...
+compiling AHRS_middleware.c...
+compiling CRC8_CRC16.c...
+compiling mem_mang4.c...
+compiling pid.c...
+compiling stm32f4xx_hal_pcd_ex.c...
+compiling fifo.c...
+compiling stm32f4xx_hal_pcd.c...
+compiling stm32f4xx_hal_rcc.c...
+compiling stm32f4xx_ll_usb.c...
+compiling stm32f4xx_hal_rcc_ex.c...
+compiling stm32f4xx_hal_flash.c...
+compiling stm32f4xx_hal_flash_ramfunc.c...
+compiling stm32f4xx_hal_flash_ex.c...
+compiling stm32f4xx_hal_gpio.c...
+compiling stm32f4xx_hal_dma_ex.c...
+compiling stm32f4xx_hal_pwr_ex.c...
+compiling stm32f4xx_hal_pwr.c...
+compiling stm32f4xx_hal_dma.c...
+compiling stm32f4xx_hal_exti.c...
+compiling stm32f4xx_hal.c...
+compiling stm32f4xx_hal_cortex.c...
+compiling stm32f4xx_hal_adc.c...
+compiling stm32f4xx_hal_can.c...
+compiling stm32f4xx_hal_crc.c...
+compiling stm32f4xx_hal_adc_ex.c...
+compiling stm32f4xx_hal_i2c.c...
+compiling stm32f4xx_hal_rng.c...
+compiling stm32f4xx_hal_i2c_ex.c...
+compiling stm32f4xx_hal_rtc.c...
+compiling stm32f4xx_hal_rtc_ex.c...
+compiling stm32f4xx_hal_tim_ex.c...
+compiling stm32f4xx_hal_spi.c...
+compiling croutine.c...
+compiling event_groups.c...
+compiling stm32f4xx_hal_tim.c...
+compiling list.c...
+compiling queue.c...
+compiling stm32f4xx_hal_uart.c...
+compiling stream_buffer.c...
+compiling timers.c...
+compiling heap_4.c...
+compiling tasks.c...
+compiling port.c...
+compiling cmsis_os.c...
+compiling usbd_core.c...
+compiling usbd_ioreq.c...
+compiling usbd_ctlreq.c...
+compiling usbd_cdc.c...
 linking...
-Program Size: Code=86812 RO-data=3732 RW-data=896 ZI-data=51696  
+Program Size: Code=86744 RO-data=3732 RW-data=888 ZI-data=51696  
 FromELF: creating hex file...
-"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 42 Warning(s).
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 68 Warning(s).
 
 <h2>Software Packages used:</h2>
 
 Package Vendor: ARM
-                http://www.keil.com/pack/ARM.CMSIS.5.8.0.pack
-                ARM.CMSIS.5.8.0
-                CMSIS (Common Microcontroller Software Interface Standard)
-   * Component: CORE Version: 5.5.0
-
-Package Vendor: Keil
-                http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.15.0.pack
-                Keil.STM32F4xx_DFP.2.15.0
-                STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
+                http://www.keil.com/pack/ARM.CMSIS.5.0.1.pack
+                ARM::CMSIS:CORE:5.0.1
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.0.1
 
 <h2>Collection of Component include folders:</h2>
   .\RTE\_standard_robot
-  D:\keil\ARM\CMSIS\5.8.0\CMSIS\Core\Include
-  D:\keil\Keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
+  D:\EnglishPath\MDK5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include
+  D:\EnglishPath\MDK5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
 
 <h2>Collection of Component Files used:</h2>
 
-   * Component: ARM::CMSIS:CORE:5.5.0
-Build Time Elapsed:  00:00:02
+   * Component: ARM::CMSIS:CORE:5.0.1
+Build Time Elapsed:  00:00:13
 </pre>
 </body>
 </html>

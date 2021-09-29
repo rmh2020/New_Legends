@@ -20,7 +20,7 @@
 #include "chassis_behaviour.h"
 #include "gimbal_task.h"
 #include "cmsis_os.h"
-#include "stdbool.h"
+
 #include "arm_math.h"
 #include "pid.h"
 #include "remote_control.h"
