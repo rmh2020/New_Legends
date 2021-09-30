@@ -256,7 +256,8 @@ static void chassis_no_move_control(fp32 *vy_set, chassis_move_t *chassis_move_r
   * @param[in]      chassis_move_rc_to_vectorµ×ÅÌÊý¾Ý
   * @retval         ·µ»Ø¿Õ
   */
-
+int sj_count =10;
+int sj_flag =0;
 static void chassis_no_follow_yaw_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector)
 {
     if (vy_set == NULL || chassis_move_rc_to_vector == NULL)
@@ -305,6 +306,26 @@ static void chassis_no_follow_yaw_control(fp32 *vy_set, chassis_move_t *chassis_
         else if(chassis_move_rc_to_vector->left_light_sensor == FALSE && chassis_move_rc_to_vector->right_light_sensor == FALSE)
         {
             chassis_move_rc_to_vector->direction = chassis_move_rc_to_vector->direction;
+        }
+        if(sj_count>0)
+        {
+            sj_count--;
+            if(sj_count==0)
+            {
+                sj_flag=1;
+                if(chassis_move_rc_to_vector->direction == RIGHT)
+                {
+                    chassis_move_rc_to_vector->direction = LEFT;
+                }
+                else if(chassis_move_rc_to_vector->direction == LEFT)
+                {
+                    chassis_move_rc_to_vector->direction = RIGHT;
+                }
+            }
+            if(sj_flag==1){
+                sj_flag=0;
+                sj_count=10;
+            }
         }
 
 

@@ -667,24 +667,26 @@ static void gimbal_absolute_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
                 gimbal_control_set->gimbal_yaw_motor.absolute_angle_set = rad_format(MIN_PATROL_YAW);
             }
 
-            //不断控制到掉头的目标值，正转，反装是随机
-            if (rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle_set - gimbal_control_set->gimbal_yaw_motor.absolute_angle) > 0.0f)
-            {      
-                *yaw += TURN_SPEED;
-            }
-            else
-            {        
-                *yaw -= TURN_SPEED;
-            }
-            
-            //到达对应角度后向方向旋转
-            if (fabs(rad_format(gimbal_control_set->gimbal_yaw_motor.absolute_angle_set - gimbal_control_set->gimbal_yaw_motor.absolute_angle)) < 0.01f)
+            if(gimbal_control_set->yaw_patrol_dir == CCW)  //yaw轴逆时针旋转
             {
-                if(gimbal_control_set->yaw_patrol_dir == CW)
-                    gimbal_control_set->yaw_patrol_dir = CCW;
-                else if(gimbal_control_set->yaw_patrol_dir == CW)
-                    gimbal_control_set->yaw_patrol_dir == CCW;
+                *yaw += TURN_SPEED;
+                if(gimbal_control_set->gimbal_yaw_motor.absolute_angle_set - gimbal_control_set->gimbal_yaw_motor.absolute_angle < 0.01f)
+                {
+                    gimbal_control_set->yaw_patrol_dir == CW;
+
+                }
             }
+            else if(gimbal_control_set->yaw_patrol_dir == CW)  //yaw轴顺时针旋转
+            {
+                *yaw -= TURN_SPEED;
+                if(gimbal_control_set->gimbal_yaw_motor.absolute_angle - gimbal_control_set->gimbal_yaw_motor.absolute_angle_set < 0.01f)
+                {
+                    gimbal_control_set->yaw_patrol_dir == CCW;
+
+                }
+            }
+           
+
            
 
             //pitch轴巡逻
