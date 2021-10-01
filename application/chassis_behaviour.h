@@ -72,7 +72,8 @@ extern chassis_behaviour_e last_chassis_behaviour_mode;
   */
 extern void chassis_behaviour_mode_set(chassis_move_t *chassis_move_mode);
 
-
+extern  int sj_count ;
+extern  int sj_flag ;
 /**
   * @brief          设置控制量.根据不同底盘控制模式，三个参数会控制不同运动.在这个函数里面，会调用不同的控制函数.
   * @param[out]     vx_set, 通常控制纵向移动.

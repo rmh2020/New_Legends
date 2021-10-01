@@ -474,7 +474,7 @@ static void gimbal_behavour_set(gimbal_control_t *gimbal_mode_set)
     }
     else if (switch_is_mid(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
-        gimbal_behaviour = GIMBAL_ABSOLUTE_ANGLE;
+        gimbal_behaviour = GIMBAL_RELATIVE_ANGLE;
     }
     else if (switch_is_down(gimbal_mode_set->gimbal_rc_ctrl->rc.s[GIMBAL_MODE_CHANNEL]))
     {
@@ -774,30 +774,23 @@ static void gimbal_relative_angle_control(fp32 *yaw, fp32 *pitch, gimbal_control
         else    //Î´Ê¶±ðµ½Ä¿±ê£¬½øÈëÑ²Âß×´Ì¬
         {
             //yawÖáÑ²Âß
-            if(gimbal_control_set->yaw_patrol_dir == CCW)  //yawÖáÄæÊ±ÕëÐý×ª
-            {
-                gimbal_control_set->gimbal_yaw_motor.relative_angle_set = rad_format(MAX_PATROL_YAW);
-            }
-            else if(gimbal_control_set->yaw_patrol_dir == CW)  //yawÖáË³Ê±ÕëÐý×ª
-            {
-                gimbal_control_set->gimbal_yaw_motor.relative_angle_set = rad_format(MIN_PATROL_YAW);
-            }
-
+           
+            
             if(gimbal_control_set->yaw_patrol_dir == CCW)  //yawÖáÄæÊ±ÕëÐý×ª
             {
                 *yaw += TURN_SPEED;
-                if(gimbal_control_set->gimbal_yaw_motor.relative_angle_set - gimbal_control_set->gimbal_yaw_motor.relative_angle < 0.5f)
+                if(MAX_PATROL_YAW - gimbal_control_set->gimbal_yaw_motor.relative_angle < 0.1f)
                 {
-                    gimbal_control_set->yaw_patrol_dir == CW;
+                    gimbal_control_set->yaw_patrol_dir = CW;
 
                 }
             }
             else if(gimbal_control_set->yaw_patrol_dir == CW)  //yawÖáË³Ê±ÕëÐý×ª
             {
                 *yaw -= TURN_SPEED;
-                if(gimbal_control_set->gimbal_yaw_motor.relative_angle - gimbal_control_set->gimbal_yaw_motor.relative_angle_set < 0.5f)
+                if(gimbal_control_set->gimbal_yaw_motor.relative_angle - MIN_PATROL_YAW < 0.1f)
                 {
-                    gimbal_control_set->yaw_patrol_dir == CCW;
+                    gimbal_control_set->yaw_patrol_dir = CCW;
 
                 }
             }

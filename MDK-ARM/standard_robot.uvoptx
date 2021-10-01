@@ -178,12 +178,7 @@
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>sj_count</ItemText>
-        </Ww>
-        <Ww>
-          <count>5</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>sj_flag</ItemText>
+          <ItemText>*yaw </ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

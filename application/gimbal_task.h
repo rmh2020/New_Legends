@@ -177,8 +177,8 @@
 #define MAX_ABSOULATE_PITCH       3.0f
 
 //云台巡逻时的限幅
-#define MIN_PATROL_YAW -PI
-#define MAX_PATROL_YAW PI
+#define MIN_PATROL_YAW -3.0F
+#define MAX_PATROL_YAW 3.0F
 
 #define MIN_PATROL_PITCH -2.0f
 #define MAX_PATROL_PITCH 3.0f
