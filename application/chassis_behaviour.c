@@ -245,7 +245,8 @@ static void chassis_no_move_control(fp32 *vy_set, chassis_move_t *chassis_move_r
     *vy_set = 0.0f;
 
 }
-
+int sj_count =1000;
+int sj_flag =0;
 
 /**
   * @brief          底盘跟随底盘yaw的行为状态机下，底盘模式是跟随底盘角度，底盘旋转速度会根据角度差计算底盘旋转的角速度
@@ -256,8 +257,7 @@ static void chassis_no_move_control(fp32 *vy_set, chassis_move_t *chassis_move_r
   * @param[in]      chassis_move_rc_to_vector底盘数据
   * @retval         返回空
   */
-int sj_count =10;
-int sj_flag =0;
+
 static void chassis_no_follow_yaw_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector)
 {
     if (vy_set == NULL || chassis_move_rc_to_vector == NULL)
@@ -306,27 +306,29 @@ static void chassis_no_follow_yaw_control(fp32 *vy_set, chassis_move_t *chassis_
         else if(chassis_move_rc_to_vector->left_light_sensor == FALSE && chassis_move_rc_to_vector->right_light_sensor == FALSE)
         {
             chassis_move_rc_to_vector->direction = chassis_move_rc_to_vector->direction;
-        }
-        if(sj_count>0)
-        {
-            sj_count--;
-            if(sj_count==0)
+            if(sj_count>0)
             {
-                sj_flag=1;
-                if(chassis_move_rc_to_vector->direction == RIGHT)
+                sj_count--;
+                if(sj_count==0)
                 {
-                    chassis_move_rc_to_vector->direction = LEFT;
-                }
-                else if(chassis_move_rc_to_vector->direction == LEFT)
-                {
-                    chassis_move_rc_to_vector->direction = RIGHT;
-                }
+                    sj_flag=1;
+                    if(chassis_move_rc_to_vector->direction == RIGHT)
+                    {
+                        chassis_move_rc_to_vector->direction = LEFT;
+                    }
+                    else if(chassis_move_rc_to_vector->direction == LEFT)
+                    {
+                        chassis_move_rc_to_vector->direction = RIGHT;
+                    }
+                }            
             }
-            if(sj_flag==1){
+            if(sj_flag==1)
+            {
                 sj_flag=0;
-                sj_count=10;
-            }
+                sj_count=1000;
+            }   
         }
+        
 
 
         //根据不同情况设置速度等级
