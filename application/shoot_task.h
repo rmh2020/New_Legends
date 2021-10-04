@@ -195,6 +195,8 @@ typedef struct
     bool_t key;              
     uint8_t key_time;
 
+    bool_t shoot_control_way; //Éä»÷¿ØÖÆ·½Ê½
+
  
 } shoot_control_t;
 

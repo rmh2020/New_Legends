@@ -351,109 +351,183 @@ void shoot_set_control(void)
   * @param[in]      void
   * @retval         void
   */
-static void shoot_set_mode(void)
+static void shoot_set_mode(shoot_control_t shoot_control_set)
 {
-    static int8_t last_s = RC_SW_UP;        //记录上一次遥控器按键值
-
-    //上拨判断， 一次开启，再次关闭
-    if ((switch_is_up(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_up(last_s) && shoot_control.shoot_mode == SHOOT_STOP))
+    if ( shoot_control_set == NULL)
     {
-        shoot_control.shoot_mode = SHOOT_READY_FRIC;
+        return;
+    }   
+
+    //射击模式下，切换自动控制和遥控器控制
+    if (switch_is_up(shoot_control_set->shoot_control_way->rc.s[CHASSIS_MODE_CHANNEL]))
+    {    
+        chassis_move_rc_to_vector->chassis_control_way = AUTO;
     }
-    else if ((switch_is_up(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_up(last_s) && shoot_control.shoot_mode != SHOOT_STOP))
+    else if (switch_is_mid(shoot_control_set->shoot_control_way->rc.s[CHASSIS_MODE_CHANNEL]))
     {
-        shoot_control.shoot_mode = SHOOT_STOP;    
+        chassis_move_rc_to_vector->chassis_control_way = RC;
     }
-
-    //处于中档， 可以使用键盘开启摩擦轮
-    if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && KEY_FRIC && shoot_control.shoot_mode == SHOOT_STOP)
-    { 
-        shoot_control.shoot_mode = SHOOT_READY_FRIC; 
-    }
-    //处于中档， 可以使用键盘关闭摩擦轮
-    else if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && KEY_FRIC && shoot_control.shoot_mode != SHOOT_STOP)
+    if(chassis_move_rc_to_vector->chassis_control_way == RC)
     {
-        shoot_control.shoot_mode = SHOOT_STOP;      
-    }
+        static int8_t last_s = RC_SW_UP;        //记录上一次遥控器按键值
 
-    shoot_control.shoot_last_key_v = shoot_control.shoot_rc->key.v;  
-
-
-
-
-  
-
-    //摩擦轮速度达到一定值,才可开启拨盘  为了便于测试,这里至少需要一个摩擦轮电机达到拨盘启动要求就可以开启拨盘
-    if(shoot_control.shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed) || abs(shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[RIGHT].require_speed)))
-    {
-        shoot_control.fric_status = TRUE;     
-        shoot_control.shoot_mode = SHOOT_READY_BULLET;
-    }
-    else if(shoot_control.shoot_mode == SHOOT_READY_BULLET && shoot_control.key == SWITCH_TRIGGER_ON)
-    {
-        shoot_control.shoot_mode = SHOOT_READY;
-    }
-    else if(shoot_control.shoot_mode == SHOOT_READY && shoot_control.key == SWITCH_TRIGGER_OFF)
-    {
-        shoot_control.shoot_mode = SHOOT_READY_BULLET;
-    }
-    else if(shoot_control.shoot_mode == SHOOT_READY)
-    {
-        //下拨一次或者鼠标按下一次，进入射击状态
-        if ((switch_is_down(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_down(last_s)) || IF_MOUSE_SINGAL_PRESSED_L )
+        //上拨判断， 一次开启，再次关闭
+        if ((switch_is_up(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_up(last_s) && shoot_control.shoot_mode == SHOOT_STOP))
         {
-            shoot_control.shoot_mode = SHOOT_BULLET;
+            shoot_control.shoot_mode = SHOOT_READY_FRIC;
         }
-    }
-    else if(shoot_control.shoot_mode == SHOOT_DONE)
-    {
-        if(shoot_control.key == SWITCH_TRIGGER_OFF)
+        else if ((switch_is_up(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_up(last_s) && shoot_control.shoot_mode != SHOOT_STOP))
         {
-            shoot_control.key_time++;
-            if(shoot_control.key_time > SHOOT_DONE_KEY_OFF_TIME)
+            shoot_control.shoot_mode = SHOOT_STOP;    
+        }
+
+        //处于中档， 可以使用键盘开启摩擦轮
+        if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && KEY_FRIC && shoot_control.shoot_mode == SHOOT_STOP)
+        { 
+            shoot_control.shoot_mode = SHOOT_READY_FRIC; 
+        }
+        //处于中档， 可以使用键盘关闭摩擦轮
+        else if (switch_is_mid(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && KEY_FRIC && shoot_control.shoot_mode != SHOOT_STOP)
+        {
+            shoot_control.shoot_mode = SHOOT_STOP;      
+        }
+
+        shoot_control.shoot_last_key_v = shoot_control.shoot_rc->key.v;  
+
+
+
+
+    
+
+        //摩擦轮速度达到一定值,才可开启拨盘  为了便于测试,这里至少需要一个摩擦轮电机达到拨盘启动要求就可以开启拨盘
+        if(shoot_control.shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed) || abs(shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[RIGHT].require_speed)))
+        {
+            shoot_control.fric_status = TRUE;     
+            shoot_control.shoot_mode = SHOOT_READY_BULLET;
+        }
+        else if(shoot_control.shoot_mode == SHOOT_READY_BULLET && shoot_control.key == SWITCH_TRIGGER_ON)
+        {
+            shoot_control.shoot_mode = SHOOT_READY;
+        }
+        else if(shoot_control.shoot_mode == SHOOT_READY && shoot_control.key == SWITCH_TRIGGER_OFF)
+        {
+            shoot_control.shoot_mode = SHOOT_READY_BULLET;
+        }
+        else if(shoot_control.shoot_mode == SHOOT_READY)
+        {
+            //下拨一次或者鼠标按下一次，进入射击状态
+            if ((switch_is_down(shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL]) && !switch_is_down(last_s)) || IF_MOUSE_SINGAL_PRESSED_L )
             {
-                shoot_control.key_time = 0;
-                shoot_control.shoot_mode = SHOOT_READY_BULLET;
+                shoot_control.shoot_mode = SHOOT_BULLET;
             }
         }
-        else
+        else if(shoot_control.shoot_mode == SHOOT_DONE)
         {
-            shoot_control.key_time = 0;
-            shoot_control.shoot_mode = SHOOT_BULLET;
+            if(shoot_control.key == SWITCH_TRIGGER_OFF)
+            {
+                shoot_control.key_time++;
+                if(shoot_control.key_time > SHOOT_DONE_KEY_OFF_TIME)
+                {
+                    shoot_control.key_time = 0;
+                    shoot_control.shoot_mode = SHOOT_READY_BULLET;
+                }
+            }
+            else
+            {
+                shoot_control.key_time = 0;
+                shoot_control.shoot_mode = SHOOT_BULLET;
+            }
         }
+        
+
+
+        if(shoot_control.shoot_mode > SHOOT_READY_FRIC)
+        {
+            //鼠标长按一直进入射击状态 保持连发
+            if ((shoot_control.press_l_time == PRESS_LONG_TIME) || (shoot_control.press_r_time == PRESS_LONG_TIME) || (shoot_control.rc_s_time == RC_S_LONG_TIME))
+            {
+                shoot_control.shoot_mode = SHOOT_CONTINUE_BULLET;
+            }
+            else if(shoot_control.shoot_mode == SHOOT_CONTINUE_BULLET)
+            {
+                shoot_control.shoot_mode =SHOOT_READY_BULLET;
+            }
+        }
+
+        
+        //检测两个摩擦轮同时上线，为了便于调试，暂时注释
+        // if(!toe_is_error(REFEREE_TOE) && (shoot_control.heat + SHOOT_HEAT_REMAIN_VALUE > shoot_control.heat_limit))
+        // {
+        //     if(shoot_control.shoot_mode == SHOOT_BULLET || shoot_control.shoot_mode == SHOOT_CONTINUE_BULLET)
+        //     {
+        //         shoot_control.shoot_mode =SHOOT_READY_BULLET;
+        //     }
+        // }
+        //如果云台状态是 无力状态，就关闭射击
+        if (gimbal_cmd_to_shoot_stop())
+        {
+            shoot_control.shoot_mode = SHOOT_STOP;
+        }
+
+        last_s = shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL];
     }
-    
-
-
-    if(shoot_control.shoot_mode > SHOOT_READY_FRIC)
+    else if(chassis_move_rc_to_vector->chassis_control_way == AUTO)
     {
-        //鼠标长按一直进入射击状态 保持连发
-        if ((shoot_control.press_l_time == PRESS_LONG_TIME) || (shoot_control.press_r_time == PRESS_LONG_TIME) || (shoot_control.rc_s_time == RC_S_LONG_TIME))
+        shoot_control.shoot_mode = SHOOT_READY_FRIC;
+        //摩擦轮速度达到一定值,才可开启拨盘  为了便于测试,这里至少需要一个摩擦轮电机达到拨盘启动要求就可以开启拨盘
+        if(shoot_control.shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control.fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[LEFT].require_speed) || abs(shoot_control.fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control.fric_motor[RIGHT].require_speed)))
         {
-            shoot_control.shoot_mode = SHOOT_CONTINUE_BULLET;
+            shoot_control.fric_status = TRUE;     
+            shoot_control.shoot_mode = SHOOT_READY_BULLET;
         }
-        else if(shoot_control.shoot_mode == SHOOT_CONTINUE_BULLET)
+        else if(shoot_control.shoot_mode == SHOOT_READY_BULLET && shoot_control.key == SWITCH_TRIGGER_ON)
         {
-            shoot_control.shoot_mode =SHOOT_READY_BULLET;
+            shoot_control.shoot_mode = SHOOT_READY;
         }
+        else if(shoot_control.shoot_mode == SHOOT_READY && shoot_control.key == SWITCH_TRIGGER_OFF)
+        {
+            shoot_control.shoot_mode = SHOOT_READY_BULLET;
+        }
+        else if(shoot_control.shoot_mode == SHOOT_READY)
+        {
+            //下拨一次或者鼠标按下一次，进入射击状态
+            if ( VisionRecvData.identify_target == TRUE&&VisionRecvData.centre_lock == FALSE )
+            {
+                shoot_control.shoot_mode = SHOOT_BULLET;
+            }
+        }
+        else if(shoot_control.shoot_mode == SHOOT_DONE)
+        {
+            if(shoot_control.key == SWITCH_TRIGGER_OFF)
+            {
+                shoot_control.key_time++;
+                if(shoot_control.key_time > SHOOT_DONE_KEY_OFF_TIME)
+                {
+                    shoot_control.key_time = 0;
+                    shoot_control.shoot_mode = SHOOT_READY_BULLET;
+                }
+            }
+            else
+            {
+                shoot_control.key_time = 0;
+                shoot_control.shoot_mode = SHOOT_BULLET;
+            }
+        }
+        if(shoot_control.shoot_mode > SHOOT_READY_FRIC)
+        {
+            //鼠标长按一直进入射击状态 保持连发
+            if (VisionRecvData.identify_target == TRUE&&VisionRecvData.centre_lock == TRUE)
+                shoot_control.shoot_mode = SHOOT_CONTINUE_BULLET;
+            }
+            else if(shoot_control.shoot_mode == SHOOT_CONTINUE_BULLET)
+            {
+                shoot_control.shoot_mode =SHOOT_READY_BULLET;
+            }
+        }
+
     }
 
-    
-    //检测两个摩擦轮同时上线，为了便于调试，暂时注释
-    // if(!toe_is_error(REFEREE_TOE) && (shoot_control.heat + SHOOT_HEAT_REMAIN_VALUE > shoot_control.heat_limit))
-    // {
-    //     if(shoot_control.shoot_mode == SHOOT_BULLET || shoot_control.shoot_mode == SHOOT_CONTINUE_BULLET)
-    //     {
-    //         shoot_control.shoot_mode =SHOOT_READY_BULLET;
-    //     }
-    // }
-    //如果云台状态是 无力状态，就关闭射击
-    if (gimbal_cmd_to_shoot_stop())
-    {
-        shoot_control.shoot_mode = SHOOT_STOP;
-    }
-
-    last_s = shoot_control.shoot_rc->rc.s[SHOOT_RC_MODE_CHANNEL];
+        
 
 }
 
