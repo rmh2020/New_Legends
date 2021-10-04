@@ -49,7 +49,7 @@
   * @param[in]      void
   * @retval         void
   */
-static void shoot_set_mode(void);
+static void shoot_set_mode(shoot_control_t *shoot_control);
 /**
   * @brief          射击数据更新
   * @param[in]      void

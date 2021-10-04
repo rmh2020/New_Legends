@@ -36,18 +36,19 @@ compiling shoot_task.c...
   bool_t vision_if_find_target();
 ..\application\vision.h(146): warning:  #1-D: last line of file ends without a newline
   #endif
-..\application\shoot_task.c(91): error:  #140: too many arguments in function call
-          shoot_set_mode(&shoot_control);        //ÉèÖÃ×´Ì¬»ú
-..\application\shoot_task.c(355): error:  #147-D: declaration is incompatible with "void shoot_set_mode(void)"  (declared at line 52)
-  static void shoot_set_mode(shoot_control_t *shoot_control)
 ..\application\shoot_task.c(395): warning:  #223-D: function "abs" declared implicitly
           if(shoot_control->shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control->fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control->fric_motor[LEFT].require_speed) || abs(shoot_control->fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control->fric_motor[RIGHT].require_speed)))
 ..\application\shoot_task.c(470): warning:  #223-D: function "abs" declared implicitly
           if(shoot_control->shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control->fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control->fric_motor[LEFT].require_speed) || abs(shoot_control->fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control->fric_motor[RIGHT].require_speed)))
 ..\application\shoot_task.c(601): warning:  #1-D: last line of file ends without a newline
   }
-..\application\shoot_task.c: 7 warnings, 2 errors
-"standard_tpye_c\standard_tpye_c.axf" - 2 Error(s), 7 Warning(s).
+..\application\shoot_task.c: 7 warnings, 0 errors
+linking...
+standard_tpye_c\standard_tpye_c.axf: Error: L6200E: Symbol VisionRecvData multiply defined (by shoot_task.o and vision.o).
+Not enough information to list image symbols.
+Not enough information to list load addresses in the image map.
+Finished: 2 information, 0 warning and 1 error messages.
+"standard_tpye_c\standard_tpye_c.axf" - 1 Error(s), 7 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -71,7 +72,7 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE:5.5.0
 Target not created.
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>
