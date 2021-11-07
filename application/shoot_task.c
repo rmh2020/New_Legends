@@ -72,7 +72,9 @@ static void trigger_motor_turn_back(void);
 static void shoot_bullet_control(void);
 
 shoot_control_t shoot_control;          //射击数据
-VisionRecvData_t      VisionRecvData;        //接收数据结构体
+VisionRecvData_t      VisionRecvData_shoot;        //接收数据结构体
+
+
 
 /**
   * @brief          射击任务，初始化PID，遥控器指针，电机指针
@@ -350,7 +352,7 @@ void shoot_set_control(void)
 /**
   * @brief          射击状态机设置，遥控器上拨一次开启，再上拨关闭，下拨1次发射1颗，一直处在下，则持续发射，用于3min准备时间清理子弹
   * @param[in]      void
-  * @retval         void
+  * @retval         vod
   */
 static void shoot_set_mode(shoot_control_t *shoot_control)
 {
@@ -360,11 +362,11 @@ static void shoot_set_mode(shoot_control_t *shoot_control)
     }   
 
     //射击模式下，切换自动控制和遥控器控制
-    if (switch_is_up(shoot_control->shoot_rc->rc.s[CHASSIS_MODE_CHANNEL]))
+    if (switch_is_up(shoot_control->shoot_rc->rc.s[shoot_MODE_CHANNEL]))
     {    
         shoot_control->shoot_control_way = AUTO;
     }
-    else if (switch_is_mid(shoot_control->shoot_rc->rc.s[CHASSIS_MODE_CHANNEL]))
+    else if (switch_is_mid(shoot_control->shoot_rc->rc.s[shoot_MODE_CHANNEL]))
     {
         shoot_control->shoot_control_way = RC;
     }
@@ -391,13 +393,13 @@ static void shoot_set_mode(shoot_control_t *shoot_control)
 
     
 
-        //摩擦轮速度达到一定值,才可开启拨盘  为了便于测试,这里至少需要一个摩擦轮电机达到拨盘启动要求就可以开启拨盘
-        if(shoot_control->shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control->fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control->fric_motor[LEFT].require_speed) || abs(shoot_control->fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control->fric_motor[RIGHT].require_speed)))
-        {
-            shoot_control->fric_status = TRUE;     
+       // 摩擦轮速度达到一定值,才可开启拨盘  为了便于测试,这里至少需要一个摩擦轮电机达到拨盘启动要求就可以开启拨盘
+       if(shoot_control->shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control->fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control->fric_motor[LEFT].require_speed) || abs(shoot_control->fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control->fric_motor[RIGHT].require_speed)))
+       {
+           shoot_control->fric_status = TRUE;     
             shoot_control->shoot_mode = SHOOT_READY_BULLET;
-        }
-        else if(shoot_control->shoot_mode == SHOOT_READY_BULLET && shoot_control->key == SWITCH_TRIGGER_ON)
+       }
+         if(shoot_control->shoot_mode == SHOOT_READY_BULLET && shoot_control->key == SWITCH_TRIGGER_ON)
         {
             shoot_control->shoot_mode = SHOOT_READY;
         }
@@ -430,22 +432,7 @@ static void shoot_set_mode(shoot_control_t *shoot_control)
                 shoot_control->shoot_mode = SHOOT_BULLET;
             }
         }
-        
-
-
-        if(shoot_control->shoot_mode > SHOOT_READY_FRIC)
-        {
-            //鼠标长按一直进入射击状态 保持连发
-            if ((shoot_control->press_l_time == PRESS_LONG_TIME) || (shoot_control->press_r_time == PRESS_LONG_TIME) || (shoot_control->rc_s_time == RC_S_LONG_TIME))
-            {
-                shoot_control->shoot_mode = SHOOT_CONTINUE_BULLET;
-            }
-            else if(shoot_control->shoot_mode == SHOOT_CONTINUE_BULLET)
-            {
-                shoot_control->shoot_mode =SHOOT_READY_BULLET;
-            }
-        }
-
+    
         
         //检测两个摩擦轮同时上线，为了便于调试，暂时注释
         // if(!toe_is_error(REFEREE_TOE) && (shoot_control.heat + SHOOT_HEAT_REMAIN_VALUE > shoot_control.heat_limit))
@@ -483,7 +470,7 @@ static void shoot_set_mode(shoot_control_t *shoot_control)
         else if(shoot_control->shoot_mode == SHOOT_READY)
         {
             //识别装甲板边缘则单发
-            if ( VisionRecvData.identify_target == TRUE&&VisionRecvData.centre_lock == FALSE )
+            if ( VisionRecvData_shoot.identify_target == TRUE&&VisionRecvData_shoot.centre_lock == FALSE )
             {
                 shoot_control->shoot_mode = SHOOT_BULLET;
             }
@@ -508,7 +495,7 @@ static void shoot_set_mode(shoot_control_t *shoot_control)
         if(shoot_control->shoot_mode > SHOOT_READY_FRIC)
         {
             //识别到装甲板中心则连发
-            if (VisionRecvData.identify_target == TRUE&&VisionRecvData.centre_lock == TRUE)
+            if (VisionRecvData_shoot.identify_target == TRUE&&VisionRecvData_shoot.centre_lock == TRUE)
             {
                 shoot_control->shoot_mode = SHOOT_CONTINUE_BULLET;
             }

@@ -19,7 +19,6 @@ float Vision_Comps_Pitch_Dist = COMPENSATION_PITCH_DIST;//根据距离补偿
 VisionSendHeader_t    VisionSendHeader;        //帧头
 
 VisionActData_t       VisionActData;          //行动模式结构体
-
 VisionRecvData_t      VisionRecvData;        //接收数据结构体
 
 VisionSendData_t      VisionSendData;        //发送数据结构体
@@ -59,7 +58,7 @@ void vision_read_data(uint8_t *ReadFormUart)
 	//判断帧头数据是否为0xA5
 	if(ReadFormUart[0] == VISION_BEGIN)
 	{
-		//判断帧头数据是否为0xff  
+		//判断帧尾数据是否为0xff  
 		if(ReadFormUart[17] == VISION_END)
 		{
 
@@ -115,7 +114,7 @@ void vision_send_data(uint8_t CmdID)
 	
   
   //将打包好的数据通过串口移位发送到西奥迪男
-  HAL_UART_Transmit(&huart1, vision_send_pack, 4, 0xFFF);
+ HAL_UART_Transmit(&huart1, vision_send_pack, 4, 0xFFF);
   
 
 	memset(vision_send_pack, 0, 50);

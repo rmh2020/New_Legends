@@ -102,7 +102,7 @@ static void chassis_no_follow_yaw_control(fp32 *vy_set, chassis_move_t *chassis_
 
 static void chassis_open_set_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector);
 
-
+ext_event_data_t changdi;
 
 //留意，这个底盘行为模式变量
 chassis_behaviour_e chassis_behaviour_mode = CHASSIS_ZERO_FORCE;
@@ -260,6 +260,8 @@ int sj_flag =0;
 
 static void chassis_no_follow_yaw_control(fp32 *vy_set, chassis_move_t *chassis_move_rc_to_vector)
 {
+    char ch[100];
+    sprintf(ch, "%s", changdi.event_type); 
     if (vy_set == NULL || chassis_move_rc_to_vector == NULL)
     {
         return;
@@ -284,51 +286,71 @@ static void chassis_no_follow_yaw_control(fp32 *vy_set, chassis_move_t *chassis_
     }
     else if(chassis_move_rc_to_vector->chassis_control_way == AUTO)  //自动程序控制
     {
-        //底盘基础巡逻轨迹
-        /*
-        左边识别 右边识别    静止不动
-        左边未识别 右边识别  方向向左
-        左边识别 右边未识别  方向向右
-        左边未识别 右边未识别 保持原状态
-        */
-        if(chassis_move_rc_to_vector->left_light_sensor == TRUE && chassis_move_rc_to_vector->right_light_sensor == TRUE)
-        {
-            chassis_move_rc_to_vector->direction = NO_MOVE;
-        }
-        else if(chassis_move_rc_to_vector->left_light_sensor == FALSE && chassis_move_rc_to_vector->right_light_sensor == TRUE)
-        {
-            chassis_move_rc_to_vector->direction = LEFT;
-        }
-        else if(chassis_move_rc_to_vector->left_light_sensor == TRUE && chassis_move_rc_to_vector->right_light_sensor == FALSE)
-        {
-            chassis_move_rc_to_vector->direction = RIGHT;
-        }
-        else if(chassis_move_rc_to_vector->left_light_sensor == FALSE && chassis_move_rc_to_vector->right_light_sensor == FALSE)
-        {
-            chassis_move_rc_to_vector->direction = chassis_move_rc_to_vector->direction;
-            if(sj_count>0)
+        if(ch[10]==1){//前哨站存活,停在右边
+            if(chassis_move_rc_to_vector->left_light_sensor == TRUE && chassis_move_rc_to_vector->right_light_sensor == TRUE)
             {
-                sj_count--;
-                if(sj_count==0)
-                {
-                    sj_flag=1;
-                    if(chassis_move_rc_to_vector->direction == RIGHT)
-                    {
-                        chassis_move_rc_to_vector->direction = LEFT;
-                    }
-                    else if(chassis_move_rc_to_vector->direction == LEFT)
-                    {
-                        chassis_move_rc_to_vector->direction = RIGHT;
-                    }
-                }            
+                chassis_move_rc_to_vector->direction = NO_MOVE;
             }
-            if(sj_flag==1)
+            else if(chassis_move_rc_to_vector->left_light_sensor == FALSE && chassis_move_rc_to_vector->right_light_sensor == TRUE)
             {
-                sj_flag=0;
-                sj_count=1000;
-            }   
+                chassis_move_rc_to_vector->direction = NO_MOVE;
+            }
+            else if(chassis_move_rc_to_vector->left_light_sensor == TRUE && chassis_move_rc_to_vector->right_light_sensor == FALSE)
+            {
+                chassis_move_rc_to_vector->direction = RIGHT;
+            }
+            else if(chassis_move_rc_to_vector->left_light_sensor == FALSE && chassis_move_rc_to_vector->right_light_sensor == FALSE)
+            {
+                chassis_move_rc_to_vector->direction =chassis_move_rc_to_vector->direction ;
+            }
+
         }
-        
+        if(ch[10]==0){//前哨站被击毁，开始巡逻
+            //底盘基础巡逻轨迹
+            /*
+            左边识别 右边识别    静止不动
+            左边未识别 右边识别  方向向左
+            左边识别 右边未识别  方向向右
+            左边未识别 右边未识别 保持原状态
+            */
+            if(chassis_move_rc_to_vector->left_light_sensor == TRUE && chassis_move_rc_to_vector->right_light_sensor == TRUE)
+            {
+                chassis_move_rc_to_vector->direction = NO_MOVE;
+            }
+            else if(chassis_move_rc_to_vector->left_light_sensor == FALSE && chassis_move_rc_to_vector->right_light_sensor == TRUE)
+            {
+                chassis_move_rc_to_vector->direction = LEFT;
+            }
+            else if(chassis_move_rc_to_vector->left_light_sensor == TRUE && chassis_move_rc_to_vector->right_light_sensor == FALSE)
+            {
+                chassis_move_rc_to_vector->direction = RIGHT;
+            }
+            else if(chassis_move_rc_to_vector->left_light_sensor == FALSE && chassis_move_rc_to_vector->right_light_sensor == FALSE)
+            {
+                chassis_move_rc_to_vector->direction = chassis_move_rc_to_vector->direction;
+                if(sj_count>0)
+                {
+                    sj_count--;
+                    if(sj_count==0)
+                    {
+                        sj_flag=1;
+                        if(chassis_move_rc_to_vector->direction == RIGHT)
+                        {
+                            chassis_move_rc_to_vector->direction = LEFT;
+                        }
+                        else if(chassis_move_rc_to_vector->direction == LEFT)
+                        {
+                            chassis_move_rc_to_vector->direction = RIGHT;
+                        }
+                    }            
+                }
+                if(sj_flag==1)
+                {
+                    sj_flag=0;
+                    sj_count=1000;
+                }   
+            }
+        }
 
 
         //根据不同情况设置速度等级

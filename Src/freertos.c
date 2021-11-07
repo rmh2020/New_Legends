@@ -163,11 +163,12 @@ void MX_FREERTOS_Init(void) {
 //		osThreadDef(DETECT, detect_task, osPriorityNormal, 0, 256);
 //		detect_handle = osThreadCreate(osThread(DETECT), NULL);
 
-    osThreadDef(ChassisTask, chassis_task, osPriorityAboveNormal, 0, 512);
-    chassisTaskHandle = osThreadCreate(osThread(ChassisTask), NULL);
+      osThreadDef(ChassisTask, chassis_task, osPriorityAboveNormal, 0, 512);
+      chassisTaskHandle = osThreadCreate(osThread(ChassisTask), NULL);
 
-    osThreadDef(gimbalTask, gimbal_task, osPriorityHigh, 0, 512);
-    gimbalTaskHandle = osThreadCreate(osThread(gimbalTask), NULL);
+
+    // osThreadDef(gimbalTask, gimbal_task, osPriorityHigh, 0, 512);
+    // gimbalTaskHandle = osThreadCreate(osThread(gimbalTask), NULL);
 
     osThreadDef(ShootTask, shoot_task, osPriorityHigh, 0, 512);
     shoot_task_handle = osThreadCreate(osThread(ShootTask), NULL);

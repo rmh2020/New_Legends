@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: ¦ÌVision V5.35.0.0
 Copyright (C) 2021 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: 1 foreverwww, 1, LIC=----
+License Information: 1 foreverwww, 1, LIC=BUURY-IVYZL-BSPYX-H9GVU-QH6EQ-LQ80B
  
 Tool Versions:
 Toolchain:       MDK-ARM Plus  Version: 5.35.0.2
@@ -22,33 +22,27 @@ Dialog DLL:      TCM.DLL V1.53.0.0
  
 <h2>Project:</h2>
 D:\github\shao bing\MDK-ARM\standard_robot.uvprojx
-Project File Date:  09/30/2021
+Project File Date:  10/21/2021
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\ARM\ARMCC\Bin'
 Build target 'standard_robot'
-compiling shoot_task.c...
+compiling chassis_behaviour.c...
 ..\application\CAN_receive.h(121): warning:  #1295-D: Deprecated declaration get_chassis_motor_measure_point - give arg types
   extern const motor_measure_t *get_chassis_motor_measure_point();
 ..\application\gimbal_task.h(363): warning:  #1295-D: Deprecated declaration software_reset - give arg types
   extern void software_reset();
-..\application\vision.h(142): warning:  #1295-D: Deprecated declaration vision_if_find_target - give arg types
-  bool_t vision_if_find_target();
-..\application\vision.h(146): warning:  #1-D: last line of file ends without a newline
-  #endif
-..\application\shoot_task.c(395): warning:  #223-D: function "abs" declared implicitly
-          if(shoot_control->shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control->fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control->fric_motor[LEFT].require_speed) || abs(shoot_control->fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control->fric_motor[RIGHT].require_speed)))
-..\application\shoot_task.c(470): warning:  #223-D: function "abs" declared implicitly
-          if(shoot_control->shoot_mode == SHOOT_READY_FRIC &&(abs(shoot_control->fric_motor[LEFT].fric_motor_measure->speed_rpm)>abs(shoot_control->fric_motor[LEFT].require_speed) || abs(shoot_control->fric_motor[RIGHT].fric_motor_measure->speed_rpm)>abs(shoot_control->fric_motor[RIGHT].require_speed)))
-..\application\shoot_task.c(601): warning:  #1-D: last line of file ends without a newline
-  }
-..\application\shoot_task.c: 7 warnings, 0 errors
+..\application\chassis_behaviour.c(264): warning:  #223-D: function "sprintf" declared implicitly
+      sprintf(ch, "%s", changdi.event_type); 
+..\application\chassis_behaviour.c(359): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+              *vy_set = CHASSIS_MID_SPEED;
+..\application\chassis_behaviour.c(363): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+              *vy_set = CHASSIS_HIGH_SPEED;
+..\application\chassis_behaviour.c: 5 warnings, 0 errors
 linking...
-standard_tpye_c\standard_tpye_c.axf: Error: L6200E: Symbol VisionRecvData multiply defined (by shoot_task.o and vision.o).
-Not enough information to list image symbols.
-Not enough information to list load addresses in the image map.
-Finished: 2 information, 0 warning and 1 error messages.
-"standard_tpye_c\standard_tpye_c.axf" - 1 Error(s), 7 Warning(s).
+Program Size: Code=82076 RO-data=3688 RW-data=836 ZI-data=51716  
+FromELF: creating hex file...
+"standard_tpye_c\standard_tpye_c.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -59,19 +53,18 @@ Package Vendor: ARM
    * Component: CORE Version: 5.5.0
 
 Package Vendor: Keil
-                http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.12.0.pack
-                Keil.STM32F4xx_DFP.2.12.0
+                http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.15.0.pack
+                Keil.STM32F4xx_DFP.2.15.0
                 STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
 
 <h2>Collection of Component include folders:</h2>
   .\RTE\_standard_robot
   D:\ARM\CMSIS\5.8.0\CMSIS\Core\Include
-  D:\keil\STM32F4xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
+  D:\keil\STM32F4xx_DFP\2.15.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
 
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.5.0
-Target not created.
 Build Time Elapsed:  00:00:02
 </pre>
 </body>

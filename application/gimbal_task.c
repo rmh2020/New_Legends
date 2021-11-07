@@ -428,7 +428,7 @@ static void calc_gimbal_cali(const gimbal_step_cali_t *gimbal_cali, uint16_t *ya
     if (temp_ecd < 0)
     {
         temp_ecd += ECD_RANGE;
-    }
+    } 
     temp_ecd = gimbal_cali->max_yaw_ecd - (temp_ecd / 2);
     
     ecd_format(temp_ecd);
